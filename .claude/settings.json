@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "dualguard": {
+      "command": "D:\\Data\\18_KAT\\KAT\\backend\\venv_gpu\\Scripts\\python.exe",
+      "args": ["-m", "agent.mcp.server"],
+      "cwd": "D:\\Data\\18_KAT\\KAT"
+    }
+  }
+}
