@@ -31,19 +31,21 @@ def _get_incoming_agent() -> IncomingAgent:
 
 
 @mcp.tool()
-def analyze_outgoing(text: str) -> AnalysisResponse:
+def analyze_outgoing(text: str, use_ai: bool = False) -> AnalysisResponse:
     """
     Analyze outgoing message for sensitive information.
     발신 메시지의 민감정보(계좌번호, 주민번호 등)를 감지합니다.
 
     Args:
         text: 분석할 메시지 내용
+        use_ai: Kanana LLM 사용 여부 (기본: False = rule-based 분석)
+                True로 설정하면 Kanana Instruct 모델이 ReAct 패턴으로 분석
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
     agent = _get_outgoing_agent()
-    return agent.analyze(text)
+    return agent.analyze(text, use_ai=use_ai)
 
 
 @mcp.tool()
@@ -65,19 +67,27 @@ def analyze_incoming(text: str, sender_id: str = None, use_ai: bool = False) -> 
 
 
 @mcp.tool()
-def analyze_image(image_path: str) -> AnalysisResponse:
+def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
     """
     Analyze text within an image using Kanana Vision Model.
     이미지 내 텍스트를 추출하여 민감정보를 분석합니다.
 
+    순차 처리 (GPU 메모리 효율화):
+    1. Kanana Vision (3B) → 이미지에서 텍스트 추출 (OCR)
+    2. Vision 언로드 → GPU 메모리 해제
+    3. 추출된 텍스트 → 2-Tier 분석 (빠른 필터링 → LLM 정밀 분석)
+
     Args:
         image_path: 이미지 파일 경로
+        use_ai: 텍스트 분석에 Kanana Instruct 사용 여부 (기본: True)
+                2-Tier 방식으로 의심 메시지에만 LLM 호출됨
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
     try:
-        # Get Vision Model
+        # Step 1: Vision 모델로 OCR
+        print("[analyze_image] Step 1: Loading Vision model for OCR...")
         vision_model = LLMManager.get("vision")
         if not vision_model:
             return AnalysisResponse(
@@ -89,10 +99,15 @@ def analyze_image(image_path: str) -> AnalysisResponse:
 
         # Extract text using Kanana Vision
         extracted_text = vision_model.analyze_image(image_path)
-        
-        # Analyze extracted text using Outgoing Agent (PII detection)
-        return analyze_outgoing(extracted_text)
-        
+        print(f"[analyze_image] OCR Result: {extracted_text[:200]}..." if len(extracted_text) > 200 else f"[analyze_image] OCR Result: {extracted_text}")
+
+        # Step 2: 텍스트 분석 (2-Tier 방식)
+        # - Tier 1: 빠른 필터링 (숫자/키워드 패턴 체크)
+        # - Tier 2: 의심 메시지만 LLM 정밀 분석
+        # LLMManager.sequential_mode=True이므로 Instruct 로드 시 Vision 자동 언로드
+        print(f"[analyze_image] Step 2: Analyzing extracted text (use_ai={use_ai})...")
+        return analyze_outgoing(extracted_text, use_ai=use_ai)
+
     except Exception as e:
         return AnalysisResponse(
             risk_level=RiskLevel.LOW,

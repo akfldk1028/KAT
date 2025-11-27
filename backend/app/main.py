@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import security, agents
+from .routers import security, agents, secret
 
 # Create DB tables (Optional for security-only backend, but keeping for now)
 Base.metadata.create_all(bind=engine)
@@ -31,6 +31,7 @@ app.add_middleware(
 # API Routers
 app.include_router(security.router, prefix="/api/security", tags=["security"])
 app.include_router(agents.router, prefix="/api/agents", tags=["agents"])
+app.include_router(secret.router, prefix="/api/secret", tags=["secret"])
 
 @app.get("/")
 def read_root():
@@ -40,6 +41,8 @@ def read_root():
         "endpoints": {
             "analyze_outgoing": "/api/agents/analyze/outgoing",
             "analyze_incoming": "/api/agents/analyze/incoming",
+            "secret_create": "/api/secret/create",
+            "secret_view": "/api/secret/view/{secret_id}",
             "health": "/api/agents/health",
             "docs": "/docs"
         }
