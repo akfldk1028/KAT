@@ -7,13 +7,27 @@ LLM 인스턴스를 딕셔너리로 관리하는 Singleton 패턴
 - Singleton: 동일 모델 재사용으로 메모리 절약
 - 확장성: 새 모델 타입 추가 용이
 - ReAct 패턴: 도구 호출 지원 (analyze_with_tools)
+- Vision: API 호출 방식 (Kanana-1.5-v-3b)
 """
 from typing import Dict, Optional, Callable, Any
 import re
 import json
+import os
+import base64
+from pathlib import Path
+from dotenv import load_dotenv
+
+# .env 파일 로드 (backend/.env)
+env_path = Path(__file__).parent.parent.parent / "backend" / ".env"
+load_dotenv(env_path)
 
 # Configuration: "4bit", "8bit", or None (for 16-bit/32-bit)
 DEFAULT_QUANTIZATION = "8bit"
+
+# Vision API 설정 - 환경변수에서 로드
+VISION_API_KEY = os.getenv("KANANA_VISION_API_KEY") or os.getenv("OPENAI_API_KEY")
+VISION_API_BASE = os.getenv("KANANA_VISION_BASE_URL") or os.getenv("OPENAI_API_BASE")
+VISION_MODEL = os.getenv("KANANA_VISION_MODEL", "kanana-1.5-v-3b")
 
 class KananaLLM:
     """Kanana LLM Wrapper"""
@@ -39,22 +53,41 @@ class KananaLLM:
             self.is_safeguard = True
             self.is_vision = False
         elif model_type == "vision":
-            # Kanana 1.5 Vision (OCR/VLM)
-            self.model_id = "./model_vision"
+            # Kanana 1.5 Vision - API 방식
+            self.model_id = VISION_MODEL
             self.is_safeguard = False
             self.is_vision = True
         else:
-            # User requested update to Kanana 1.5 and local storage
-            # The model will be moved to the 'model' directory in the project root
+            # 로컬 Instruct 모델
             self.model_id = "./model"
             self.is_safeguard = False
             self.is_vision = False
 
         self.tokenizer = None
-        self.processor = None # For vision model
+        self.processor = None
         self.model = None
+        self.vision_client = None  # Vision API 클라이언트
+        self._torch = None
+
+        # Vision은 API 방식이므로 별도 처리
+        if self.is_vision:
+            print(f"Kanana Vision ({model_type}) initializing with API...")
+            try:
+                from openai import OpenAI
+                self.vision_client = OpenAI(
+                    api_key=VISION_API_KEY,
+                    base_url=VISION_API_BASE,
+                )
+                self.model = "API"  # 모델 로드 성공 표시
+                print(f"Kanana Vision API client initialized successfully!")
+            except Exception as e:
+                print(f"Failed to initialize Vision API client: {e}")
+            return  # Vision은 여기서 끝
+
+        # 텍스트 모델 (instruct, safeguard)은 로컬 로드
+        import torch
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self._torch = torch  # Store reference for later use
+        self._torch = torch
         print(f"Kanana LLM ({model_type}) initializing on {self.device} with {quantization} quantization...")
 
         try:
@@ -71,38 +104,21 @@ class KananaLLM:
                         bnb_4bit_quant_type="nf4"
                     )
 
-            # Load Tokenizer / Processor
-            if self.is_vision:
-                self.processor = AutoProcessor.from_pretrained(self.model_id, trust_remote_code=True)
-            else:
-                self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, trust_remote_code=True)
+            # Load Tokenizer
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, trust_remote_code=True)
 
             # Determine dtype
             dtype = torch.bfloat16 if self.device == "cuda" else torch.float32
-            
-            # Load Model
-            if self.is_vision:
-                # Vision Model Loading
-                # Note: Vision model does NOT support quantization (no official bitsandbytes support)
-                # See: https://huggingface.co/kakaocorp/kanana-1.5-v-3b-instruct#requirements
-                self.model = AutoModelForVision2Seq.from_pretrained(
-                    self.model_id,
-                    torch_dtype=dtype,
-                    # quantization_config=None for Vision model (not supported)
-                    device_map="auto",
-                    trust_remote_code=True,
-                    _attn_implementation="eager"
-                )
-            else:
-                # Text Model Loading
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    self.model_id,
-                    torch_dtype=dtype,
-                    quantization_config=quantization_config,
-                    device_map="auto",
-                    trust_remote_code=True
-                )
-                
+
+            # Text Model Loading
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_id,
+                torch_dtype=dtype,
+                quantization_config=quantization_config,
+                device_map="auto",
+                trust_remote_code=True
+            )
+
             print(f"Kanana LLM ({model_type}) Loaded Successfully!")
         except Exception as e:
             print(f"Failed to load Kanana LLM: {e}")
@@ -188,74 +204,70 @@ class KananaLLM:
                 "raw_output": f"Safeguard Error: {str(e)}"
             }
 
-    def analyze_image(self, image_path: str, prompt: str = "사진에서 텍스트를 추출해줘.") -> str:
+    def analyze_image(self, image_path: str, prompt: str = None) -> str:
         """
-        Kanana Vision 모델로 이미지 분석 (OCR/Description)
+        Kanana Vision API로 이미지 분석 (OCR)
+
+        Args:
+            image_path: 이미지 파일 경로
+            prompt: 커스텀 프롬프트 (기본: OCR 프롬프트)
+
+        Returns:
+            추출된 텍스트
         """
         if not self.is_vision:
             return "Error: This is not a vision model."
 
-        if not self.model or not self.processor:
-            return "Error: Vision model not loaded."
+        if not self.vision_client:
+            return "Error: Vision API client not initialized."
+
+        if prompt is None:
+            prompt = """이 이미지에서 모든 텍스트를 추출해주세요.
+텍스트가 있다면 그대로 출력하고, 텍스트가 없다면 "텍스트 없음"이라고 답해주세요.
+개인정보(계좌번호, 주민번호, 전화번호, 주소 등)가 보이면 그것도 포함해서 추출해주세요."""
 
         try:
-            from PIL import Image
-            import os
-
             if not os.path.exists(image_path):
                 return f"Error: Image file not found at {image_path}"
 
-            image = Image.open(image_path).convert("RGB")
-            
-            messages = [
-                {"role": "user", "content": [
-                    {"type": "image", "image": image},
-                    {"type": "text", "text": prompt}
-                ]}
-            ]
-            
-            # Custom processing for Kanana Vision (based on test script)
-            # The test script used manual batch construction, but let's try to use the processor's chat template if available,
-            # or stick to the manual construction which worked in the test.
-            # The test script used:
-            # sample = { "image": [image], "conv": [ ... ] }
-            # inputs = processor.batch_encode_collate(...)
-            
-            # Let's use the proven method from the test script for reliability.
-            
-            sample = {
-                "image": [image],
-                "conv": [
-                    {"role": "user", "content": "<image> " + prompt},
-                ]
+            # 이미지를 base64로 인코딩
+            with open(image_path, "rb") as f:
+                image_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+            # 이미지 확장자로 MIME 타입 결정
+            ext = Path(image_path).suffix.lower()
+            mime_types = {
+                ".jpg": "image/jpeg",
+                ".jpeg": "image/jpeg",
+                ".png": "image/png",
+                ".gif": "image/gif",
+                ".webp": "image/webp",
             }
-            
-            inputs = self.processor.batch_encode_collate(
-                [sample], 
-                padding_side="left", 
-                add_generation_prompt=True, 
-                max_length=4096 # Increased for safety
+            mime_type = mime_types.get(ext, "image/png")
+
+            # API 호출
+            response = self.vision_client.chat.completions.create(
+                messages=[{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:{mime_type};base64,{image_base64}"
+                            },
+                        },
+                    ],
+                }],
+                model=self.model_id,
+                max_completion_tokens=2048,
+                extra_body={"add_generation_prompt": True, "stop_token_ids": [128001]},
             )
-            
-            inputs = {k: v.to(self.device) if isinstance(v, self._torch.Tensor) else v for k, v in inputs.items()}
-            
-            gen_kwargs = {
-                "max_new_tokens": 1024,
-                "temperature": 0.0, # Deterministic for OCR
-                "do_sample": False,
-            }
-            
-            with self._torch.no_grad():
-                outputs = self.model.generate(**inputs, **gen_kwargs)
-                
-            generated_text = self.processor.tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
-            
-            # Clean up result if needed (the model output might include the prompt or special tokens depending on decoding)
-            # The test script output was clean JSON.
-            return generated_text
+
+            return response.choices[0].message.content
 
         except Exception as e:
-            return f"Vision Analysis Error: {str(e)}"
+            return f"Vision API Error: {str(e)}"
 
     def analyze_with_tools(
         self,
@@ -401,9 +413,14 @@ class LLMManager:
             print(f"[LLMManager] {model_type} model failed to load (Model is None). Returning None.")
             return None
 
-        if not llm.is_vision and llm.tokenizer is None:
-             print(f"[LLMManager] {model_type} model failed to load (Tokenizer is None). Returning None.")
-             return None
+        # Vision은 API 클라이언트, 텍스트 모델은 tokenizer 체크
+        if llm.is_vision:
+            if llm.vision_client is None:
+                print(f"[LLMManager] {model_type} model failed to load (Vision client is None). Returning None.")
+                return None
+        elif llm.tokenizer is None:
+            print(f"[LLMManager] {model_type} model failed to load (Tokenizer is None). Returning None.")
+            return None
 
         cls._current_model = model_type
         return llm

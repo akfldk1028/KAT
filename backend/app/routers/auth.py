@@ -10,10 +10,6 @@ router = APIRouter()
 def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.user_id == user.user_id).first()
     if db_user:
-        return schemas.AuthResponse(msg="이미 사용중이거나 탈퇴한 아이디입니다.") # Matching legacy error msg
-        # In a real API, we might want to return 400, but legacy frontend might expect 200 with msg?
-        # Legacy code: return res.status(400).json({ msg: '...' });
-        # So we should raise HTTPException.
         raise HTTPException(
             status_code=400,
             detail="이미 사용중이거나 탈퇴한 아이디입니다."

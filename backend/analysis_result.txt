@@ -1,0 +1,4 @@
+risk_level: MEDIUM
+reasons: ['계좌번호 패턴이 감지되었습니다.']
+is_secret_recommended: True
+recommended_action: 시크릿 전송 추천

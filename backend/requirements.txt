@@ -10,3 +10,6 @@ easyocr
 transformers
 torch
 accelerate
+openai
+python-dotenv
+requests

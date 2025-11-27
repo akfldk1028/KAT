@@ -14,9 +14,14 @@ import sys
 import os
 from pathlib import Path
 
-# 프로젝트 루트를 Python 경로에 추가
+# 프로젝트 루트를 Python 경로에 추가 (루트의 agent/ 모듈 우선 사용)
 PROJECT_ROOT = Path(__file__).parent.parent.parent
+# backend/agent/ 대신 루트의 agent/를 사용하도록 경로 우선순위 설정
 sys.path.insert(0, str(PROJECT_ROOT))
+# backend/ 경로 제거 (있으면) - 루트 agent 우선
+backend_path = str(Path(__file__).parent.parent)
+if backend_path in sys.path:
+    sys.path.remove(backend_path)
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,14 +56,14 @@ class OutgoingRequest(BaseModel):
     text: str
     sender_id: Optional[int] = None
     receiver_id: Optional[int] = None
-    use_ai: bool = False  # Kanana LLM 사용 여부
+    use_ai: bool = True  # Kanana LLM 사용 (테스트용 기본값 True)
 
 
 class IncomingRequest(BaseModel):
     text: str
     sender_id: Optional[int] = None
     receiver_id: Optional[int] = None
-    use_ai: bool = False
+    use_ai: bool = True  # Kanana LLM 사용 (테스트용 기본값 True)
 
 
 class AnalysisResponse(BaseModel):
