@@ -1,0 +1,7 @@
+{
+  "watch": [
+    "./src/**/*.ts"
+  ],
+  "ext": "ts",
+  "exec": "NODE_ENV=development ts-node --transpile-only ./src/web.ts"
+}
