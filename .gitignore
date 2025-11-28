@@ -80,3 +80,14 @@ credentials.json
 
 # === Claude Code ===
 .claude/settings.local.json
+
+# === Frontend Dependencies ===
+frontend/KakaoTalk/client/node_modules/
+frontend/KakaoTalk/server/node_modules/
+frontend/KakaoTalk/client/build/
+frontend/KakaoTalk/server/build/
+frontend/KakaoTalk/client/dist/
+frontend/KakaoTalk/server/dist/
+frontend/KakaoTalk/nul
+nul
+backend/kanana

@@ -1,0 +1,269 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-28",
+  "description": "수신 메시지 피싱/사기 위협 탐지 패턴",
+
+  "threat_categories": {
+    "financial_scam": {
+      "name_ko": "금융사기",
+      "description": "보이스피싱, 투자사기, 대출사기 등 금융 관련 사기",
+      "risk_weight": 3,
+      "patterns": [
+        {
+          "id": "urgent_transfer",
+          "name_ko": "긴급 송금 요청",
+          "keywords": ["급하게", "지금 바로", "빨리", "즉시", "긴급"],
+          "context_keywords": ["보내", "송금", "이체", "입금"],
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "loan_offer",
+          "name_ko": "대출 유도",
+          "keywords": ["저금리", "무담보", "당일대출", "즉시대출", "신용대출"],
+          "context_keywords": ["대출", "승인", "한도"],
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "investment_scam",
+          "name_ko": "투자 사기",
+          "keywords": ["고수익", "원금보장", "확정수익", "100% 수익", "코인"],
+          "context_keywords": ["투자", "수익률", "배당"],
+          "risk_level": "CRITICAL"
+        },
+        {
+          "id": "refund_scam",
+          "name_ko": "환불 사기",
+          "keywords": ["환불", "과오납", "세금환급", "보험금"],
+          "context_keywords": ["계좌", "입금", "확인"],
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "account_verify",
+          "name_ko": "계좌 확인 사칭",
+          "keywords": ["계좌확인", "본인확인", "인증", "보안승급"],
+          "context_keywords": ["클릭", "링크", "접속"],
+          "risk_level": "CRITICAL"
+        }
+      ]
+    },
+    "impersonation": {
+      "name_ko": "사칭",
+      "description": "가족, 지인, 기관 사칭",
+      "risk_weight": 3,
+      "patterns": [
+        {
+          "id": "family_impersonate",
+          "name_ko": "가족 사칭",
+          "keywords": ["엄마", "아빠", "아들", "딸", "언니", "오빠", "동생"],
+          "context_keywords": ["폰 고장", "급해", "돈 좀", "카톡 안돼"],
+          "risk_level": "CRITICAL"
+        },
+        {
+          "id": "authority_impersonate",
+          "name_ko": "기관 사칭",
+          "keywords": ["검찰", "경찰", "금융감독원", "국세청", "은행"],
+          "context_keywords": ["수사", "조사", "사건", "연루", "동결"],
+          "risk_level": "CRITICAL"
+        },
+        {
+          "id": "delivery_impersonate",
+          "name_ko": "배송 사칭",
+          "keywords": ["택배", "배송", "운송장", "CJ대한통운", "우체국"],
+          "context_keywords": ["확인", "조회", "클릭", "주소"],
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "company_impersonate",
+          "name_ko": "회사/상사 사칭",
+          "keywords": ["부장님", "팀장님", "사장님", "대표님", "본부장"],
+          "context_keywords": ["급히", "처리", "구매", "상품권"],
+          "risk_level": "HIGH"
+        }
+      ]
+    },
+    "link_phishing": {
+      "name_ko": "링크 피싱",
+      "description": "악성 링크 유포",
+      "risk_weight": 2,
+      "patterns": [
+        {
+          "id": "shortened_url",
+          "name_ko": "단축 URL",
+          "regex": "(?:bit\\.ly|tinyurl\\.com|goo\\.gl|t\\.co|is\\.gd|v\\.gd|me2\\.do|vo\\.la)[/\\w]+",
+          "risk_level": "MEDIUM"
+        },
+        {
+          "id": "suspicious_domain",
+          "name_ko": "의심 도메인",
+          "regex": "https?://[\\w.-]*(?:kakao[\\w]*|naver[\\w]*|bank[\\w]*|gov[\\w]*)\\.[^kr][a-z]{2,}",
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "ip_url",
+          "name_ko": "IP 주소 URL",
+          "regex": "https?://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}",
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "apk_download",
+          "name_ko": "APK 다운로드 유도",
+          "keywords": ["앱 설치", "apk", "다운로드", "설치하세요"],
+          "context_keywords": ["보안", "업데이트", "필수"],
+          "risk_level": "CRITICAL"
+        }
+      ]
+    },
+    "info_extraction": {
+      "name_ko": "정보탈취",
+      "description": "개인정보 요청",
+      "risk_weight": 2,
+      "patterns": [
+        {
+          "id": "credential_request",
+          "name_ko": "인증정보 요청",
+          "keywords": ["비밀번호", "OTP", "인증번호", "보안카드"],
+          "context_keywords": ["알려", "보내", "입력"],
+          "risk_level": "CRITICAL"
+        },
+        {
+          "id": "id_request",
+          "name_ko": "신분증 요청",
+          "keywords": ["신분증", "주민등록증", "면허증", "여권"],
+          "context_keywords": ["사진", "보내", "촬영", "찍어"],
+          "risk_level": "CRITICAL"
+        },
+        {
+          "id": "account_request",
+          "name_ko": "계좌정보 요청",
+          "keywords": ["계좌번호", "통장번호", "카드번호"],
+          "context_keywords": ["알려", "보내", "확인"],
+          "risk_level": "HIGH"
+        }
+      ]
+    },
+    "pressure_tactics": {
+      "name_ko": "심리적 압박",
+      "description": "긴급성, 공포 유발",
+      "risk_weight": 1,
+      "patterns": [
+        {
+          "id": "time_pressure",
+          "name_ko": "시간 압박",
+          "keywords": ["오늘까지", "지금 당장", "10분 안에", "곧 만료", "마감임박"],
+          "risk_level": "MEDIUM"
+        },
+        {
+          "id": "fear_inducing",
+          "name_ko": "공포 유발",
+          "keywords": ["체포", "구속", "압류", "해킹", "유출", "범죄"],
+          "risk_level": "HIGH"
+        },
+        {
+          "id": "too_good",
+          "name_ko": "혜택 과장",
+          "keywords": ["당첨", "무료", "선물", "경품", "이벤트 당첨"],
+          "risk_level": "MEDIUM"
+        }
+      ]
+    }
+  },
+
+  "known_scam_patterns": {
+    "voice_phishing": {
+      "name_ko": "보이스피싱 전형",
+      "description": "전형적인 보이스피싱 시나리오",
+      "scenarios": [
+        {
+          "id": "prosecution_scam",
+          "name_ko": "검찰 사칭 수사",
+          "pattern_sequence": ["authority_impersonate", "fear_inducing", "account_verify"],
+          "typical_phrases": [
+            "귀하의 명의가 범죄에 연루",
+            "안전한 계좌로 이체",
+            "수사에 협조"
+          ]
+        },
+        {
+          "id": "family_emergency",
+          "name_ko": "가족 긴급상황",
+          "pattern_sequence": ["family_impersonate", "time_pressure", "urgent_transfer"],
+          "typical_phrases": [
+            "폰이 고장나서",
+            "급하게 돈이 필요해",
+            "카톡이 안돼서"
+          ]
+        },
+        {
+          "id": "refund_trap",
+          "name_ko": "환불 함정",
+          "pattern_sequence": ["refund_scam", "credential_request"],
+          "typical_phrases": [
+            "과오납금 환불",
+            "세금 환급",
+            "계좌확인이 필요합니다"
+          ]
+        }
+      ]
+    }
+  },
+
+  "risk_scoring": {
+    "description": "위협 점수 계산 기준",
+    "base_scores": {
+      "CRITICAL": 100,
+      "HIGH": 70,
+      "MEDIUM": 40,
+      "LOW": 10
+    },
+    "multipliers": {
+      "multiple_categories": 1.5,
+      "known_scenario_match": 2.0,
+      "url_present": 1.3,
+      "credential_request": 1.8
+    },
+    "thresholds": {
+      "SAFE": {"max": 20},
+      "SUSPICIOUS": {"min": 21, "max": 60},
+      "DANGEROUS": {"min": 61, "max": 100},
+      "CRITICAL": {"min": 101}
+    }
+  },
+
+  "safe_patterns": {
+    "description": "안전한 것으로 간주되는 패턴 (false positive 방지)",
+    "whitelist_domains": [
+      "kakao.com",
+      "kakaocorp.com",
+      "naver.com",
+      "google.com",
+      "gov.kr",
+      "go.kr"
+    ],
+    "context_exceptions": [
+      {
+        "keywords": ["영화", "드라마", "소설", "뉴스"],
+        "action": "reduce_score",
+        "factor": 0.3
+      }
+    ]
+  },
+
+  "response_templates": {
+    "SAFE": {
+      "message": "안전한 메시지입니다.",
+      "action": "none"
+    },
+    "SUSPICIOUS": {
+      "message": "주의가 필요한 메시지입니다. 발신자를 확인하세요.",
+      "action": "warn"
+    },
+    "DANGEROUS": {
+      "message": "위험한 메시지입니다! 링크 클릭이나 정보 제공을 하지 마세요.",
+      "action": "block_recommended"
+    },
+    "CRITICAL": {
+      "message": "피싱/사기 메시지로 의심됩니다! 절대 응답하지 마세요.",
+      "action": "block_and_report"
+    }
+  }
+}

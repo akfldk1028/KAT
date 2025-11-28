@@ -7,6 +7,8 @@ MCP 도구를 HTTP 엔드포인트로 노출
 - POST /api/agents/analyze/outgoing - 발신 메시지 분석
 - POST /api/agents/analyze/incoming - 수신 메시지 분석
 - POST /api/agents/analyze/image - 이미지 분석 (Vision OCR + PII 감지)
+- POST /api/secret/create - 시크릿 메시지 생성
+- GET /api/secret/view/{secret_id} - 시크릿 메시지 열람
 - GET /api/agents/health - 헬스체크
 """
 
@@ -23,16 +25,67 @@ backend_path = str(Path(__file__).parent.parent)
 if backend_path in sys.path:
     sys.path.remove(backend_path)
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 import tempfile
 import shutil
+from datetime import datetime, timedelta
+import uuid
+
+# SQLAlchemy for Secret Messages
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
 
 # MCP 도구 임포트
 from agent.mcp.tools import analyze_outgoing, analyze_incoming, analyze_image
 from agent.core.models import RiskLevel
+
+# === Database Setup ===
+DATABASE_PATH = PROJECT_ROOT / "kanana_dualguard.db"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+class SecretMessageModel(Base):
+    """시크릿 메시지 DB 모델"""
+    __tablename__ = "secret_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    secret_id = Column(String, unique=True, index=True)
+    room_id = Column(Integer, index=True)
+    sender_id = Column(Integer, index=True)
+    original_message = Column(Text)
+    message_type = Column(String, default="text")
+    image_url = Column(String, nullable=True)
+    expiry_seconds = Column(Integer, default=60)
+    require_auth = Column(Boolean, default=False)
+    prevent_capture = Column(Boolean, default=True)
+    is_viewed = Column(Boolean, default=False)
+    viewed_at = Column(DateTime, nullable=True)
+    is_expired = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    expires_at = Column(DateTime)
+
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 app = FastAPI(
     title="DualGuard Agent API",
@@ -266,6 +319,189 @@ async def api_analyze_image(
         # 임시 파일 정리
         if temp_path and os.path.exists(temp_path):
             os.unlink(temp_path)
+
+
+# === Secret Message Pydantic Models ===
+
+class SecretMessageCreate(BaseModel):
+    """시크릿 메시지 생성 요청"""
+    room_id: int
+    sender_id: int
+    message: str
+    message_type: str = "text"
+    image_url: Optional[str] = None
+    expiry_seconds: int = 60
+    require_auth: bool = False
+    prevent_capture: bool = True
+
+
+class SecretMessageResponse(BaseModel):
+    """시크릿 메시지 응답"""
+    secret_id: str
+    room_id: int
+    sender_id: int
+    message_type: str
+    expiry_seconds: int
+    require_auth: bool
+    prevent_capture: bool
+    created_at: datetime
+    expires_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class SecretMessageContent(BaseModel):
+    """시크릿 메시지 내용 (열람 시)"""
+    secret_id: str
+    message: str
+    message_type: str
+    image_url: Optional[str] = None
+    is_expired: bool
+    prevent_capture: bool
+    remaining_seconds: int
+
+
+# === Secret Message API ===
+
+@app.post("/api/secret/create", response_model=SecretMessageResponse)
+def create_secret_message(
+    request: SecretMessageCreate,
+    db: Session = Depends(get_db)
+):
+    """시크릿 메시지 생성"""
+    secret_id = str(uuid.uuid4())
+    now = datetime.utcnow()
+    expires_at = now + timedelta(seconds=request.expiry_seconds)
+
+    secret_msg = SecretMessageModel(
+        secret_id=secret_id,
+        room_id=request.room_id,
+        sender_id=request.sender_id,
+        original_message=request.message,
+        message_type=request.message_type,
+        image_url=request.image_url,
+        expiry_seconds=request.expiry_seconds,
+        require_auth=request.require_auth,
+        prevent_capture=request.prevent_capture,
+        created_at=now,
+        expires_at=expires_at
+    )
+
+    db.add(secret_msg)
+    db.commit()
+    db.refresh(secret_msg)
+
+    return SecretMessageResponse(
+        secret_id=secret_msg.secret_id,
+        room_id=secret_msg.room_id,
+        sender_id=secret_msg.sender_id,
+        message_type=secret_msg.message_type,
+        expiry_seconds=secret_msg.expiry_seconds,
+        require_auth=secret_msg.require_auth,
+        prevent_capture=secret_msg.prevent_capture,
+        created_at=secret_msg.created_at,
+        expires_at=secret_msg.expires_at
+    )
+
+
+@app.get("/api/secret/view/{secret_id}", response_model=SecretMessageContent)
+def view_secret_message(
+    secret_id: str,
+    db: Session = Depends(get_db)
+):
+    """시크릿 메시지 열람"""
+    secret_msg = db.query(SecretMessageModel).filter(
+        SecretMessageModel.secret_id == secret_id
+    ).first()
+
+    if not secret_msg:
+        raise HTTPException(status_code=404, detail="메시지를 찾을 수 없습니다")
+
+    now = datetime.utcnow()
+
+    # 만료 체크
+    if now > secret_msg.expires_at or secret_msg.is_expired:
+        if not secret_msg.is_expired:
+            secret_msg.is_expired = True
+            db.commit()
+
+        return SecretMessageContent(
+            secret_id=secret_id,
+            message="[만료된 메시지입니다]",
+            message_type="text",
+            image_url=None,
+            is_expired=True,
+            prevent_capture=secret_msg.prevent_capture,
+            remaining_seconds=0
+        )
+
+    # 첫 열람 기록
+    if not secret_msg.is_viewed:
+        secret_msg.is_viewed = True
+        secret_msg.viewed_at = now
+        db.commit()
+
+    remaining = (secret_msg.expires_at - now).total_seconds()
+    remaining_seconds = max(0, int(remaining))
+
+    return SecretMessageContent(
+        secret_id=secret_id,
+        message=secret_msg.original_message,
+        message_type=secret_msg.message_type,
+        image_url=secret_msg.image_url,
+        is_expired=False,
+        prevent_capture=secret_msg.prevent_capture,
+        remaining_seconds=remaining_seconds
+    )
+
+
+@app.delete("/api/secret/expire/{secret_id}")
+def expire_secret_message(
+    secret_id: str,
+    db: Session = Depends(get_db)
+):
+    """시크릿 메시지 수동 만료"""
+    secret_msg = db.query(SecretMessageModel).filter(
+        SecretMessageModel.secret_id == secret_id
+    ).first()
+
+    if not secret_msg:
+        raise HTTPException(status_code=404, detail="메시지를 찾을 수 없습니다")
+
+    secret_msg.is_expired = True
+    secret_msg.original_message = "[삭제된 메시지]"
+    db.commit()
+
+    return {"status": "expired", "secret_id": secret_id}
+
+
+@app.get("/api/secret/status/{secret_id}")
+def check_secret_status(
+    secret_id: str,
+    db: Session = Depends(get_db)
+):
+    """시크릿 메시지 상태 확인"""
+    secret_msg = db.query(SecretMessageModel).filter(
+        SecretMessageModel.secret_id == secret_id
+    ).first()
+
+    if not secret_msg:
+        raise HTTPException(status_code=404, detail="메시지를 찾을 수 없습니다")
+
+    now = datetime.utcnow()
+    is_expired = now > secret_msg.expires_at or secret_msg.is_expired
+    remaining = max(0, (secret_msg.expires_at - now).total_seconds()) if not is_expired else 0
+
+    return {
+        "secret_id": secret_id,
+        "is_viewed": secret_msg.is_viewed,
+        "viewed_at": secret_msg.viewed_at,
+        "is_expired": is_expired,
+        "remaining_seconds": int(remaining),
+        "created_at": secret_msg.created_at,
+        "expires_at": secret_msg.expires_at
+    }
 
 
 if __name__ == "__main__":

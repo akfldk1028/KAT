@@ -2,59 +2,24 @@
 Outgoing Agent - 안심 전송 Agent
 발신 메시지의 민감정보를 감지하고 보호 조치를 제안
 
+v2.0 - pattern_matcher.py + sensitive_patterns.json 기반
+
 기능:
-- Rule-based PII 감지 (기본)
+- Rule-based PII 감지 (pattern_matcher 사용)
+- 조합 규칙 적용 (이름+주민번호 → CRITICAL 등)
 - Kanana LLM + ReAct 패턴 (use_ai=True)
 """
 import re
 from typing import Dict, Any
 from .base import BaseAgent
 from ..core.models import RiskLevel, AnalysisResponse
+from ..core.pattern_matcher import detect_pii, calculate_risk, get_risk_action
 from ..llm.kanana import LLMManager
 from ..prompts.outgoing_agent import get_outgoing_system_prompt
 
 
 class OutgoingAgent(BaseAgent):
     """안심 전송 Agent - 발신 메시지 민감정보 감지"""
-
-    # PII 패턴 정의 (확장)
-    PATTERNS = {
-        "account": {
-            "regex": r'\d{3}-\d{2,6}-\d{3,6}',
-            "message": "계좌번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.MEDIUM,
-        },
-        "resident_id": {
-            "regex": r'\d{6}-[1-4]\d{6}',
-            "message": "주민등록번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.CRITICAL,
-        },
-        "phone": {
-            "regex": r'01[016789]-?\d{3,4}-?\d{4}',
-            "message": "전화번호가 포함되어 있습니다.",
-            "risk": RiskLevel.LOW,
-        },
-        "card": {
-            "regex": r'\d{4}-?\d{4}-?\d{4}-?\d{4}',
-            "message": "신용카드번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.HIGH,
-        },
-        "passport": {
-            "regex": r'[A-Z]{1,2}\d{7,8}',  # 한국 여권: M12345678
-            "message": "여권번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.CRITICAL,
-        },
-        "driver_license": {
-            "regex": r'\d{2}-\d{2}-\d{6}-\d{2}',  # 운전면허: 11-22-123456-78
-            "message": "운전면허번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.HIGH,
-        },
-        "foreigner_id": {
-            "regex": r'\d{6}-[5-8]\d{6}',  # 외국인등록번호: 앞자리 5-8
-            "message": "외국인등록번호 패턴이 감지되었습니다.",
-            "risk": RiskLevel.CRITICAL,
-        },
-    }
 
     @property
     def name(self) -> str:
@@ -117,45 +82,39 @@ class OutgoingAgent(BaseAgent):
         return False
 
     def _analyze_rule_based(self, text: str) -> AnalysisResponse:
-        """Rule-based 분석 (기존 방식)"""
+        """
+        Rule-based 분석 (pattern_matcher.py 사용)
+
+        1. detect_pii() - 정규식으로 PII 스캔
+        2. calculate_risk () - 조합 규칙 적용하여 최종 위험도 계산
+        3. get_risk_action() - 권장 조치 반환
+        """
+        # 1. PII 스캔
+        pii_result = detect_pii(text)
+
+        # 2. 위험도 계산 (조합 규칙 적용)
+        risk_result = calculate_risk(pii_result["found_pii"])
+
+        # 3. 권장 조치
+        recommended_action = get_risk_action(risk_result["final_risk"])
+
+        # 4. 감지 이유 생성
         reasons = []
-        risk_level = RiskLevel.LOW
-        is_secret_recommended = False
+        for item in pii_result["found_pii"]:
+            reasons.append(f"{item['name_ko']} 패턴이 감지되었습니다.")
 
-        # 전화번호 먼저 찾아서 마스킹 (계좌번호와 구분하기 위해)
-        phone_pattern = self.PATTERNS["phone"]["regex"]
-        phone_matches = re.findall(phone_pattern, text)
-        text_without_phones = re.sub(phone_pattern, "PHONE_MASKED", text)
+        # 조합 규칙으로 상향된 경우 이유 추가
+        if risk_result["escalation_reason"]:
+            reasons.append(risk_result["escalation_reason"])
 
-        # 전화번호 감지 기록
-        if phone_matches:
-            reasons.append(self.PATTERNS["phone"]["message"])
-
-        # 나머지 패턴 검사 (전화번호 제외된 텍스트에서)
-        for pattern_name, pattern_info in self.PATTERNS.items():
-            if pattern_name == "phone":
-                continue  # 이미 처리됨
-
-            if re.search(pattern_info["regex"], text_without_phones):
-                reasons.append(pattern_info["message"])
-
-                # 위험도 업그레이드 (더 높은 것으로)
-                if self._compare_risk(pattern_info["risk"], risk_level) > 0:
-                    risk_level = pattern_info["risk"]
-
-                # 민감정보는 시크릿 전송 추천 (전화번호 제외)
-                if pattern_name != "phone":
-                    is_secret_recommended = True
-
-        recommended_action = "전송"
-        if is_secret_recommended:
-            recommended_action = "시크릿 전송 추천"
+        # RiskLevel enum으로 변환
+        risk_level = RiskLevel(risk_result["final_risk"])
 
         return AnalysisResponse(
             risk_level=risk_level,
             reasons=reasons,
             recommended_action=recommended_action,
-            is_secret_recommended=is_secret_recommended
+            is_secret_recommended=risk_result["is_secret_recommended"]
         )
 
     def _analyze_with_ai(self, text: str) -> AnalysisResponse:
@@ -167,13 +126,14 @@ class OutgoingAgent(BaseAgent):
                 print("[OutgoingAgent] LLM not available, falling back to rule-based")
                 return self._analyze_rule_based(text)
 
-            # 도구 정의
+            # 새 MCP 도구 정의 (pattern_matcher 기반)
             tools = {
-                "detect_pii": self._tool_detect_pii,
-                "recommend_secret_mode": self._tool_recommend_secret_mode
+                "scan_pii": self._tool_scan_pii,
+                "evaluate_risk": self._tool_evaluate_risk,
+                "analyze_full": self._tool_analyze_full,
             }
 
-            # 시스템 프롬프트 가져오기
+            # 시스템 프롬프트 가져오기 (JSON 데이터 동적 주입됨)
             system_prompt = get_outgoing_system_prompt()
 
             # LLM으로 분석
@@ -199,56 +159,35 @@ class OutgoingAgent(BaseAgent):
             print(f"[OutgoingAgent] AI analysis error: {e}, falling back to rule-based")
             return self._analyze_rule_based(text)
 
-    def _tool_detect_pii(self, text: str) -> Dict[str, Any]:
-        """detect_pii 도구 - LLM이 호출하는 PII 감지 함수"""
-        found_pii = []
-        risk_level = "LOW"
+    def _tool_scan_pii(self, text: str) -> Dict[str, Any]:
+        """scan_pii 도구 - pattern_matcher.detect_pii 래퍼"""
+        return detect_pii(text)
 
-        # 각 패턴 검사
-        for pattern_name, pattern_info in self.PATTERNS.items():
-            matches = re.findall(pattern_info["regex"], text)
-            if matches:
-                for match in matches:
-                    found_pii.append(f"{pattern_name}:{match}")
+    def _tool_evaluate_risk(self, detected_items: list) -> Dict[str, Any]:
+        """evaluate_risk 도구 - pattern_matcher.calculate_risk 래퍼"""
+        return calculate_risk(detected_items)
 
-                # 가장 높은 위험도로 업데이트
-                pattern_risk = pattern_info["risk"].value
-                if self._risk_value(pattern_risk) > self._risk_value(risk_level):
-                    risk_level = pattern_risk
+    def _tool_analyze_full(self, text: str) -> Dict[str, Any]:
+        """analyze_full 도구 - 전체 분석 파이프라인"""
+        # 1. PII 스캔
+        pii_result = detect_pii(text)
 
-        return {
-            "found_pii": found_pii,
-            "risk_level": risk_level,
-            "recommendations": ["시크릿 전송 권장"] if found_pii else []
-        }
+        # 2. 위험도 평가
+        risk_result = calculate_risk(pii_result["found_pii"])
 
-    def _tool_recommend_secret_mode(self, pii_types: list = None, risk_level: str = "LOW") -> Dict[str, Any]:
-        """recommend_secret_mode 도구 - 시크릿 모드 추천 결정"""
-        pii_types = pii_types or []
+        # 3. 권장 조치
+        action = get_risk_action(risk_result["final_risk"])
 
-        # 민감한 정보 유형 체크
-        sensitive_types = {"account", "resident_id", "card"}
-        has_sensitive = any(pii in sensitive_types for pii in pii_types)
-
-        # HIGH 이상이거나 민감정보 있으면 시크릿 추천
-        should_use = has_sensitive or risk_level in ["HIGH", "CRITICAL"]
+        # 4. 요약
+        if pii_result["count"] == 0:
+            summary = "민감정보가 감지되지 않았습니다."
+        else:
+            detected_names = list(set(item["name_ko"] for item in pii_result["found_pii"]))
+            summary = f"{len(detected_names)}종의 민감정보 감지: {', '.join(detected_names)}. {action}"
 
         return {
-            "should_use_secret": should_use,
-            "reason": "민감한 개인정보가 포함되어 있습니다." if should_use else "일반 전송 가능합니다."
+            "pii_scan": pii_result,
+            "risk_evaluation": risk_result,
+            "recommended_action": action,
+            "summary": summary
         }
-
-    def _risk_value(self, risk: str) -> int:
-        """위험도를 숫자로 변환"""
-        order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
-        return order.get(risk.upper(), 0)
-
-    def _compare_risk(self, a: RiskLevel, b: RiskLevel) -> int:
-        """위험도 비교 (a > b이면 양수)"""
-        order = {
-            RiskLevel.LOW: 0,
-            RiskLevel.MEDIUM: 1,
-            RiskLevel.HIGH: 2,
-            RiskLevel.CRITICAL: 3,
-        }
-        return order[a] - order[b]

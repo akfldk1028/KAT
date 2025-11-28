@@ -15,7 +15,7 @@ export const API_HOST = process.env.API_HOST || HOST + '/api';
 // Agent API 서버 (포트 8002)
 export const AGENT_HOST = process.env.AGENT_HOST || 'http://localhost:8002/api/agents';
 
-// Secret Message API (메인 백엔드 포트 8000)
-export const SECRET_HOST = process.env.SECRET_HOST || 'http://localhost:8000/api/secret';
+// Secret Message API (Agent 서버 포트 8002로 통합)
+export const SECRET_HOST = process.env.SECRET_HOST || 'http://localhost:8002/api/secret';
 
 export const BASE_IMG_URL = '/asset/base_profile.jpg';
