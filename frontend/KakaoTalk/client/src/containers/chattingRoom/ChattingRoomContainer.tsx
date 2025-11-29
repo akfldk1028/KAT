@@ -393,6 +393,8 @@ class ChattingRoomContainer extends Component<Props, State> {
           require_auth: options.requireAuth,
           prevent_capture: options.preventCapture
         });
+        // 순서: 에이전트 알림 먼저, 시크릿 링크 나중에
+        this.showSecretSuccessAlert();
         this.sendSecretMessage(response.secret_id);
         console.log('Secret image sent:', response.secret_id);
       } catch (error) {
@@ -434,8 +436,12 @@ class ChattingRoomContainer extends Component<Props, State> {
           secret_id: response.secret_id
         });
         console.log('Message converted to secret:', lastMessage.id);
+        // 기존 메시지 변환의 경우 에이전트 알림만
+        this.showSecretSuccessAlert();
       } else {
         console.warn('Could not find message to convert, sending new secret message');
+        // 순서: 에이전트 알림 먼저, 시크릿 링크 나중에
+        this.showSecretSuccessAlert();
         this.sendSecretMessage(response.secret_id);
       }
     } catch (error) {
@@ -449,6 +455,29 @@ class ChattingRoomContainer extends Component<Props, State> {
 
   handleSecretCancel = () => {
     this.setState({ showSecretPopup: false });
+  };
+
+  showSecretSuccessAlert = () => {
+    // 에이전트 알림을 채팅 메시지로 전송 (채팅방에 영구 저장)
+    this.sendAgentAlertMessage('"민감정보를 시크릿 전송으로 보냈어요."');
+  };
+
+  sendAgentAlertMessage = (msg: string) => {
+    const userState = this.props.rootState.user;
+    const chatState = this.props.rootState.chat;
+    const authState = this.props.rootState.auth;
+
+    const chattingRequest: ChattingRequestDto = {
+      room_id: chatState.room_id,
+      type: chatState.type as RoomType,
+      participant: chatState.participant,
+      send_user_id: userState.id,
+      message: msg,
+      not_read: 0,
+      message_type: 'agent_alert'
+    };
+
+    authState.socket?.emit('message', chattingRequest);
   };
 
   sendTextMessage = (msg: string) => {

@@ -242,3 +242,85 @@ export const MessageNotification: React.FC<MessageNotificationProp> = props => {
     </MsgNotificationWrapper>
   );
 };
+
+// 시크릿 전송 에이전트 알림 - 채팅방 중앙에 표시
+const SecretAgentAlertWrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  background: rgba(80, 80, 80, 0.95);
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInOut 3s ease-in-out forwards;
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+`;
+
+const SecretAgentIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff6b9d, #c850c0, #4158d0, #ff6b9d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const SecretAgentIconInner = styled.div`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(80, 80, 80, 0.95);
+`;
+
+const SecretAgentText = styled.div`
+  color: white;
+
+  & .title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  & .message {
+    font-size: 13px;
+    color: #ccc;
+  }
+`;
+
+interface SecretAgentAlertProps {
+  visible: boolean;
+}
+
+export const SecretAgentAlert: React.FC<SecretAgentAlertProps> = ({ visible }) => {
+  if (!visible) return null;
+
+  return (
+    <SecretAgentAlertWrapper>
+      <SecretAgentIcon>
+        <SecretAgentIconInner />
+      </SecretAgentIcon>
+      <SecretAgentText>
+        <div className="title">시크릿 전송 에이전트:</div>
+        <div className="message">"민감정보를 시크릿 전송으로 보냈어요."</div>
+      </SecretAgentText>
+    </SecretAgentAlertWrapper>
+  );
+};

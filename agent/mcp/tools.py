@@ -14,10 +14,8 @@ from ..core.pattern_matcher import (
     calculate_risk,
     get_risk_action
 )
-from ..agents.outgoing import OutgoingAgent
-from ..agents.incoming import IncomingAgent
 
-from ..llm.kanana import LLMManager
+# NOTE: Agent와 LLM은 순환 import 방지를 위해 함수 내부에서 lazy import
 
 # MCP 서버 인스턴스
 mcp = FastMCP("DualGuard")
@@ -27,16 +25,20 @@ _outgoing_agent = None
 _incoming_agent = None
 
 
-def _get_outgoing_agent() -> OutgoingAgent:
+def _get_outgoing_agent():
+    """OutgoingAgent 싱글톤 (lazy import)"""
     global _outgoing_agent
     if _outgoing_agent is None:
+        from ..agents.outgoing import OutgoingAgent
         _outgoing_agent = OutgoingAgent()
     return _outgoing_agent
 
 
-def _get_incoming_agent() -> IncomingAgent:
+def _get_incoming_agent():
+    """IncomingAgent 싱글톤 (lazy import)"""
     global _incoming_agent
     if _incoming_agent is None:
+        from ..agents.incoming import IncomingAgent
         _incoming_agent = IncomingAgent()
     return _incoming_agent
 
@@ -97,7 +99,8 @@ def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
     try:
-        # Step 1: Vision 모델로 OCR
+        # Step 1: Vision 모델로 OCR (lazy import)
+        from ..llm.kanana import LLMManager
         print("[analyze_image] Step 1: Loading Vision model for OCR...")
         vision_model = LLMManager.get("vision")
         if not vision_model:

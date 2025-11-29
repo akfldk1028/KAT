@@ -70,6 +70,20 @@ const Content: React.FC<Props> = props => {
     // 지금 채팅 날짜가 이전에 채팅 날짜와 다르면 날짜 표시
     const date = isSameDate ? '' : getDate();
 
+    // 에이전트 알림 메시지는 항상 MyChat으로 중앙 정렬
+    if (chat.message_type === 'agent_alert') {
+      return (
+        <MyChat
+          msg={chat.message}
+          notRead={0}
+          localeTime=""
+          content={date}
+          messageType="agent_alert"
+          key={chat.id}
+        />
+      );
+    }
+
     // 마지막 채팅인 경우
     if (idx === chattingList.length - 1) {
       // 내가 보낸 채팅인 경우

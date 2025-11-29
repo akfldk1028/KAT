@@ -93,6 +93,9 @@ def detect_pii(text: str) -> Dict[str, Any]:
     MCP Tool: 텍스트에서 PII 감지
     정규식 기반으로 민감정보를 탐지하고 결과 반환
 
+    중요: 우선순위가 높은 패턴(카드번호, 주민번호)을 먼저 매칭하고,
+    이미 매칭된 부분은 다른 패턴으로 중복 감지하지 않음
+
     Args:
         text: 분석할 텍스트
 
@@ -110,36 +113,74 @@ def detect_pii(text: str) -> Dict[str, Any]:
 
     risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
 
+    # 패턴 우선순위 정의 (높은 것 먼저 매칭)
+    # 숫자가 낮을수록 먼저 매칭됨
+    priority_order = {
+        "resident_id": 1,      # 주민번호
+        "foreigner_id": 1,     # 외국인등록번호
+        "card": 2,             # 신용카드
+        "passport": 3,         # 여권
+        "driver_license": 3,   # 운전면허
+        "phone": 4,            # 전화번호 (계좌번호보다 먼저 - 010 패턴 구분)
+        "account": 5,          # 계좌번호
+        "birth_date": 10,      # 생년월일 (가장 낮은 우선순위)
+    }
+
+    # 모든 패턴 수집
+    all_patterns = []
     for cat_id, cat_info in data["categories"].items():
         for item in cat_info["items"]:
-            regex = item.get("regex")
-            keywords = item.get("keywords", [])
+            if item.get("regex"):
+                priority = priority_order.get(item["id"], 10)
+                all_patterns.append({
+                    "item": item,
+                    "category": cat_id,
+                    "priority": priority
+                })
 
-            # 정규식 매칭
-            if regex:
-                try:
-                    matches = re.findall(regex, text)
-                    for match in matches:
-                        found_pii.append({
-                            "id": item["id"],
-                            "category": cat_id,
-                            "value": match if isinstance(match, str) else match[0],
-                            "risk_level": item["risk_level"],
-                            "name_ko": item["name_ko"]
-                        })
-                        categories_found.add(cat_id)
-                        if risk_order[item["risk_level"]] > risk_order[highest_risk.value]:
-                            highest_risk = RiskLevel(item["risk_level"])
-                except re.error:
+    # 우선순위순 정렬
+    all_patterns.sort(key=lambda x: x["priority"])
+
+    # 이미 매칭된 위치 추적 (중복 방지)
+    matched_ranges = []
+
+    def is_overlapping(start: int, end: int) -> bool:
+        """이미 매칭된 범위와 겹치는지 확인"""
+        for m_start, m_end in matched_ranges:
+            # 겹치는 경우: 새 범위가 기존 범위 안에 포함되거나 교차
+            if not (end <= m_start or start >= m_end):
+                return True
+        return False
+
+    # 우선순위순 매칭
+    for pattern_info in all_patterns:
+        item = pattern_info["item"]
+        cat_id = pattern_info["category"]
+        regex = item["regex"]
+
+        try:
+            for match in re.finditer(regex, text):
+                start, end = match.start(), match.end()
+                matched_value = match.group()
+
+                # 이미 매칭된 범위와 겹치면 스킵
+                if is_overlapping(start, end):
                     continue
 
-            # 키워드 매칭 (requires_ai가 아닌 경우만)
-            if not item.get("requires_ai", False):
-                for keyword in keywords:
-                    if keyword.lower() in text.lower():
-                        # 키워드만 있으면 PII로 기록하지 않음 (컨텍스트 필요)
-                        # 단, regex 매칭이 없고 키워드만 있으면 AI 분석 필요 표시
-                        pass
+                # 새 매칭 추가
+                matched_ranges.append((start, end))
+                found_pii.append({
+                    "id": item["id"],
+                    "category": cat_id,
+                    "value": matched_value,
+                    "risk_level": item["risk_level"],
+                    "name_ko": item["name_ko"]
+                })
+                categories_found.add(cat_id)
+                if risk_order[item["risk_level"]] > risk_order[highest_risk.value]:
+                    highest_risk = RiskLevel(item["risk_level"])
+        except re.error:
+            continue
 
     return {
         "found_pii": found_pii,

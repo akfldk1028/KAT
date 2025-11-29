@@ -3,7 +3,7 @@ import { UserResponseDto } from './user';
 export type RoomType = 'individual' | 'group';
 
 // 메시지 타입
-export type MessageType = 'text' | 'image' | 'secret';
+export type MessageType = 'text' | 'image' | 'secret' | 'agent_alert';
 
 // chat state
 export interface ChattingDto {

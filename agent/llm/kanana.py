@@ -6,10 +6,10 @@ LLM 인스턴스를 딕셔너리로 관리하는 Singleton 패턴
 - Lazy Loading: 요청 시에만 모델 로드
 - Singleton: 동일 모델 재사용으로 메모리 절약
 - 확장성: 새 모델 타입 추가 용이
-- ReAct 패턴: 도구 호출 지원 (analyze_with_tools)
+- API 방식: Kanana-2-30b OpenAI 호환 API 사용 (Tool Call 지원)
 - Vision: API 호출 방식 (Kanana-1.5-v-3b)
 """
-from typing import Dict, Optional, Callable, Any
+from typing import Dict, Optional, Callable, Any, List
 import re
 import json
 import os
@@ -17,191 +17,413 @@ import base64
 from pathlib import Path
 from dotenv import load_dotenv
 
+# MCP 클라이언트는 순환 import 방지를 위해 함수 내부에서 lazy import
+
 # .env 파일 로드 (backend/.env)
 env_path = Path(__file__).parent.parent.parent / "backend" / ".env"
 load_dotenv(env_path)
 
-# Configuration: "4bit", "8bit", or None (for 16-bit/32-bit)
-DEFAULT_QUANTIZATION = "8bit"
+# LLM API 설정 - Kanana-2-30b (2025-11-28 업데이트)
+LLM_API_KEY = os.getenv("KANANA_LLM_API_KEY") or os.getenv("OPENAI_API_KEY")
+LLM_API_BASE = os.getenv("KANANA_LLM_BASE_URL") or os.getenv("OPENAI_API_BASE")
 
-# Vision API 설정 - 환경변수에서 로드
+# Vision API 설정 - Kanana-1.5-v-3b
 VISION_API_KEY = os.getenv("KANANA_VISION_API_KEY") or os.getenv("OPENAI_API_KEY")
 VISION_API_BASE = os.getenv("KANANA_VISION_BASE_URL") or os.getenv("OPENAI_API_BASE")
 VISION_MODEL = os.getenv("KANANA_VISION_MODEL", "kanana-1.5-v-3b")
 
-class KananaLLM:
-    """Kanana LLM Wrapper"""
 
-    def __init__(self, model_type: str = "instruct", quantization: str = DEFAULT_QUANTIZATION):
+class KananaLLM:
+    """Kanana LLM Wrapper - API 방식"""
+
+    def __init__(self, model_type: str = "instruct"):
         """
         Initialize Kanana LLM
         Args:
-            model_type: "instruct" for general chat, "safeguard" for safety detection, "vision" for OCR
-            quantization: "4bit", "8bit", or None
+            model_type: "instruct" for general chat with tool call, "vision" for OCR
         """
-        # Lazy imports for heavy dependencies
-        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-        try:
-            from transformers import AutoModelForVision2Seq, AutoProcessor
-        except ImportError:
-            pass # Vision dependencies might not be needed for text models
-            
-        import torch
+        self.model_type = model_type
+        self.client = None
+        self.model_id = None
+        self.is_vision = model_type == "vision"
 
-        if model_type == "safeguard":
-            self.model_id = "kakaocorp/kanana-safeguard-8b"
-            self.is_safeguard = True
-            self.is_vision = False
-        elif model_type == "vision":
-            # Kanana 1.5 Vision - API 방식
-            self.model_id = VISION_MODEL
-            self.is_safeguard = False
-            self.is_vision = True
-        else:
-            # 로컬 Instruct 모델
-            self.model_id = "./model"
-            self.is_safeguard = False
-            self.is_vision = False
-
-        self.tokenizer = None
-        self.processor = None
-        self.model = None
-        self.vision_client = None  # Vision API 클라이언트
-        self._torch = None
-
-        # Vision은 API 방식이므로 별도 처리
         if self.is_vision:
-            print(f"Kanana Vision ({model_type}) initializing with API...")
+            # Vision API 클라이언트
+            print(f"[KananaLLM] Vision API 초기화 중...")
             try:
                 from openai import OpenAI
-                self.vision_client = OpenAI(
+                self.client = OpenAI(
                     api_key=VISION_API_KEY,
                     base_url=VISION_API_BASE,
                 )
-                self.model = "API"  # 모델 로드 성공 표시
-                print(f"Kanana Vision API client initialized successfully!")
+                self.model_id = VISION_MODEL
+                print(f"[KananaLLM] Vision API 초기화 성공!")
             except Exception as e:
-                print(f"Failed to initialize Vision API client: {e}")
-            return  # Vision은 여기서 끝
+                print(f"[KananaLLM] Vision API 초기화 실패: {e}")
+        else:
+            # LLM API 클라이언트 (Kanana-2-30b)
+            print(f"[KananaLLM] LLM API 초기화 중 (Kanana-2-30b)...")
+            try:
+                from openai import OpenAI
+                self.client = OpenAI(
+                    api_key=LLM_API_KEY,
+                    base_url=LLM_API_BASE,
+                )
+                # 모델 ID 자동 감지
+                models = self.client.models.list()
+                if models.data:
+                    self.model_id = models.data[0].id
+                    print(f"[KananaLLM] LLM API 초기화 성공! Model: {self.model_id}")
+                else:
+                    print(f"[KananaLLM] 모델 목록이 비어있음")
+            except Exception as e:
+                print(f"[KananaLLM] LLM API 초기화 실패: {e}")
 
-        # 텍스트 모델 (instruct, safeguard)은 로컬 로드
-        import torch
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self._torch = torch
-        print(f"Kanana LLM ({model_type}) initializing on {self.device} with {quantization} quantization...")
+    def is_ready(self) -> bool:
+        """API 클라이언트가 준비되었는지 확인"""
+        return self.client is not None and self.model_id is not None
 
-        try:
-            # Prepare Quantization Config
-            quantization_config = None
-            if self.device == "cuda" and quantization:
-                if quantization == "8bit":
-                    quantization_config = BitsAndBytesConfig(load_in_8bit=True)
-                elif quantization == "4bit":
-                    quantization_config = BitsAndBytesConfig(
-                        load_in_4bit=True,
-                        bnb_4bit_compute_dtype=torch.bfloat16,
-                        bnb_4bit_use_double_quant=True,
-                        bnb_4bit_quant_type="nf4"
-                    )
+    def analyze(self, text: str, system_prompt: str = None) -> str:
+        """일반 텍스트 분석 (API 방식)"""
+        if not self.is_ready():
+            return "Kanana Analysis: API not ready (Fallback)"
 
-            # Load Tokenizer
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, trust_remote_code=True)
-
-            # Determine dtype
-            dtype = torch.bfloat16 if self.device == "cuda" else torch.float32
-
-            # Text Model Loading
-            self.model = AutoModelForCausalLM.from_pretrained(
-                self.model_id,
-                torch_dtype=dtype,
-                quantization_config=quantization_config,
-                device_map="auto",
-                trust_remote_code=True
-            )
-
-            print(f"Kanana LLM ({model_type}) Loaded Successfully!")
-        except Exception as e:
-            print(f"Failed to load Kanana LLM: {e}")
-            print("Running in fallback mode (Rule-based only).")
-
-    def analyze(self, text: str) -> str:
-        """일반 텍스트 분석 (Instruct 모델용)"""
-        if not self.model or not self.tokenizer:
-            return "Kanana Analysis: Model not loaded (Fallback)"
+        if system_prompt is None:
+            system_prompt = "당신은 카카오에서 개발된 친절한 AI입니다."
 
         try:
-            prompt = f"""
-            분석 요청: 다음 메시지가 피싱이나 사기일 가능성이 있는지 분석해줘.
-            메시지: "{text}"
-
-            분석 결과:
-            """
-
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
-            outputs = self.model.generate(
-                **inputs,
-                max_new_tokens=100,
-                temperature=0.7
+            response = self.client.chat.completions.create(
+                model=self.model_id,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text}
+                ],
+                temperature=0.1,
+                max_tokens=512
             )
-            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-            if "분석 결과:" in response:
-                return response.split("분석 결과:")[1].strip()
-            return response
-
+            return response.choices[0].message.content
         except Exception as e:
             return f"Kanana Analysis Error: {str(e)}"
 
-    def classify_safety(self, user_prompt: str, assistant_prompt: str = "") -> dict:
+    def analyze_with_tools(
+        self,
+        user_message: str,
+        system_prompt: str,
+        tools: Dict[str, Callable[..., Any]],
+        max_iterations: int = 3
+    ) -> Dict[str, Any]:
         """
-        Kanana Safeguard 모델로 안전성 분류
-        Returns: {"is_safe": bool, "category": str, "raw_output": str}
-        """
-        if not self.is_safeguard:
-            return {"is_safe": True, "category": "N/A", "raw_output": "Not a safeguard model"}
+        OpenAI Tool Call 방식으로 도구를 호출하며 분석
 
-        if not self.model or not self.tokenizer:
-            return {"is_safe": True, "category": "FALLBACK", "raw_output": "Model not loaded"}
+        Args:
+            user_message: 사용자 메시지
+            system_prompt: 시스템 프롬프트
+            tools: 사용 가능한 도구들 {"tool_name": callable}
+            max_iterations: 최대 반복 횟수
+
+        Returns:
+            최종 분석 결과 딕셔너리
+        """
+        if not self.is_ready():
+            return {
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": ["API not ready"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
+            }
+
+        # OpenAI 형식의 도구 정의
+        tool_definitions = self._build_tool_definitions(tools)
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message}
+        ]
 
         try:
-            messages = [
-                {"role": "user", "content": user_prompt},
-                {"role": "assistant", "content": assistant_prompt}
-            ]
-
-            input_ids = self.tokenizer.apply_chat_template(
-                messages,
-                tokenize=True,
-                return_tensors="pt"
-            ).to(self.device)
-
-            attention_mask = (input_ids != self.tokenizer.pad_token_id).long()
-
-            with self._torch.no_grad():
-                output_ids = self.model.generate(
-                    input_ids,
-                    attention_mask=attention_mask,
-                    max_new_tokens=1,
-                    pad_token_id=self.tokenizer.eos_token_id
+            for iteration in range(max_iterations):
+                # API 호출
+                response = self.client.chat.completions.create(
+                    model=self.model_id,
+                    messages=messages,
+                    tools=tool_definitions if tool_definitions else None,
+                    tool_choice="auto" if tool_definitions else None,
+                    temperature=0.1,
+                    max_tokens=1024
                 )
 
-            gen_idx = input_ids.shape[-1]
-            result = self.tokenizer.decode(output_ids[0][gen_idx], skip_special_tokens=True)
+                assistant_message = response.choices[0].message
 
-            is_safe = result.startswith("<SAFE>")
-            category = "SAFE" if is_safe else result.replace("<", "").replace(">", "")
+                # Tool call이 있는 경우
+                if assistant_message.tool_calls:
+                    messages.append(assistant_message)
 
+                    for tool_call in assistant_message.tool_calls:
+                        tool_name = tool_call.function.name
+                        try:
+                            tool_args = json.loads(tool_call.function.arguments)
+                        except json.JSONDecodeError:
+                            tool_args = {}
+
+                        # 도구 실행
+                        if tool_name in tools:
+                            try:
+                                tool_result = tools[tool_name](**tool_args)
+                                result_str = json.dumps(tool_result, ensure_ascii=False)
+                            except Exception as e:
+                                result_str = f"Error: {str(e)}"
+                        else:
+                            result_str = f"Unknown tool: {tool_name}"
+
+                        # 도구 결과 추가
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": result_str
+                        })
+                else:
+                    # 최종 응답
+                    content = assistant_message.content or ""
+
+                    # JSON 파싱 시도
+                    result = self._parse_response(content)
+                    if result:
+                        return result
+
+                    # JSON이 없으면 내용 기반으로 결과 생성
+                    return self._extract_result_from_text(content, user_message)
+
+            # max_iterations 초과
             return {
-                "is_safe": is_safe,
-                "category": category,
-                "raw_output": result
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": ["분석 완료 (max iterations)"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
             }
 
         except Exception as e:
+            print(f"[KananaLLM] analyze_with_tools 오류: {e}")
             return {
-                "is_safe": True,
-                "category": "ERROR",
-                "raw_output": f"Safeguard Error: {str(e)}"
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": [f"분석 오류: {str(e)}"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
+            }
+
+    def _build_tool_definitions(self, tools: Dict[str, Callable]) -> List[dict]:
+        """도구 정의를 OpenAI 형식으로 변환"""
+        definitions = []
+
+        tool_schemas = {
+            "scan_pii": {
+                "name": "scan_pii",
+                "description": "텍스트에서 개인정보(PII)를 탐지합니다. 계좌번호, 주민번호, 전화번호, 이메일 등을 찾습니다.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "text": {"type": "string", "description": "분석할 텍스트"}
+                    },
+                    "required": ["text"]
+                }
+            },
+            "evaluate_risk": {
+                "name": "evaluate_risk",
+                "description": "탐지된 PII 목록을 기반으로 위험도를 평가합니다.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "found_pii": {
+                            "type": "array",
+                            "items": {"type": "object"},
+                            "description": "탐지된 PII 목록"
+                        }
+                    },
+                    "required": ["found_pii"]
+                }
+            },
+            "analyze_full": {
+                "name": "analyze_full",
+                "description": "텍스트의 PII 탐지와 위험도 평가를 한 번에 수행합니다.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "text": {"type": "string", "description": "분석할 텍스트"}
+                    },
+                    "required": ["text"]
+                }
+            }
+        }
+
+        for tool_name in tools.keys():
+            if tool_name in tool_schemas:
+                definitions.append({
+                    "type": "function",
+                    "function": tool_schemas[tool_name]
+                })
+
+        return definitions
+
+    def _parse_response(self, content: str) -> Optional[Dict[str, Any]]:
+        """응답에서 JSON 결과 파싱"""
+        # JSON 블록 찾기
+        json_patterns = [
+            r'```json\s*(.*?)\s*```',
+            r'\{[^{}]*"risk_level"[^{}]*\}',
+            r'\{.*?\}'
+        ]
+
+        for pattern in json_patterns:
+            matches = re.findall(pattern, content, re.DOTALL)
+            for match in matches:
+                try:
+                    result = json.loads(match)
+                    if "risk_level" in result:
+                        return result
+                except json.JSONDecodeError:
+                    continue
+
+        return None
+
+    def _extract_result_from_text(self, content: str, user_message: str) -> Dict[str, Any]:
+        """텍스트 응답에서 결과 추출"""
+        content_lower = content.lower()
+
+        # 위험도 추출
+        risk_level = "LOW"
+        if "high" in content_lower or "높" in content_lower or "위험" in content_lower:
+            risk_level = "HIGH"
+        elif "medium" in content_lower or "중간" in content_lower:
+            risk_level = "MEDIUM"
+
+        # 시크릿 추천 여부
+        is_secret = risk_level in ["HIGH", "MEDIUM"] or \
+                    "시크릿" in content_lower or \
+                    "secret" in content_lower or \
+                    "민감" in content_lower
+
+        return {
+            "risk_level": risk_level,
+            "detected_pii": [],
+            "reasons": [content[:200] if content else "분석 완료"],
+            "is_secret_recommended": is_secret,
+            "recommended_action": "시크릿 전송 권장" if is_secret else "전송"
+        }
+
+    def analyze_with_mcp(
+        self,
+        user_message: str,
+        system_prompt: str,
+        max_iterations: int = 3
+    ) -> Dict[str, Any]:
+        """
+        MCP 프로토콜을 통해 도구를 호출하며 분석
+
+        Kanana LLM이 MCP 클라이언트 역할:
+        1. LLM이 Tool Call 요청 생성
+        2. MCP Client가 MCP 서버의 도구 호출
+        3. 결과를 LLM에 전달
+        4. LLM이 최종 분석 결과 반환
+
+        Args:
+            user_message: 사용자 메시지
+            system_prompt: 시스템 프롬프트
+            max_iterations: 최대 반복 횟수
+
+        Returns:
+            최종 분석 결과 딕셔너리
+        """
+        if not self.is_ready():
+            return {
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": ["API not ready"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
+            }
+
+        # MCP 클라이언트에서 도구 스키마 가져오기 (lazy import)
+        from ..mcp.client import get_mcp_client
+        mcp_client = get_mcp_client()
+        tool_definitions = mcp_client.get_openai_tools_schema()
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message}
+        ]
+
+        try:
+            for iteration in range(max_iterations):
+                print(f"[KananaLLM+MCP] Iteration {iteration + 1}/{max_iterations}")
+
+                # API 호출
+                response = self.client.chat.completions.create(
+                    model=self.model_id,
+                    messages=messages,
+                    tools=tool_definitions if tool_definitions else None,
+                    tool_choice="auto" if tool_definitions else None,
+                    temperature=0.1,
+                    max_tokens=1024
+                )
+
+                assistant_message = response.choices[0].message
+
+                # Tool call이 있는 경우 - MCP를 통해 도구 호출
+                if assistant_message.tool_calls:
+                    messages.append(assistant_message)
+
+                    for tool_call in assistant_message.tool_calls:
+                        tool_name = tool_call.function.name
+                        try:
+                            tool_args = json.loads(tool_call.function.arguments)
+                        except json.JSONDecodeError:
+                            tool_args = {}
+
+                        print(f"[KananaLLM+MCP] Tool Call: {tool_name}({tool_args})")
+
+                        # MCP 클라이언트를 통해 도구 호출
+                        tool_result = mcp_client.call_tool(tool_name, tool_args)
+                        result_str = json.dumps(tool_result, ensure_ascii=False)
+
+                        print(f"[KananaLLM+MCP] Tool Result: {result_str[:200]}...")
+
+                        # 도구 결과 추가
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": result_str
+                        })
+                else:
+                    # 최종 응답
+                    content = assistant_message.content or ""
+
+                    # JSON 파싱 시도
+                    result = self._parse_response(content)
+                    if result:
+                        return result
+
+                    # JSON이 없으면 내용 기반으로 결과 생성
+                    return self._extract_result_from_text(content, user_message)
+
+            # max_iterations 초과
+            return {
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": ["분석 완료 (max iterations)"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
+            }
+
+        except Exception as e:
+            print(f"[KananaLLM+MCP] 오류: {e}")
+            return {
+                "risk_level": "LOW",
+                "detected_pii": [],
+                "reasons": [f"분석 오류: {str(e)}"],
+                "is_secret_recommended": False,
+                "recommended_action": "전송"
             }
 
     def analyze_image(self, image_path: str, prompt: str = None) -> str:
@@ -218,8 +440,8 @@ class KananaLLM:
         if not self.is_vision:
             return "Error: This is not a vision model."
 
-        if not self.vision_client:
-            return "Error: Vision API client not initialized."
+        if not self.is_ready():
+            return "Error: Vision API not ready."
 
         if prompt is None:
             prompt = """이 이미지에서 모든 텍스트를 추출해주세요.
@@ -246,7 +468,7 @@ class KananaLLM:
             mime_type = mime_types.get(ext, "image/png")
 
             # API 호출
-            response = self.vision_client.chat.completions.create(
+            response = self.client.chat.completions.create(
                 messages=[{
                     "role": "user",
                     "content": [
@@ -269,187 +491,55 @@ class KananaLLM:
         except Exception as e:
             return f"Vision API Error: {str(e)}"
 
-    def analyze_with_tools(
-        self,
-        user_message: str,
-        system_prompt: str,
-        tools: Dict[str, Callable[..., Any]],
-        max_iterations: int = 3
-    ) -> Dict[str, Any]:
-        """
-        ReAct 패턴으로 도구를 호출하며 분석
-
-        Args:
-            user_message: 사용자 메시지
-            system_prompt: 시스템 프롬프트 (도구 설명 포함)
-            tools: 사용 가능한 도구들 {"tool_name": callable}
-            max_iterations: 최대 반복 횟수
-
-        Returns:
-            최종 분석 결과 딕셔너리
-        """
-        if not self.model or not self.tokenizer:
-            return {
-                "risk_level": "LOW",
-                "detected_pii": [],
-                "reasons": ["Model not loaded"],
-                "is_secret_recommended": False,
-                "recommended_action": "전송"
-            }
-
-        try:
-            # 대화 히스토리 구성
-            conversation = f"{system_prompt}\n\nUser: {user_message}\n\n"
-
-            for iteration in range(max_iterations):
-                # LLM 호출
-                inputs = self.tokenizer(conversation, return_tensors="pt").to(self.device)
-
-                with self._torch.no_grad():
-                    outputs = self.model.generate(
-                        **inputs,
-                        max_new_tokens=512,
-                        temperature=0.1,  # 낮은 temperature로 일관성 있는 응답
-                        do_sample=True,
-                        pad_token_id=self.tokenizer.eos_token_id,
-                        eos_token_id=self.tokenizer.eos_token_id
-                    )
-
-                response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-                # 입력 프롬프트 제거하고 새 생성 부분만 추출
-                new_content = response[len(conversation):].strip()
-
-                # Answer 찾기 (최종 응답)
-                answer_match = re.search(r'Answer:\s*(\{.*?\})', new_content, re.DOTALL)
-                if answer_match:
-                    try:
-                        result = json.loads(answer_match.group(1))
-                        return result
-                    except json.JSONDecodeError:
-                        pass
-
-                # Action 파싱
-                action_match = re.search(r'Action:\s*(\w+)', new_content)
-                action_input_match = re.search(r'Action Input:\s*(\{.*?\})', new_content, re.DOTALL)
-
-                if action_match and action_input_match:
-                    action_name = action_match.group(1)
-                    try:
-                        action_input = json.loads(action_input_match.group(1))
-                    except json.JSONDecodeError:
-                        action_input = {}
-
-                    # 도구 실행
-                    if action_name in tools:
-                        tool_result = tools[action_name](**action_input)
-                        observation = json.dumps(tool_result, ensure_ascii=False)
-                    else:
-                        observation = f"Error: Unknown tool '{action_name}'"
-
-                    # 대화에 결과 추가
-                    conversation += f"{new_content}\nObservation: {observation}\n"
-                else:
-                    # Action도 Answer도 없으면 기본 응답 반환
-                    break
-
-            # 최대 반복 후에도 Answer가 없으면 기본 응답
-            return {
-                "risk_level": "LOW",
-                "detected_pii": [],
-                "reasons": ["분석 완료"],
-                "is_secret_recommended": False,
-                "recommended_action": "전송"
-            }
-
-        except Exception as e:
-            return {
-                "risk_level": "LOW",
-                "detected_pii": [],
-                "reasons": [f"분석 오류: {str(e)}"],
-                "is_secret_recommended": False,
-                "recommended_action": "전송"
-            }
-
 
 class LLMManager:
     """
     LLM 인스턴스 관리자
     Singleton 패턴으로 모델 재사용
-
-    GPU 메모리 제한으로 한 번에 하나의 모델만 로드 가능
-    - sequential_mode=True: 모델 변경 시 기존 모델 언로드 (기본)
-    - sequential_mode=False: 여러 모델 동시 로드 시도 (충분한 VRAM 필요)
+    API 방식이므로 메모리 부담 없음
     """
 
     _instances: Dict[str, KananaLLM] = {}
-    _current_model: Optional[str] = None  # 현재 로드된 모델 타입
-    sequential_mode: bool = True  # GPU 메모리 절약을 위해 순차 모드 기본값
 
     @classmethod
-    def get(cls, model_type: str = "safeguard", quantization: str = DEFAULT_QUANTIZATION) -> Optional[KananaLLM]:
+    def get(cls, model_type: str = "instruct") -> Optional[KananaLLM]:
         """
         LLM 인스턴스 가져오기 (Lazy Loading)
 
         Args:
-            model_type: "instruct", "safeguard", or "vision"
-            quantization: "4bit", "8bit", or None
+            model_type: "instruct" (Kanana-2-30b) or "vision" (Kanana-1.5-v-3b)
 
         Returns:
-            KananaLLM 인스턴스 또는 None (로드 실패 시)
+            KananaLLM 인스턴스 또는 None (초기화 실패 시)
         """
-        # 순차 모드: 다른 모델이 로드되어 있으면 언로드
-        if cls.sequential_mode and cls._current_model and cls._current_model != model_type:
-            print(f"[LLMManager] Sequential mode: Unloading {cls._current_model} to load {model_type}...")
-            cls.unload(cls._current_model)
-
         if model_type not in cls._instances:
-            print(f"[LLMManager] Loading {model_type} model for the first time...")
-            cls._instances[model_type] = KananaLLM(model_type=model_type, quantization=quantization)
+            print(f"[LLMManager] {model_type} API 클라이언트 초기화 중...")
+            cls._instances[model_type] = KananaLLM(model_type=model_type)
 
         llm = cls._instances[model_type]
 
-        if llm.model is None:
-            print(f"[LLMManager] {model_type} model failed to load (Model is None). Returning None.")
+        if not llm.is_ready():
+            print(f"[LLMManager] {model_type} API가 준비되지 않음")
             return None
 
-        # Vision은 API 클라이언트, 텍스트 모델은 tokenizer 체크
-        if llm.is_vision:
-            if llm.vision_client is None:
-                print(f"[LLMManager] {model_type} model failed to load (Vision client is None). Returning None.")
-                return None
-        elif llm.tokenizer is None:
-            print(f"[LLMManager] {model_type} model failed to load (Tokenizer is None). Returning None.")
-            return None
-
-        cls._current_model = model_type
         return llm
 
     @classmethod
     def is_loaded(cls, model_type: str) -> bool:
         """특정 모델이 로드되었는지 확인"""
-        return model_type in cls._instances
+        if model_type not in cls._instances:
+            return False
+        return cls._instances[model_type].is_ready()
 
     @classmethod
     def unload(cls, model_type: str) -> None:
-        """특정 모델 언로드 (메모리 해제)"""
+        """특정 모델 인스턴스 제거"""
         if model_type in cls._instances:
             del cls._instances[model_type]
-            if cls._current_model == model_type:
-                cls._current_model = None
-            import gc
-            import torch
-            gc.collect()
-            torch.cuda.empty_cache()
-            print(f"[LLMManager] {model_type} model unloaded and memory cleared.")
+            print(f"[LLMManager] {model_type} 인스턴스 제거됨")
 
     @classmethod
     def unload_all(cls) -> None:
-        """모든 모델 언로드"""
+        """모든 모델 인스턴스 제거"""
         cls._instances.clear()
-        cls._current_model = None
-        import gc
-        import torch
-        gc.collect()
-        torch.cuda.empty_cache()
-        print("[LLMManager] All models unloaded.")
+        print("[LLMManager] 모든 인스턴스 제거됨")

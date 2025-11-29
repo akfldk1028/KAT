@@ -118,7 +118,7 @@ class OutgoingAgent(BaseAgent):
         )
 
     def _analyze_with_ai(self, text: str) -> AnalysisResponse:
-        """Kanana LLM + ReAct 패턴으로 분석"""
+        """Kanana LLM + MCP 프로토콜로 분석"""
         try:
             # LLM 인스턴스 가져오기
             llm = LLMManager.get("instruct")
@@ -126,21 +126,14 @@ class OutgoingAgent(BaseAgent):
                 print("[OutgoingAgent] LLM not available, falling back to rule-based")
                 return self._analyze_rule_based(text)
 
-            # 새 MCP 도구 정의 (pattern_matcher 기반)
-            tools = {
-                "scan_pii": self._tool_scan_pii,
-                "evaluate_risk": self._tool_evaluate_risk,
-                "analyze_full": self._tool_analyze_full,
-            }
-
             # 시스템 프롬프트 가져오기 (JSON 데이터 동적 주입됨)
             system_prompt = get_outgoing_system_prompt()
 
-            # LLM으로 분석
-            result = llm.analyze_with_tools(
+            # MCP 프로토콜을 통해 도구 호출
+            # Kanana LLM이 MCP 클라이언트로서 MCP 서버의 도구 사용
+            result = llm.analyze_with_mcp(
                 user_message=text,
                 system_prompt=system_prompt,
-                tools=tools,
                 max_iterations=3
             )
 
@@ -156,7 +149,7 @@ class OutgoingAgent(BaseAgent):
             )
 
         except Exception as e:
-            print(f"[OutgoingAgent] AI analysis error: {e}, falling back to rule-based")
+            print(f"[OutgoingAgent] AI+MCP analysis error: {e}, falling back to rule-based")
             return self._analyze_rule_based(text)
 
     def _tool_scan_pii(self, text: str) -> Dict[str, Any]:

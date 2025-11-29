@@ -40,7 +40,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
 # MCP 도구 임포트
-from agent.mcp.tools import analyze_outgoing, analyze_incoming, analyze_image
+from agent.mcp.tools import analyze_outgoing, analyze_incoming, analyze_image, mcp
 from agent.core.models import RiskLevel
 
 # === Database Setup ===
@@ -102,6 +102,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# MCP 서버를 FastAPI에 마운트 (SSE 방식)
+# /mcp 경로에서 MCP 프로토콜 지원
+try:
+    mcp_app = mcp.sse_app()
+    app.mount("/mcp", mcp_app)
+    print("[MCP] SSE 서버가 /mcp 경로에 마운트됨")
+except Exception as e:
+    print(f"[MCP] SSE 마운트 실패: {e}, HTTP 방식 시도...")
+    try:
+        # HTTP 방식 폴백
+        mcp_http = mcp.http_app()
+        app.mount("/mcp", mcp_http)
+        print("[MCP] HTTP 서버가 /mcp 경로에 마운트됨")
+    except Exception as e2:
+        print(f"[MCP] HTTP 마운트도 실패: {e2}")
+
 
 # === Request/Response 모델 ===
 
@@ -132,6 +148,31 @@ class AnalysisResponse(BaseModel):
 async def health_check():
     """헬스체크"""
     return {"status": "ok", "service": "DualGuard Agent API"}
+
+
+@app.get("/api/mcp/info")
+async def mcp_info():
+    """MCP 서버 정보"""
+    return {
+        "status": "active",
+        "name": mcp.name,
+        "endpoint": "/mcp",
+        "transport": "SSE",
+        "tools": [
+            "analyze_outgoing",
+            "analyze_incoming",
+            "analyze_image",
+            "scan_pii",
+            "evaluate_risk",
+            "analyze_full",
+            "list_pii_patterns",
+            "list_document_types",
+            "get_risk_rules",
+            "identify_document",
+            "get_action_for_risk"
+        ],
+        "description": "DualGuard MCP 서버 - 카카오톡 양방향 보안 분석"
+    }
 
 
 @app.post("/api/agents/analyze/outgoing", response_model=AnalysisResponse)

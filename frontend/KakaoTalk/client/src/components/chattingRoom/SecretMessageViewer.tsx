@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { viewSecretMessage, SecretMessageContent } from '~/apis/secret';
+import { HOST } from '~/constants';
 
 const Overlay = styled.div`
   position: fixed;
@@ -55,6 +56,14 @@ const MessageBox = styled.div`
   color: #333;
   word-break: break-word;
   white-space: pre-wrap;
+`;
+
+const SecretImage = styled.img`
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
 `;
 
 const InfoText = styled.p`
@@ -248,7 +257,14 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
             )}
 
             <MessageBox>
-              {content.message}
+              {content.message_type === 'image' ? (
+                <SecretImage
+                  src={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
+                  alt="시크릿 이미지"
+                />
+              ) : (
+                content.message
+              )}
             </MessageBox>
           </>
         )}

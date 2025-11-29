@@ -103,6 +103,57 @@ const ImageWrapper = styled.div`
   }
 `;
 
+// 에이전트 알림 메시지 스타일
+const AgentAlertWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+`;
+
+const AgentAlertBox = styled.div`
+  display: flex;
+  align-items: center;
+  background: rgba(80, 80, 80, 0.95);
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+`;
+
+const AgentIcon = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff6b9d, #c850c0, #4158d0, #ff6b9d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+`;
+
+const AgentIconInner = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(80, 80, 80, 0.95);
+`;
+
+const AgentText = styled.div`
+  color: white;
+
+  & .title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  & .message {
+    font-size: 12px;
+    color: #ccc;
+  }
+`;
+
 // 시크릿 메시지 링크 스타일
 const SecretLink = styled.div`
   position: relative;
@@ -150,7 +201,7 @@ interface ChatProps {
   localeTime: string;
   notRead: number;
   content?: string;
-  messageType?: 'text' | 'image' | 'secret';
+  messageType?: 'text' | 'image' | 'secret' | 'agent_alert';
   imageUrl?: string;
   secretId?: string;
 }
@@ -169,6 +220,23 @@ interface FriendChatProps {
 
 export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageType, imageUrl, secretId }) => {
   const [showSecretViewer, setShowSecretViewer] = useState(false);
+
+  // 에이전트 알림 메시지인 경우 (채팅방 중앙에 저장되는 메시지)
+  if (messageType === 'agent_alert') {
+    return (
+      <AgentAlertWrapper>
+        <AgentAlertBox>
+          <AgentIcon>
+            <AgentIconInner />
+          </AgentIcon>
+          <AgentText>
+            <div className="title">시크릿 전송 에이전트:</div>
+            <div className="message">{msg || '"민감정보를 시크릿 전송으로 보냈어요."'}</div>
+          </AgentText>
+        </AgentAlertBox>
+      </AgentAlertWrapper>
+    );
+  }
 
   // 시크릿 메시지인 경우
   if (messageType === 'secret' && secretId) {
@@ -214,7 +282,18 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
 
 // 내가 보낸 채팅
 export const MyChat: React.FC<ChatProps> = props => {
-  const { content } = props;
+  const { content, messageType } = props;
+
+  // 에이전트 알림은 중앙 정렬로 표시
+  if (messageType === 'agent_alert') {
+    return (
+      <React.Fragment>
+        {content ? <SeparationBlock content={content} /> : null}
+        <Chat {...props} />
+      </React.Fragment>
+    );
+  }
+
   return (
     <React.Fragment>
       {content ? <SeparationBlock content={content} /> : null}
