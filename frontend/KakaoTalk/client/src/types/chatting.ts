@@ -1,4 +1,5 @@
 import { UserResponseDto } from './user';
+import { SecurityAnalysis } from './security';
 
 export type RoomType = 'individual' | 'group';
 
@@ -106,6 +107,8 @@ export interface ChattingResponseDto {
   message_type?: MessageType;
   image_url?: string;
   secret_id?: string;
+  // Agent B (Incoming Guard) 분석 결과
+  security_analysis?: SecurityAnalysis;
 }
 
 // 서버에 채팅 가져오기

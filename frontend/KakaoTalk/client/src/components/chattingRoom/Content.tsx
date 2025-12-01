@@ -112,6 +112,7 @@ const Content: React.FC<Props> = props => {
             messageType={chat.message_type}
             imageUrl={chat.image_url}
             secretId={chat.secret_id}
+            securityAnalysis={chat.security_analysis}
             key={chat.id}
           />
         );
@@ -125,7 +126,8 @@ const Content: React.FC<Props> = props => {
           content={date}
           messageType={chat.message_type}
           imageUrl={chat.image_url}
-            secretId={chat.secret_id}
+          secretId={chat.secret_id}
+          securityAnalysis={chat.security_analysis}
           onImgClick={() => showProfile(sender)}
           key={chat.id}
         />
@@ -176,7 +178,8 @@ const Content: React.FC<Props> = props => {
           localeTime={time}
           messageType={chat.message_type}
           imageUrl={chat.image_url}
-            secretId={chat.secret_id}
+          secretId={chat.secret_id}
+          securityAnalysis={chat.security_analysis}
           key={chat.id}
         />
       );
@@ -190,7 +193,8 @@ const Content: React.FC<Props> = props => {
         content={date}
         messageType={chat.message_type}
         imageUrl={chat.image_url}
-            secretId={chat.secret_id}
+        secretId={chat.secret_id}
+        securityAnalysis={chat.security_analysis}
         onImgClick={() => showProfile(sender)}
         key={chat.id}
       />

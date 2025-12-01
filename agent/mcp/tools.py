@@ -1,10 +1,15 @@
 """
 MCP Tools - FastMCP 기반 도구 정의
 AI가 호출할 수 있는 모든 분석 도구를 제공
+
+Agent A (발신 보호): PII 감지 도구
+Agent B (수신 보호): 피싱/사기 위협 감지 도구
 """
 from mcp.server.fastmcp import FastMCP
 from typing import Dict, List, Any
 from ..core.models import RiskLevel, AnalysisResponse
+
+# Agent A (발신 보호) - PII 패턴 매칭
 from ..core.pattern_matcher import (
     get_pii_patterns,
     get_document_types,
@@ -13,6 +18,18 @@ from ..core.pattern_matcher import (
     detect_document_type,
     calculate_risk,
     get_risk_action
+)
+
+# Agent B (수신 보호) - 위협 패턴 매칭
+from ..core.threat_matcher import (
+    get_threat_categories,
+    get_known_scam_scenarios,
+    detect_threats,
+    detect_urls,
+    match_scam_scenario,
+    calculate_threat_score,
+    analyze_incoming_message,
+    get_threat_response
 )
 
 # NOTE: Agent와 LLM은 순환 import 방지를 위해 함수 내부에서 lazy import
@@ -298,4 +315,412 @@ def analyze_full(text: str) -> Dict[str, Any]:
         "risk_evaluation": risk_result,
         "recommended_action": action,
         "summary": summary
+    }
+
+
+# ============================================================
+# Threat Matcher MCP Tools - Agent B (수신 보호) 분석 도구
+# 피싱/스미싱/보이스피싱 위협 감지
+# ============================================================
+
+@mcp.tool()
+def list_threat_categories() -> Dict[str, Any]:
+    """
+    List all threat categories and patterns.
+    감지 가능한 모든 위협 카테고리와 패턴 목록을 반환합니다.
+
+    AI가 어떤 종류의 피싱/사기 위협을 감지할 수 있는지 파악하는 데 사용합니다.
+
+    Returns:
+        카테고리별 위협 패턴 정보
+        - financial_scam: 금융사기 (긴급송금, 대출유도, 투자사기)
+        - impersonation: 사칭 (가족, 기관, 배송, 회사)
+        - link_phishing: 링크 피싱 (단축URL, 의심도메인, APK유도)
+        - info_extraction: 정보탈취 (인증정보, 신분증, 계좌정보 요청)
+        - pressure_tactics: 심리적 압박 (시간압박, 공포유발, 혜택과장)
+    """
+    return get_threat_categories()
+
+
+@mcp.tool()
+def list_scam_scenarios() -> List[Dict]:
+    """
+    List known scam scenarios.
+    알려진 사기 시나리오 목록을 반환합니다.
+
+    전형적인 보이스피싱/스미싱 패턴을 파악하는 데 사용합니다.
+    (예: 검찰 사칭 수사, 가족 긴급상황, 환불 함정)
+
+    Returns:
+        시나리오 목록 (id, name_ko, pattern_sequence, typical_phrases)
+    """
+    return get_known_scam_scenarios()
+
+
+@mcp.tool()
+def scan_threats(text: str) -> Dict[str, Any]:
+    """
+    Scan incoming message for threat patterns.
+    수신 메시지에서 위협 패턴을 스캔합니다.
+
+    키워드 + 정규식 기반으로 피싱/사기 패턴을 감지합니다.
+
+    Args:
+        text: 분석할 수신 메시지
+
+    Returns:
+        found_threats: 감지된 위협 목록 [{id, category, name_ko, risk_level, matched_keywords}]
+        categories_found: 감지된 카테고리 목록
+        highest_risk: 가장 높은 위험도 (LOW/MEDIUM/HIGH/CRITICAL)
+        matched_keywords: 매칭된 키워드 목록
+        count: 감지된 위협 개수
+    """
+    return detect_threats(text)
+
+
+@mcp.tool()
+def scan_urls(text: str) -> Dict[str, Any]:
+    """
+    Scan message for URLs and analyze safety.
+    메시지에서 URL을 감지하고 안전성을 분석합니다.
+
+    단축 URL, 의심 도메인, IP 주소 URL 등을 탐지합니다.
+
+    Args:
+        text: 분석할 텍스트
+
+    Returns:
+        urls_found: 발견된 모든 URL
+        suspicious_urls: 의심스러운 URL (화이트리스트 제외)
+        safe_urls: 안전한 URL (화이트리스트 도메인)
+        risk_level: URL 관련 위험도
+        has_shortened_url: 단축 URL 포함 여부
+    """
+    return detect_urls(text)
+
+
+@mcp.tool()
+def check_scam_scenario(found_threats: List[Dict]) -> Dict[str, Any]:
+    """
+    Check if detected threats match known scam scenarios.
+    감지된 위협이 알려진 사기 시나리오와 매칭되는지 확인합니다.
+
+    Args:
+        found_threats: scan_threats()에서 반환된 found_threats 목록
+
+    Returns:
+        matched_scenario: 매칭된 시나리오 정보 (있는 경우)
+        confidence: 매칭 신뢰도 (high/medium/low/none)
+        pattern_coverage: 패턴 커버리지 (0.0~1.0)
+    """
+    return match_scam_scenario(found_threats)
+
+
+@mcp.tool()
+def evaluate_threat(
+    found_threats: List[Dict],
+    url_analysis: Dict = None,
+    scenario_match: Dict = None
+) -> Dict[str, Any]:
+    """
+    Evaluate final threat score based on all detections.
+    모든 감지 결과를 종합하여 최종 위협 점수를 계산합니다.
+
+    Args:
+        found_threats: scan_threats()에서 반환된 found_threats
+        url_analysis: scan_urls()에서 반환된 결과 (옵션)
+        scenario_match: check_scam_scenario()에서 반환된 결과 (옵션)
+
+    Returns:
+        threat_score: 최종 위협 점수 (0~200+)
+        threat_level: 위협 레벨 (SAFE/SUSPICIOUS/DANGEROUS/CRITICAL)
+        is_likely_scam: 사기 메시지 가능성 여부
+        warning_message: 사용자에게 보여줄 경고 메시지
+        recommended_action: 권장 조치 (none/warn/block_recommended/block_and_report)
+    """
+    return calculate_threat_score(found_threats, url_analysis, scenario_match)
+
+
+@mcp.tool()
+def analyze_threat_full(text: str) -> Dict[str, Any]:
+    """
+    Full threat analysis pipeline for incoming messages.
+    수신 메시지 전체 위협 분석 파이프라인.
+
+    단일 호출로 전체 분석을 수행합니다:
+    1. 위협 패턴 감지
+    2. URL 분석
+    3. 시나리오 매칭
+    4. 최종 점수 계산
+
+    Args:
+        text: 분석할 수신 메시지
+
+    Returns:
+        threat_detection: 위협 감지 결과
+        url_analysis: URL 분석 결과
+        scenario_match: 시나리오 매칭 결과
+        final_assessment: 최종 평가 (점수, 레벨, 경고, 권장조치)
+        summary: 분석 요약
+    """
+    result = analyze_incoming_message(text)
+
+    # 요약 추가
+    threat_level = result["final_assessment"]["threat_level"]
+    threat_count = result["threat_detection"]["count"]
+
+    if threat_level == "SAFE":
+        summary = "안전한 메시지입니다. 위협 요소가 감지되지 않았습니다."
+    elif threat_level == "SUSPICIOUS":
+        summary = f"{threat_count}개의 의심 패턴 감지. 발신자를 확인하세요."
+    elif threat_level == "DANGEROUS":
+        summary = f"위험! {threat_count}개의 위협 패턴 감지. 링크 클릭/정보 제공 금지."
+    else:  # CRITICAL
+        summary = f"피싱/사기 의심! {threat_count}개의 심각한 위협 감지. 절대 응답하지 마세요."
+
+    result["summary"] = summary
+    return result
+
+
+@mcp.tool()
+def get_threat_action(threat_level: str) -> Dict[str, str]:
+    """
+    Get response template for a given threat level.
+    위협 레벨에 따른 응답 템플릿을 반환합니다.
+
+    Args:
+        threat_level: 위협 레벨 (SAFE/SUSPICIOUS/DANGEROUS/CRITICAL)
+
+    Returns:
+        message: 사용자에게 보여줄 메시지
+        action: 권장 조치
+    """
+    return get_threat_response(threat_level)
+
+
+# ============================================================
+# Hybrid Analysis Tools - Rule + LLM 통합 분석
+# ============================================================
+
+@mcp.tool()
+def hybrid_analyze_outgoing(text: str, use_llm: bool = True) -> Dict[str, Any]:
+    """
+    Hybrid analysis for outgoing messages (Rule + LLM).
+    발신 메시지 하이브리드 분석 (Rule-based + LLM).
+
+    Args:
+        text: 분석할 발신 메시지
+        use_llm: LLM 분석 사용 여부 (기본: True)
+
+    Returns:
+        method: 분석 방법 (rule_based/hybrid)
+        found_pii: 감지된 PII 목록
+        risk_level: 최종 위험도
+        is_secret_recommended: 시크릿 전송 권장 여부
+        llm_reasoning: LLM 분석 근거 (use_llm=True인 경우)
+    """
+    from ..core.hybrid_analyzer import hybrid_analyze
+    return hybrid_analyze(text, use_llm=use_llm)
+
+
+@mcp.tool()
+def hybrid_analyze_incoming(text: str, use_llm: bool = True) -> Dict[str, Any]:
+    """
+    Hybrid analysis for incoming messages (Rule + LLM).
+    수신 메시지 하이브리드 분석 (Rule-based + LLM).
+
+    Args:
+        text: 분석할 수신 메시지
+        use_llm: LLM 분석 사용 여부 (기본: True)
+
+    Returns:
+        method: 분석 방법 (rule_based/hybrid)
+        threat_level: 위협 레벨
+        threat_score: 위협 점수
+        is_likely_scam: 사기 메시지 가능성
+        detected_threats: 감지된 위협 목록
+        warning_message: 경고 메시지
+        llm_reasoning: LLM 분석 근거 (use_llm=True인 경우)
+    """
+    from ..core.hybrid_threat_analyzer import hybrid_threat_analyze
+    return hybrid_threat_analyze(text, use_llm=use_llm)
+
+
+# ============================================================
+# Agent B 추가 MCP Tools - 4단계 분석용
+# ============================================================
+
+@mcp.tool()
+def check_reported_scam(text: str) -> Dict[str, Any]:
+    """
+    Check if message contains reported scam accounts or phone numbers.
+    메시지 내 계좌번호/전화번호의 사기 신고 이력을 조회합니다.
+
+    경찰청/금감원 신고 DB에서 조회합니다 (현재는 Mock DB).
+
+    Args:
+        text: 분석할 메시지
+
+    Returns:
+        has_reported_identifier: 신고된 식별자 포함 여부
+        reported_accounts: 신고된 계좌 정보 목록
+        reported_phones: 신고된 전화번호 정보 목록
+        max_risk_score: 최대 위험 점수 (0-100)
+        recommended_action: 권장 조치 (none/warn/block_and_report)
+    """
+    from ..core.scam_checker import check_scam_in_message
+    return check_scam_in_message(text)
+
+
+@mcp.tool()
+def get_sender_trust(user_id: int, sender_id: int, current_message: str = "") -> Dict[str, Any]:
+    """
+    Get sender trust level based on conversation history.
+    대화 이력을 기반으로 발신자 신뢰도를 조회합니다.
+
+    Args:
+        user_id: 수신자 (현재 사용자) ID
+        sender_id: 발신자 ID
+        current_message: 현재 수신 메시지 (선택, 추가 분석용)
+
+    Returns:
+        sender_trust: 발신자 신뢰 정보
+            - has_history: 이전 대화 이력 존재 여부
+            - is_first_message: 첫 메시지 여부
+            - trust_score: 신뢰도 점수 (0-100)
+            - trust_level: 신뢰 레벨 (unknown/low/medium/high)
+        risk_factors: 위험 요소 목록
+        risk_adjustment: 위험도 조정값
+        warning_message: 경고 메시지 (있는 경우)
+    """
+    from ..core.conversation_analyzer import analyze_sender_risk
+    return analyze_sender_risk(user_id, sender_id, current_message)
+
+
+@mcp.tool()
+def get_action_policy_for_risk(
+    risk_level: str,
+    scenario: str = None,
+    scam_check_result: Dict = None,
+    sender_analysis: Dict = None
+) -> Dict[str, Any]:
+    """
+    Get detailed action policy for given risk level.
+    위험도에 따른 상세 액션 정책을 조회합니다.
+
+    Args:
+        risk_level: 위험 레벨 (LOW/MEDIUM/HIGH/CRITICAL)
+        scenario: 매칭된 시나리오 ID (선택)
+        scam_check_result: check_reported_scam() 결과 (선택)
+        sender_analysis: get_sender_trust() 결과 (선택)
+
+    Returns:
+        final_risk_level: 최종 위험 레벨 (종합 분석 시)
+        policy: 적용할 정책
+            - action_type: 액션 타입
+            - ui_config: UI 설정 (경고 색상, 버튼 표시 등)
+            - user_message: 사용자에게 보여줄 메시지
+            - recommended_steps: 권장 조치 목록
+        risk_factors: 위험 요소 목록
+        total_risk_score: 종합 위험 점수
+    """
+    from ..core.action_policy import get_combined_policy, get_action_policy
+
+    if scam_check_result or sender_analysis:
+        # 종합 분석
+        return get_combined_policy(
+            text_risk=risk_level,
+            scam_check_result=scam_check_result,
+            sender_analysis=sender_analysis,
+            scenario_match=scenario
+        )
+    else:
+        # 단순 정책 조회
+        policy = get_action_policy(risk_level, scenario)
+        return {
+            "final_risk_level": risk_level,
+            "policy": policy,
+            "risk_factors": [],
+            "total_risk_score": {"LOW": 10, "MEDIUM": 40, "HIGH": 70, "CRITICAL": 100}.get(risk_level, 10)
+        }
+
+
+@mcp.tool()
+def analyze_incoming_full(
+    text: str,
+    user_id: int = None,
+    sender_id: int = None,
+    use_ai: bool = True
+) -> Dict[str, Any]:
+    """
+    Full 4-stage analysis for incoming messages.
+    수신 메시지 완전한 4단계 분석 파이프라인.
+
+    Stage 1: 텍스트 패턴 분석 (위협 감지)
+    Stage 2: URL + 신고 DB 조회
+    Stage 3: 발신자 신뢰도 분석
+    Stage 4: 정책 기반 최종 판정
+
+    Args:
+        text: 분석할 수신 메시지
+        user_id: 수신자 ID (선택)
+        sender_id: 발신자 ID (선택)
+        use_ai: LLM 분석 사용 여부
+
+    Returns:
+        stage1_threat_detection: 1단계 위협 감지 결과
+        stage2_scam_check: 2단계 신고 DB 조회 결과
+        stage3_sender_trust: 3단계 발신자 분석 결과
+        stage4_final_policy: 4단계 최종 정책
+        summary: 분석 요약
+        risk_level: 최종 위험 레벨
+        recommended_action: 권장 조치
+    """
+    from ..core.threat_matcher import analyze_incoming_message
+    from ..core.scam_checker import check_scam_in_message
+    from ..core.conversation_analyzer import analyze_sender_risk
+    from ..core.action_policy import get_combined_policy, format_warning_for_ui
+
+    # Stage 1: 텍스트 패턴 분석
+    stage1 = analyze_incoming_message(text)
+    threat_level = stage1.get("final_assessment", {}).get("threat_level", "SAFE")
+
+    # Stage 2: 신고 DB 조회
+    stage2 = check_scam_in_message(text)
+
+    # Stage 3: 발신자 신뢰도 (user_id, sender_id 있는 경우)
+    stage3 = None
+    if user_id and sender_id:
+        stage3 = analyze_sender_risk(user_id, sender_id, text)
+
+    # Stage 4: 종합 정책 결정
+    scenario_match = None
+    if stage1.get("scenario_match", {}).get("matched_scenario"):
+        scenario_match = stage1["scenario_match"]["matched_scenario"].get("id")
+
+    stage4 = get_combined_policy(
+        text_risk=threat_level,
+        scam_check_result=stage2,
+        sender_analysis=stage3,
+        scenario_match=scenario_match
+    )
+
+    # 요약 생성
+    final_level = stage4["final_risk_level"]
+    summary_messages = {
+        "LOW": "안전한 메시지입니다.",
+        "MEDIUM": "주의가 필요한 메시지입니다. 발신자를 확인하세요.",
+        "HIGH": "위험한 메시지입니다! 링크 클릭이나 정보 제공을 하지 마세요.",
+        "CRITICAL": "피싱/사기 메시지로 강력히 의심됩니다! 절대 응답하지 마세요."
+    }
+
+    return {
+        "stage1_threat_detection": stage1,
+        "stage2_scam_check": stage2,
+        "stage3_sender_trust": stage3,
+        "stage4_final_policy": stage4,
+        "summary": summary_messages.get(final_level, "분석 완료"),
+        "risk_level": final_level,
+        "recommended_action": stage4["policy"].get("action_type", "none"),
+        "ui_warning": format_warning_for_ui(stage4["policy"])
     }

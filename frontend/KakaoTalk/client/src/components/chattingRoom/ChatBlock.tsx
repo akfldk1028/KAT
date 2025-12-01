@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { UserResponseDto } from '~/types/user';
+import { SecurityAnalysis } from '~/types/security';
 import { BASE_IMG_URL, HOST } from '~/constants';
 import { SeparationBlock } from './InfoBlock';
 import SecretMessageViewer from './SecretMessageViewer';
@@ -154,6 +155,46 @@ const AgentText = styled.div`
   }
 `;
 
+// 수신 메시지 위협 경고 스타일
+const ThreatWarning = styled.div<{ riskLevel: string }>`
+  display: flex;
+  align-items: center;
+  background: ${props => {
+    switch(props.riskLevel) {
+      case 'CRITICAL': return 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
+      case 'HIGH': return 'linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%)';
+      case 'MEDIUM': return 'linear-gradient(135deg, #ffa726 0%, #fb8c00 100%)';
+      default: return 'linear-gradient(135deg, #66bb6a 0%, #43a047 100%)';
+    }
+  }};
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  max-width: 280px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+
+  & .warning-icon {
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  & .warning-content {
+    flex: 1;
+  }
+
+  & .warning-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  & .warning-reasons {
+    font-size: 11px;
+    opacity: 0.9;
+  }
+`;
+
 // 시크릿 메시지 링크 스타일
 const SecretLink = styled.div`
   position: relative;
@@ -204,6 +245,7 @@ interface ChatProps {
   messageType?: 'text' | 'image' | 'secret' | 'agent_alert';
   imageUrl?: string;
   secretId?: string;
+  securityAnalysis?: SecurityAnalysis;
 }
 
 interface FriendChatProps {
@@ -215,6 +257,7 @@ interface FriendChatProps {
   messageType?: 'text' | 'image' | 'secret';
   imageUrl?: string;
   secretId?: string;
+  securityAnalysis?: SecurityAnalysis;
   onImgClick(): void;
 }
 
@@ -317,9 +360,33 @@ export const FriendChat: React.FC<ChatProps> = props => {
   );
 };
 
+// 위협 경고 아이콘 헬퍼
+const getThreatIcon = (riskLevel: string) => {
+  switch(riskLevel) {
+    case 'CRITICAL': return '🚨';
+    case 'HIGH': return '⚠️';
+    case 'MEDIUM': return '⚡';
+    default: return '✓';
+  }
+};
+
+// 위협 레벨 라벨
+const getThreatLabel = (riskLevel: string) => {
+  switch(riskLevel) {
+    case 'CRITICAL': return '피싱/사기 의심!';
+    case 'HIGH': return '위험 감지';
+    case 'MEDIUM': return '주의 필요';
+    default: return '안전';
+  }
+};
+
 // 다른 사람이 보냈으며, 프로필 사진을 포함하는 채팅
 export const FriendChatWithThumbnail: React.FC<FriendChatProps> = props => {
-  const { user, content, onImgClick } = props;
+  const { user, content, onImgClick, securityAnalysis } = props;
+
+  // 위협 경고 표시 여부 (LOW가 아닌 경우에만)
+  const showWarning = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
+
   return (
     <React.Fragment>
       {content ? <SeparationBlock content={content} /> : null}
@@ -330,6 +397,19 @@ export const FriendChatWithThumbnail: React.FC<FriendChatProps> = props => {
           onClick={onImgClick}
         />
         <NameBlock>{user.name}</NameBlock>
+        {showWarning && (
+          <ThreatWarning riskLevel={securityAnalysis!.risk_level}>
+            <span className="warning-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
+            <div className="warning-content">
+              <div className="warning-title">
+                {getThreatLabel(securityAnalysis!.risk_level)}
+              </div>
+              <div className="warning-reasons">
+                {securityAnalysis!.reasons.slice(0, 2).join(', ')}
+              </div>
+            </div>
+          </ThreatWarning>
+        )}
         <div>
           <Chat {...props} />
         </div>

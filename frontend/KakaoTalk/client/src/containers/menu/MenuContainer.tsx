@@ -14,6 +14,7 @@ import { PAGE_PATHS } from '~/constants';
 import { Auth } from '~/types/auth';
 import { ProfileContainer, ChattingRoomContainer } from '~/containers';
 import { ChattingResponseDto, UpdateRoomListDto } from '~/types/chatting';
+import { analyzeIncoming } from '~/apis/agent';
 
 const Wrapper = styled.main`
   width: 100%;
@@ -37,7 +38,24 @@ class MenuContainer extends Component<Props> {
       props.userActions.fetchFriends(auth.id);
       props.userActions.fetchRoomList(auth.id);
       socket.emit('join', auth.id.toString());
-      socket.on('message', (response: ChattingResponseDto) => {
+      socket.on('message', async (response: ChattingResponseDto) => {
+        // Agent B (Incoming Guard): 수신 메시지 분석 - constructor에서도 처리
+        const userState = this.props.rootState.user;
+        if (
+          response.send_user_id !== userState.id &&
+          (!response.message_type || response.message_type === 'text') &&
+          response.message &&
+          response.message.length > 0
+        ) {
+          try {
+            console.log('[Agent B - Constructor] Analyzing:', response.message.substring(0, 50));
+            const analysis = await analyzeIncoming(response.message, response.send_user_id, true);
+            console.log('[Agent B - Constructor] Result:', analysis);
+            response.security_analysis = analysis;
+          } catch (error) {
+            console.error('[Agent B - Constructor] Failed:', error);
+          }
+        }
         this.updateRooms(response);
       });
     }
@@ -71,11 +89,31 @@ class MenuContainer extends Component<Props> {
 
   async componentDidUpdate(prevProps: Props) {
     const chatState = this.props.rootState.chat;
+    const userState = this.props.rootState.user;
     if (prevProps.rootState.chat.room_id !== chatState.room_id) {
       const socket = this.props.rootState.auth.socket as typeof Socket;
       const { addChatting } = this.props.chatActions;
       await socket.off('message');
       await socket.on('message', async (response: ChattingResponseDto) => {
+        // Agent B (Incoming Guard): 수신 메시지 분석
+        // 조건: 내가 보낸게 아니고, 일반 텍스트 메시지인 경우
+        if (
+          response.send_user_id !== userState.id &&
+          (!response.message_type || response.message_type === 'text') &&
+          response.message &&
+          response.message.length > 0
+        ) {
+          try {
+            console.log('[Agent B] Analyzing incoming message:', response.message.substring(0, 50));
+            const analysis = await analyzeIncoming(response.message, response.send_user_id, true);
+            console.log('[Agent B] Analysis result:', analysis);
+            // 분석 결과를 response에 추가
+            response.security_analysis = analysis;
+          } catch (error) {
+            console.error('[Agent B] Incoming analysis failed:', error);
+          }
+        }
+
         if (response.room_id === chatState.room_id) {
           await addChatting(response);
         }

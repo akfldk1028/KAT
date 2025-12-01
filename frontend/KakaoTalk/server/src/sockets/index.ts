@@ -80,6 +80,7 @@ const message = (socket: socketIO.Socket, io: socketIO.Server) => {
       }
     );
 
+    // 기본 메시지 응답 (발신자용)
     const messageResponse: MessageResponse = {
       id: savedMessage.id,
       room_id,
@@ -92,13 +93,30 @@ const message = (socket: socketIO.Socket, io: socketIO.Server) => {
       security_analysis: outgoingAnalysis || undefined,
       secret_id: secret_id || undefined
     };
+
     if (messageObj.type === 'individual') {
       const me = messageObj.send_user_id.toString();
       const target = messageObj.participant[0].id.toString();
       if (me === target) {
         io.to(me).emit('message', messageResponse);
       } else {
-        io.to(target).emit('message', messageResponse);
+        // 수신자에게 보낼 때는 Incoming Agent 분석 결과 포함
+        let incomingAnalysis = null;
+        if (message_type !== 'image' && message_type !== 'agent_alert') {
+          incomingAnalysis = await analyzeIncoming(
+            message,
+            send_user_id,
+            messageObj.participant[0]?.id
+          );
+        }
+
+        // 수신자용 응답 (Incoming 분석 결과 포함)
+        const targetResponse: MessageResponse = {
+          ...messageResponse,
+          security_analysis: incomingAnalysis || undefined
+        };
+
+        io.to(target).emit('message', targetResponse);
         io.to(me).emit('message', messageResponse);
         await Participant.increment(['not_read_chat'], {
           where: {

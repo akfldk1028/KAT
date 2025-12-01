@@ -54,15 +54,15 @@
         {
           "id": "family_impersonate",
           "name_ko": "가족 사칭",
-          "keywords": ["엄마", "아빠", "아들", "딸", "언니", "오빠", "동생"],
-          "context_keywords": ["폰 고장", "급해", "돈 좀", "카톡 안돼"],
+          "keywords": ["엄마야", "아빠야", "아들이야", "딸이야", "엄마", "아빠", "아들", "딸", "언니", "오빠", "동생"],
+          "context_keywords": ["폰 고장", "폰이 고장", "액정 깨", "급해", "급한데", "급하게", "돈 좀", "돈이 필요", "보내줘", "이체해", "카톡 안돼", "새 번호", "친구폰"],
           "risk_level": "CRITICAL"
         },
         {
           "id": "authority_impersonate",
           "name_ko": "기관 사칭",
-          "keywords": ["검찰", "경찰", "금융감독원", "국세청", "은행"],
-          "context_keywords": ["수사", "조사", "사건", "연루", "동결"],
+          "keywords": ["검찰", "경찰", "금융감독원", "국세청", "은행", "지검", "중앙지검", "서울중앙지검"],
+          "context_keywords": ["수사", "조사", "사건", "연루", "동결", "범죄", "명의", "협조", "본인확인", "계좌", "해킹"],
           "risk_level": "CRITICAL"
         },
         {
@@ -95,7 +95,7 @@
         {
           "id": "suspicious_domain",
           "name_ko": "의심 도메인",
-          "regex": "https?://[\\w.-]*(?:kakao[\\w]*|naver[\\w]*|bank[\\w]*|gov[\\w]*)\\.[^kr][a-z]{2,}",
+          "regex": "https?://[\\w.-]*(?:kakao|naver|bank|gov|security|verify|update|login)[\\w-]*\\.(?:net|org|co|info|xyz|top|click|link|site|online|pw|cc|tk)",
           "risk_level": "HIGH"
         },
         {
@@ -224,8 +224,8 @@
     "thresholds": {
       "SAFE": {"max": 20},
       "SUSPICIOUS": {"min": 21, "max": 60},
-      "DANGEROUS": {"min": 61, "max": 100},
-      "CRITICAL": {"min": 101}
+      "DANGEROUS": {"min": 61, "max": 99},
+      "CRITICAL": {"min": 100}
     }
   },
 

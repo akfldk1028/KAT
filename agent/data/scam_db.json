@@ -1,0 +1,132 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-30",
+  "description": "사기 신고 DB (Mock Data) - 실제로는 경찰청/금감원 API 연동",
+
+  "reported_accounts": {
+    "description": "신고된 계좌번호 목록",
+    "data": [
+      {
+        "account_number": "110-123-456789",
+        "bank": "신한은행",
+        "report_count": 15,
+        "report_type": "보이스피싱",
+        "first_reported": "2025-01-15",
+        "last_reported": "2025-11-20",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      },
+      {
+        "account_number": "3333-01-1234567",
+        "bank": "카카오뱅크",
+        "report_count": 8,
+        "report_type": "투자사기",
+        "first_reported": "2025-03-10",
+        "last_reported": "2025-11-25",
+        "status": "confirmed_scam",
+        "risk_score": 95
+      },
+      {
+        "account_number": "123-45-678901",
+        "bank": "국민은행",
+        "report_count": 3,
+        "report_type": "환불사기",
+        "first_reported": "2025-10-01",
+        "last_reported": "2025-11-15",
+        "status": "under_investigation",
+        "risk_score": 70
+      },
+      {
+        "account_number": "456-789-012345",
+        "bank": "우리은행",
+        "report_count": 25,
+        "report_type": "가족사칭",
+        "first_reported": "2024-12-01",
+        "last_reported": "2025-11-28",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      }
+    ]
+  },
+
+  "reported_phones": {
+    "description": "신고된 전화번호 목록",
+    "data": [
+      {
+        "phone_number": "010-1234-5678",
+        "report_count": 50,
+        "report_type": "보이스피싱",
+        "caller_claim": "검찰청 사칭",
+        "first_reported": "2025-01-01",
+        "last_reported": "2025-11-29",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      },
+      {
+        "phone_number": "010-9876-5432",
+        "report_count": 12,
+        "report_type": "가족사칭",
+        "caller_claim": "자녀 사칭 긴급송금",
+        "first_reported": "2025-06-15",
+        "last_reported": "2025-11-27",
+        "status": "confirmed_scam",
+        "risk_score": 95
+      },
+      {
+        "phone_number": "02-1234-5678",
+        "report_count": 30,
+        "report_type": "기관사칭",
+        "caller_claim": "금융감독원 사칭",
+        "first_reported": "2025-02-20",
+        "last_reported": "2025-11-28",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      },
+      {
+        "phone_number": "010-5555-6666",
+        "report_count": 5,
+        "report_type": "대출사기",
+        "caller_claim": "저금리 대출 유도",
+        "first_reported": "2025-09-01",
+        "last_reported": "2025-11-20",
+        "status": "under_investigation",
+        "risk_score": 60
+      },
+      {
+        "phone_number": "070-1234-5678",
+        "report_count": 100,
+        "report_type": "스미싱",
+        "caller_claim": "택배 사칭 링크",
+        "first_reported": "2024-06-01",
+        "last_reported": "2025-11-29",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      }
+    ]
+  },
+
+  "status_definitions": {
+    "confirmed_scam": {
+      "name_ko": "사기 확정",
+      "description": "수사기관에서 사기로 확정된 건",
+      "action": "block_and_report"
+    },
+    "under_investigation": {
+      "name_ko": "조사 중",
+      "description": "신고 접수되어 조사 진행 중",
+      "action": "warn"
+    },
+    "cleared": {
+      "name_ko": "혐의 없음",
+      "description": "조사 결과 혐의 없음 판정",
+      "action": "none"
+    }
+  },
+
+  "risk_thresholds": {
+    "immediate_block": 90,
+    "strong_warning": 70,
+    "caution": 50,
+    "safe": 0
+  }
+}
