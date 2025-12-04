@@ -1,12 +1,16 @@
 """
-Threat Matcher - threat_patterns.json 기반 피싱/사기 패턴 매칭
+Threat Matcher - MECE 기반 피싱/사기 패턴 매칭 (v2.0)
 AI(Agent B)가 MCP 도구를 통해 호출하는 수신 메시지 분석 모듈
+
+카테고리 분류:
+- A: 관계 사칭형 (Targeting Trust)
+- B: 공포/권위 악용형 (Targeting Fear & Authority)
+- C: 욕망/감정 자극형 (Targeting Desire & Emotion)
 """
 import json
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Any
-from functools import lru_cache
 
 
 # JSON 데이터 캐시
@@ -23,134 +27,253 @@ def _get_threat_data() -> Dict:
     return _threat_cache
 
 
-def get_threat_categories() -> Dict[str, Any]:
+def reload_threat_data() -> None:
+    """캐시 초기화 (패턴 파일 수정 시 호출)"""
+    global _threat_cache
+    _threat_cache = None
+
+
+def get_all_categories() -> Dict[str, Any]:
     """
-    MCP Tool: 모든 위협 카테고리 정보 반환
-    AI가 어떤 종류의 위협이 있는지 파악하는 데 사용
+    MCP Tool: 모든 카테고리 정보 반환
+    AI가 어떤 종류의 위협 카테고리가 있는지 파악하는 데 사용
 
     Returns:
-        카테고리별 위협 패턴 목록
+        카테고리별 정보 (A, B, C)
     """
     data = _get_threat_data()
     result = {}
 
-    for cat_id, cat_info in data["threat_categories"].items():
+    for cat_id, cat_info in data["categories"].items():
         result[cat_id] = {
             "name_ko": cat_info["name_ko"],
+            "name_en": cat_info["name_en"],
             "description": cat_info["description"],
-            "risk_weight": cat_info["risk_weight"],
-            "patterns": [
-                {
-                    "id": p["id"],
-                    "name_ko": p["name_ko"],
-                    "risk_level": p["risk_level"]
-                }
-                for p in cat_info["patterns"]
-            ]
+            "psychological_trigger": cat_info["psychological_trigger"],
+            "main_channel": cat_info["main_channel"],
+            "patterns": list(cat_info["patterns"].keys())
         }
 
     return result
 
 
-def get_known_scam_scenarios() -> List[Dict]:
+def get_pattern_details(pattern_id: str) -> Optional[Dict]:
     """
-    MCP Tool: 알려진 사기 시나리오 반환
-    전형적인 보이스피싱/스미싱 패턴
+    MCP Tool: 특정 패턴의 상세 정보 반환
+
+    Args:
+        pattern_id: 패턴 ID (예: "A-1", "B-2")
 
     Returns:
-        시나리오 목록
+        패턴 상세 정보
     """
     data = _get_threat_data()
-    scenarios = []
+    cat_id = pattern_id.split("-")[0]
 
-    for scam_type, scam_info in data["known_scam_patterns"].items():
-        for scenario in scam_info["scenarios"]:
-            scenarios.append({
-                "id": scenario["id"],
-                "name_ko": scenario["name_ko"],
-                "pattern_sequence": scenario["pattern_sequence"],
-                "typical_phrases": scenario["typical_phrases"]
-            })
+    if cat_id in data["categories"]:
+        patterns = data["categories"][cat_id]["patterns"]
+        if pattern_id in patterns:
+            return patterns[pattern_id]
 
-    return scenarios
+    return None
 
 
 def detect_threats(text: str) -> Dict[str, Any]:
     """
-    MCP Tool: 텍스트에서 위협 패턴 감지
-    키워드 + 정규식 기반으로 위협을 탐지
+    MCP Tool: 텍스트에서 위협 패턴 감지 (MECE 카테고리 기반)
 
     Args:
         text: 분석할 수신 메시지
 
     Returns:
         {
-            "found_threats": [{"id": "...", "category": "...", "name_ko": "...", "risk_level": "..."}],
-            "categories_found": ["financial_scam", "impersonation"],
-            "highest_risk": "CRITICAL",
-            "matched_keywords": ["긴급", "송금"]
+            "matched_patterns": [{"id": "A-1", "category": "A", ...}],
+            "primary_category": "A",
+            "primary_pattern": "A-1",
+            "scam_probability": 85,
+            "matched_keywords": ["엄마", "폰 고장"]
         }
     """
     data = _get_threat_data()
-    found_threats = []
-    categories_found = set()
+    matched_patterns = []
     all_matched_keywords = []
-    highest_risk = "LOW"
 
-    risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
-    text_lower = text.lower()
+    # 각 카테고리의 패턴 검사
+    for cat_id, cat_info in data["categories"].items():
+        for pattern_id, pattern in cat_info["patterns"].items():
+            match_result = _check_pattern_match(text, pattern)
 
-    for cat_id, cat_info in data["threat_categories"].items():
-        for pattern in cat_info["patterns"]:
-            matched = False
-            matched_keywords = []
-
-            # 정규식 패턴 체크
-            if "regex" in pattern:
-                try:
-                    if re.search(pattern["regex"], text, re.IGNORECASE):
-                        matched = True
-                        matched_keywords.append(f"[regex:{pattern['id']}]")
-                except re.error:
-                    pass
-
-            # 키워드 패턴 체크
-            if "keywords" in pattern:
-                found_keywords = [k for k in pattern["keywords"] if k in text]
-                if found_keywords:
-                    # context_keywords가 있으면 함께 체크
-                    if "context_keywords" in pattern:
-                        found_context = [k for k in pattern["context_keywords"] if k in text]
-                        if found_context:
-                            matched = True
-                            matched_keywords.extend(found_keywords)
-                            matched_keywords.extend(found_context)
-                    else:
-                        matched = True
-                        matched_keywords.extend(found_keywords)
-
-            if matched:
-                found_threats.append({
-                    "id": pattern["id"],
+            if match_result["matched"]:
+                matched_patterns.append({
+                    "id": pattern_id,
                     "category": cat_id,
                     "category_name_ko": cat_info["name_ko"],
-                    "name_ko": pattern["name_ko"],
-                    "risk_level": pattern["risk_level"],
-                    "matched_keywords": matched_keywords
+                    "pattern_name_ko": pattern["name_ko"],
+                    "risk_score": pattern["risk_score"],
+                    "matched_keywords": match_result["keywords"],
+                    "match_strength": match_result["strength"]
                 })
-                categories_found.add(cat_id)
-                all_matched_keywords.extend(matched_keywords)
+                all_matched_keywords.extend(match_result["keywords"])
 
-                if risk_order[pattern["risk_level"]] > risk_order[highest_risk]:
-                    highest_risk = pattern["risk_level"]
+    # 매칭 결과가 없으면
+    if not matched_patterns:
+        return {
+            "matched_patterns": [],
+            "primary_category": None,
+            "primary_pattern": None,
+            "scam_probability": 0,
+            "matched_keywords": [],
+            "risk_level": "safe"
+        }
+
+    # 가장 강력한 매칭 찾기 (risk_score * match_strength)
+    matched_patterns.sort(
+        key=lambda x: x["risk_score"] * x["match_strength"],
+        reverse=True
+    )
+    primary = matched_patterns[0]
+
+    # 사기 확률 계산
+    scam_probability = _calculate_scam_probability(text, matched_patterns, data)
+
+    # 위험 레벨 결정
+    risk_level = _get_risk_level(scam_probability, data)
 
     return {
-        "found_threats": found_threats,
-        "categories_found": list(categories_found),
-        "highest_risk": highest_risk,
+        "matched_patterns": matched_patterns,
+        "primary_category": primary["category"],
+        "primary_pattern": primary["id"],
+        "primary_pattern_name": primary["pattern_name_ko"],
+        "scam_probability": scam_probability,
         "matched_keywords": list(set(all_matched_keywords)),
-        "count": len(found_threats)
+        "risk_level": risk_level
     }
+
+
+def _check_pattern_match(text: str, pattern: Dict) -> Dict[str, Any]:
+    """패턴 매칭 체크"""
+    matched_keywords = []
+    strength = 0.0
+
+    # 키워드 체크
+    keywords = pattern.get("keywords", [])
+    found_keywords = [k for k in keywords if k in text]
+
+    if not found_keywords:
+        return {"matched": False, "keywords": [], "strength": 0}
+
+    matched_keywords.extend(found_keywords)
+    # 키워드 1개 이상 매칭되면 기본 0.3 + 추가 매칭에 따른 보너스
+    keyword_base = 0.3 if found_keywords else 0
+    keyword_bonus = min(len(found_keywords) / len(keywords), 0.5) * 0.4
+    strength += keyword_base + keyword_bonus
+
+    # 컨텍스트 키워드 체크
+    context_keywords = pattern.get("context_keywords", [])
+    if context_keywords:
+        found_context = [k for k in context_keywords if k in text]
+        if found_context:
+            matched_keywords.extend(found_context)
+            # 컨텍스트 2개 이상이면 강한 매칭
+            context_score = min(len(found_context) / 3, 1.0) * 0.5
+            strength += context_score
+        else:
+            # 컨텍스트 없이 키워드만 있으면 약한 매칭
+            strength *= 0.5
+
+    # URL 인디케이터 체크 (B 카테고리)
+    url_indicators = pattern.get("url_indicators", [])
+    if url_indicators:
+        for indicator in url_indicators:
+            if indicator.lower() in text.lower():
+                matched_keywords.append(f"[URL:{indicator}]")
+                strength += 0.2
+                break
+
+    # 전화번호 인디케이터 체크 (B-3)
+    phone_indicators = pattern.get("phone_indicators", [])
+    if phone_indicators:
+        for indicator in phone_indicators:
+            if indicator in text:
+                matched_keywords.append(f"[Phone:{indicator}]")
+                strength += 0.15
+                break
+
+    # 최소 강도 이상이면 매칭 (키워드 + 컨텍스트 2개 이상이면 매칭)
+    has_keyword = len(found_keywords) >= 1
+    has_context = len([k for k in context_keywords if k in text]) >= 2 if context_keywords else True
+    matched = has_keyword and has_context and strength >= 0.3
+
+    return {
+        "matched": matched,
+        "keywords": matched_keywords,
+        "strength": min(strength, 1.0)
+    }
+
+
+def _calculate_scam_probability(
+    text: str,
+    matched_patterns: List[Dict],
+    data: Dict
+) -> int:
+    """사기 확률(%) 계산"""
+    if not matched_patterns:
+        return 0
+
+    # 기본 점수: 가장 높은 risk_score
+    base_score = max(p["risk_score"] for p in matched_patterns)
+
+    # 매칭 강도 반영
+    primary_strength = matched_patterns[0]["match_strength"]
+    score = base_score * primary_strength
+
+    # 멀티플라이어 적용
+    multipliers = data["scoring"]["multipliers"]
+
+    # 여러 패턴 매칭
+    if len(matched_patterns) > 1:
+        score *= multipliers["multiple_patterns"]
+
+    # URL 포함
+    if re.search(r'https?://|bit\.ly|tinyurl|url\.kr|han\.gl', text, re.IGNORECASE):
+        score *= multipliers["url_present"]
+
+    # 전화번호 포함
+    if re.search(r'02-\d{3,4}-\d{4}|0\d{2}-\d{3,4}-\d{4}|1[56]\d{2}-\d{4}|070-\d{4}-\d{4}', text):
+        score *= multipliers["phone_number_present"]
+
+    # 금액 포함
+    if re.search(r'\d{2,3}만\s?원|\d{1,3},?\d{3},?\d{3}원|\$\d+|USD|JPY', text):
+        score *= multipliers["money_amount_present"]
+
+    # 긴급성 언어
+    urgency_keywords = data["scoring"]["urgency_keywords"]
+    if any(uk in text for uk in urgency_keywords):
+        score *= multipliers["urgency_language"]
+
+    # 안전 컨텍스트 체크 (false positive 방지)
+    for safe_ctx in data["safe_patterns"]["safe_contexts"]:
+        if any(k in text for k in safe_ctx["keywords"]):
+            score *= safe_ctx["factor"]
+
+    # 0-100 범위로 제한
+    return min(int(score), 100)
+
+
+def _get_risk_level(probability: int, data: Dict) -> str:
+    """확률에 따른 위험 레벨 반환"""
+    thresholds = data["scoring"]["base_threshold"]
+
+    if probability <= thresholds["safe"]["max"]:
+        return "safe"
+    elif probability <= thresholds["low"]["max"]:
+        return "low"
+    elif probability <= thresholds["medium"]["max"]:
+        return "medium"
+    elif probability <= thresholds["high"]["max"]:
+        return "high"
+    else:
+        return "critical"
 
 
 def detect_urls(text: str) -> Dict[str, Any]:
@@ -161,12 +284,7 @@ def detect_urls(text: str) -> Dict[str, Any]:
         text: 분석할 텍스트
 
     Returns:
-        {
-            "urls_found": [...],
-            "suspicious_urls": [...],
-            "safe_urls": [...],
-            "risk_level": "HIGH"
-        }
+        URL 분석 결과
     """
     data = _get_threat_data()
 
@@ -175,7 +293,7 @@ def detect_urls(text: str) -> Dict[str, Any]:
     urls_found = re.findall(url_pattern, text)
 
     # 단축 URL 패턴도 추가
-    short_url_pattern = r'(?:bit\.ly|tinyurl\.com|goo\.gl|t\.co|is\.gd|v\.gd|me2\.do|vo\.la)/[\w]+'
+    short_url_pattern = r'(?:bit\.ly|tinyurl\.com|goo\.gl|t\.co|is\.gd|v\.gd|me2\.do|vo\.la|url\.kr|han\.gl)/[\w]+'
     short_urls = re.findall(short_url_pattern, text, re.IGNORECASE)
     urls_found.extend([f"https://{u}" for u in short_urls])
 
@@ -183,157 +301,20 @@ def detect_urls(text: str) -> Dict[str, Any]:
 
     suspicious_urls = []
     safe_urls = []
-    risk_level = "LOW"
 
     for url in urls_found:
-        is_safe = False
-        for safe_domain in safe_domains:
-            if safe_domain in url:
-                is_safe = True
-                safe_urls.append(url)
-                break
-
-        if not is_safe:
+        is_safe = any(safe_domain in url for safe_domain in safe_domains)
+        if is_safe:
+            safe_urls.append(url)
+        else:
             suspicious_urls.append(url)
-
-            # IP 주소 URL 체크
-            if re.search(r'https?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', url):
-                risk_level = "HIGH"
-            # 의심 도메인 체크
-            elif re.search(r'kakao|naver|bank|gov', url, re.IGNORECASE) and not any(sd in url for sd in safe_domains):
-                risk_level = "CRITICAL"
-            elif risk_level == "LOW":
-                risk_level = "MEDIUM"
 
     return {
         "urls_found": urls_found,
         "suspicious_urls": suspicious_urls,
         "safe_urls": safe_urls,
-        "risk_level": risk_level if suspicious_urls else "LOW",
+        "has_suspicious_url": bool(suspicious_urls),
         "has_shortened_url": bool(short_urls)
-    }
-
-
-def match_scam_scenario(found_threats: List[Dict]) -> Dict[str, Any]:
-    """
-    MCP Tool: 감지된 위협들이 알려진 사기 시나리오와 매칭되는지 확인
-
-    Args:
-        found_threats: detect_threats()에서 반환된 found_threats
-
-    Returns:
-        {
-            "matched_scenario": {"id": "...", "name_ko": "..."},
-            "confidence": "high/medium/low",
-            "pattern_coverage": 0.75
-        }
-    """
-    data = _get_threat_data()
-    threat_ids = {t["id"] for t in found_threats}
-
-    best_match = None
-    best_coverage = 0
-
-    for scam_type, scam_info in data["known_scam_patterns"].items():
-        for scenario in scam_info["scenarios"]:
-            required_patterns = set(scenario["pattern_sequence"])
-            matched = threat_ids.intersection(required_patterns)
-            coverage = len(matched) / len(required_patterns) if required_patterns else 0
-
-            if coverage > best_coverage:
-                best_coverage = coverage
-                best_match = {
-                    "id": scenario["id"],
-                    "name_ko": scenario["name_ko"],
-                    "typical_phrases": scenario["typical_phrases"]
-                }
-
-    if best_match and best_coverage > 0:
-        confidence = "high" if best_coverage >= 0.8 else "medium" if best_coverage >= 0.5 else "low"
-        return {
-            "matched_scenario": best_match,
-            "confidence": confidence,
-            "pattern_coverage": best_coverage
-        }
-
-    return {
-        "matched_scenario": None,
-        "confidence": "none",
-        "pattern_coverage": 0
-    }
-
-
-def calculate_threat_score(
-    found_threats: List[Dict],
-    url_analysis: Dict = None,
-    scenario_match: Dict = None
-) -> Dict[str, Any]:
-    """
-    MCP Tool: 최종 위협 점수 계산
-
-    Args:
-        found_threats: detect_threats()에서 반환된 found_threats
-        url_analysis: detect_urls()에서 반환된 결과 (옵션)
-        scenario_match: match_scam_scenario()에서 반환된 결과 (옵션)
-
-    Returns:
-        {
-            "threat_score": 150,
-            "threat_level": "CRITICAL",
-            "is_likely_scam": true,
-            "warning_message": "피싱/사기 메시지로 의심됩니다!",
-            "recommended_action": "block_and_report"
-        }
-    """
-    data = _get_threat_data()
-    scoring = data["risk_scoring"]
-
-    # 기본 점수 계산
-    total_score = 0
-    for threat in found_threats:
-        base = scoring["base_scores"].get(threat["risk_level"], 10)
-        total_score += base
-
-    # 여러 카테고리 감지 시 가중
-    categories = {t["category"] for t in found_threats}
-    if len(categories) > 1:
-        total_score *= scoring["multipliers"]["multiple_categories"]
-
-    # URL 분석 결과 반영
-    if url_analysis:
-        if url_analysis.get("suspicious_urls"):
-            total_score *= scoring["multipliers"]["url_present"]
-        # 인증정보 요청과 URL 조합
-        if any(t["id"] == "credential_request" for t in found_threats):
-            total_score *= scoring["multipliers"]["credential_request"]
-
-    # 시나리오 매칭 반영
-    if scenario_match and scenario_match.get("matched_scenario"):
-        if scenario_match["confidence"] in ["high", "medium"]:
-            total_score *= scoring["multipliers"]["known_scenario_match"]
-
-    # 위협 레벨 결정
-    thresholds = scoring["thresholds"]
-    if total_score >= thresholds["CRITICAL"]["min"]:
-        threat_level = "CRITICAL"
-    elif total_score >= thresholds["DANGEROUS"]["min"]:
-        threat_level = "DANGEROUS"
-    elif total_score >= thresholds["SUSPICIOUS"]["min"]:
-        threat_level = "SUSPICIOUS"
-    else:
-        threat_level = "SAFE"
-
-    # 응답 템플릿
-    response = data["response_templates"].get(threat_level, data["response_templates"]["SAFE"])
-
-    return {
-        "threat_score": round(total_score),
-        "threat_level": threat_level,
-        "is_likely_scam": threat_level in ["DANGEROUS", "CRITICAL"],
-        "warning_message": response["message"],
-        "recommended_action": response["action"],
-        "categories_detected": list(categories),
-        "threat_count": len(found_threats)
     }
 
 
@@ -346,7 +327,7 @@ def analyze_incoming_message(text: str) -> Dict[str, Any]:
         text: 분석할 수신 메시지
 
     Returns:
-        종합 분석 결과
+        종합 분석 결과 (scam_probability % 포함)
     """
     # 1. 위협 패턴 감지
     threats = detect_threats(text)
@@ -354,32 +335,138 @@ def analyze_incoming_message(text: str) -> Dict[str, Any]:
     # 2. URL 분석
     urls = detect_urls(text)
 
-    # 3. 시나리오 매칭
-    scenario = match_scam_scenario(threats["found_threats"])
+    # URL이 있으면 확률 조정
+    if urls["has_suspicious_url"] and threats["scam_probability"] > 0:
+        threats["scam_probability"] = min(
+            int(threats["scam_probability"] * 1.1),
+            100
+        )
 
-    # 4. 최종 점수 계산
-    score = calculate_threat_score(
-        threats["found_threats"],
-        urls,
-        scenario
-    )
+    # 3. 응답 템플릿 가져오기
+    data = _get_threat_data()
+    risk_level = threats["risk_level"]
+    response_template = data["response_templates"].get(risk_level, data["response_templates"]["safe"])
 
     return {
         "text": text[:100] + "..." if len(text) > 100 else text,
         "threat_detection": threats,
         "url_analysis": urls,
-        "scenario_match": scenario,
-        "final_assessment": score,
+        "final_assessment": {
+            "scam_probability": threats["scam_probability"],
+            "risk_level": risk_level,
+            "matched_category": threats["primary_category"],
+            "matched_pattern": threats["primary_pattern"],
+            "pattern_name": threats.get("primary_pattern_name", ""),
+            "warning_message": response_template["message"],
+            "recommended_action": response_template["action"],
+            "display_color": response_template["color"]
+        },
         "summary": {
-            "threat_level": score["threat_level"],
-            "is_likely_scam": score["is_likely_scam"],
-            "warning": score["warning_message"],
-            "action": score["recommended_action"]
+            "probability": f"{threats['scam_probability']}%",
+            "category": threats["primary_pattern"],  # A-1, B-2 형식으로 출력
+            "category_main": threats["primary_category"],  # A, B, C
+            "pattern": threats.get("primary_pattern_name", "안전"),
+            "warning": response_template["message"]
         }
     }
 
 
-def get_threat_response(threat_level: str) -> Dict[str, str]:
-    """위협 레벨에 따른 응답 템플릿 반환"""
+def get_response_for_level(risk_level: str) -> Dict[str, str]:
+    """위험 레벨에 따른 응답 템플릿 반환"""
     data = _get_threat_data()
-    return data["response_templates"].get(threat_level, data["response_templates"]["SAFE"])
+    return data["response_templates"].get(risk_level, data["response_templates"]["safe"])
+
+
+# Legacy 호환성 함수들
+def get_threat_categories() -> Dict[str, Any]:
+    """Legacy: 이전 버전 호환용"""
+    return get_all_categories()
+
+
+def get_known_scam_scenarios() -> List[Dict]:
+    """Legacy: 알려진 사기 시나리오 반환"""
+    data = _get_threat_data()
+    scenarios = []
+
+    for cat_id, cat_info in data["categories"].items():
+        for pattern_id, pattern in cat_info["patterns"].items():
+            scenarios.append({
+                "id": pattern_id,
+                "name_ko": pattern["name_ko"],
+                "category": cat_id,
+                "sample_messages": pattern.get("sample_messages", [])
+            })
+
+    return scenarios
+
+
+def calculate_threat_score(found_threats: List[Dict], url_analysis: Dict = None, scenario_match: Dict = None) -> Dict[str, Any]:
+    """Legacy: 이전 버전 호환용 - detect_threats 사용 권장"""
+    if not found_threats:
+        return {
+            "threat_score": 0,
+            "threat_level": "SAFE",
+            "is_likely_scam": False,
+            "warning_message": "안전한 메시지입니다.",
+            "recommended_action": "none"
+        }
+
+    # 새 함수 결과를 이전 형식으로 변환
+    max_score = max(t.get("risk_score", 0) for t in found_threats)
+
+    level_map = {
+        "safe": "SAFE",
+        "low": "SAFE",
+        "medium": "SUSPICIOUS",
+        "high": "DANGEROUS",
+        "critical": "CRITICAL"
+    }
+
+    data = _get_threat_data()
+    risk_level = _get_risk_level(max_score, data)
+
+    return {
+        "threat_score": max_score,
+        "threat_level": level_map.get(risk_level, "SAFE"),
+        "is_likely_scam": max_score >= 60,
+        "warning_message": data["response_templates"][risk_level]["message"],
+        "recommended_action": data["response_templates"][risk_level]["action"]
+    }
+
+
+def match_scam_scenario(found_threats: List[Dict]) -> Dict[str, Any]:
+    """Legacy: 시나리오 매칭 - 새 구조에서는 패턴 자체가 시나리오"""
+    if not found_threats:
+        return {
+            "matched_scenario": None,
+            "confidence": "none",
+            "pattern_coverage": 0
+        }
+
+    primary = found_threats[0] if found_threats else None
+    if primary:
+        return {
+            "matched_scenario": {
+                "id": primary.get("id"),
+                "name_ko": primary.get("pattern_name_ko", primary.get("name_ko", ""))
+            },
+            "confidence": "high" if primary.get("match_strength", 0) > 0.7 else "medium",
+            "pattern_coverage": primary.get("match_strength", 0)
+        }
+
+    return {
+        "matched_scenario": None,
+        "confidence": "none",
+        "pattern_coverage": 0
+    }
+
+
+def get_threat_response(threat_level: str) -> Dict[str, str]:
+    """Legacy: 위협 레벨에 따른 응답 템플릿 반환"""
+    level_map = {
+        "SAFE": "safe",
+        "SUSPICIOUS": "medium",
+        "DANGEROUS": "high",
+        "CRITICAL": "critical"
+    }
+    return get_response_for_level(level_map.get(threat_level, "safe"))

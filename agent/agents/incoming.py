@@ -2,7 +2,7 @@
 Incoming Agent - 안심 가드 Agent
 수신 메시지의 피싱/사기 위협을 탐지하고 사용자를 보호
 
-v3.0 - 4단계 완전 분석 파이프라인
+v3.1 - 4단계 완전 분석 파이프라인 (category 필드 포함)
 
 4단계 분석 Flow:
 1. 텍스트 패턴 분석 (위협 감지, URL 분석, 시나리오 매칭)
@@ -80,8 +80,18 @@ class IncomingAgent(BaseAgent):
 
         # Rule-based 분석 먼저 수행 (항상)
         stage1 = analyze_incoming_message(text)
-        threat_level = stage1.get("final_assessment", {}).get("threat_level", "SAFE")
-        print(f"[IncomingAgent] Stage 1 Rule-based: threat_level={threat_level}")
+        # analyze_incoming_message는 risk_level을 반환 (safe/low/medium/high/critical)
+        risk_level_raw = stage1.get("final_assessment", {}).get("risk_level", "safe")
+        # 소문자 → 대문자 변환 (SAFE → safe 호환)
+        level_to_threat = {
+            "safe": "SAFE",
+            "low": "SAFE",
+            "medium": "SUSPICIOUS",
+            "high": "DANGEROUS",
+            "critical": "CRITICAL"
+        }
+        threat_level = level_to_threat.get(risk_level_raw.lower(), "SAFE") if isinstance(risk_level_raw, str) else "SAFE"
+        print(f"[IncomingAgent] Stage 1 Rule-based: risk_level={risk_level_raw} → threat_level={threat_level}")
         print(f"[IncomingAgent] Stage 1 결과: threat_level={threat_level}")
 
         # ========== Stage 2: 사기 신고 DB 조회 ==========
@@ -153,6 +163,15 @@ class IncomingAgent(BaseAgent):
         }
         risk_level = level_map.get(final_level, RiskLevel.LOW)
 
+        # MECE 카테고리 정보 추출
+        summary = stage1.get("summary", {})
+        category = summary.get("category")  # A-1, B-2 등
+        category_name = summary.get("pattern")  # 가족 사칭 (액정 파손) 등
+
+        # 사기 확률 추출
+        final_assessment = stage1.get("final_assessment", {})
+        scam_probability = final_assessment.get("scam_probability", 0)
+
         # 이유 목록 생성
         reasons = []
 
@@ -209,7 +228,10 @@ class IncomingAgent(BaseAgent):
             risk_level=risk_level,
             reasons=reasons,
             recommended_action=recommended_action,
-            is_secret_recommended=False
+            is_secret_recommended=False,
+            category=category,
+            category_name=category_name,
+            scam_probability=scam_probability
         )
 
     # Legacy 메서드 (호환성 유지)

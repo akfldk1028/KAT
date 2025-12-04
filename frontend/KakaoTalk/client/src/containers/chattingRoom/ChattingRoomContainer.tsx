@@ -393,8 +393,7 @@ class ChattingRoomContainer extends Component<Props, State> {
           require_auth: options.requireAuth,
           prevent_capture: options.preventCapture
         });
-        // 순서: 에이전트 알림 먼저, 시크릿 링크 나중에
-        this.showSecretSuccessAlert();
+        // 시크릿 링크만 전송 (에이전트 라벨은 시크릿 메시지 UI에 포함됨)
         this.sendSecretMessage(response.secret_id);
         console.log('Secret image sent:', response.secret_id);
       } catch (error) {
@@ -436,12 +435,10 @@ class ChattingRoomContainer extends Component<Props, State> {
           secret_id: response.secret_id
         });
         console.log('Message converted to secret:', lastMessage.id);
-        // 기존 메시지 변환의 경우 에이전트 알림만
-        this.showSecretSuccessAlert();
+        // 에이전트 라벨은 시크릿 메시지 UI에 포함됨
       } else {
         console.warn('Could not find message to convert, sending new secret message');
-        // 순서: 에이전트 알림 먼저, 시크릿 링크 나중에
-        this.showSecretSuccessAlert();
+        // 시크릿 링크만 전송 (에이전트 라벨은 시크릿 메시지 UI에 포함됨)
         this.sendSecretMessage(response.secret_id);
       }
     } catch (error) {

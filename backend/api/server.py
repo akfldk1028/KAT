@@ -39,7 +39,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
-# MCP 도구 임포트
+# MCP 도구 임포트 (v3.1 - category 필드 포함)
 from agent.mcp.tools import analyze_outgoing, analyze_incoming, analyze_image, mcp
 from agent.core.models import RiskLevel
 
@@ -140,6 +140,10 @@ class AnalysisResponse(BaseModel):
     reasons: List[str]
     recommended_action: str
     is_secret_recommended: bool
+    # Agent B (수신 보호) 전용 필드
+    category: Optional[str] = None  # MECE 카테고리 (A-1, B-2 등)
+    category_name: Optional[str] = None  # 카테고리 이름 (가족 사칭 등)
+    scam_probability: Optional[int] = None  # 사기 확률 (0-100%)
 
 
 # === 엔드포인트 ===
@@ -201,6 +205,11 @@ async def api_analyze_incoming(request: IncomingRequest):
     """
     안심 가드 Agent - 수신 메시지 분석
     피싱, 사기, 가족 사칭 등을 감지합니다.
+
+    응답에 MECE 카테고리 정보 포함:
+    - category: A-1, B-2 등 (MECE 카테고리 코드)
+    - category_name: 가족 사칭 (액정 파손) 등
+    - scam_probability: 0-100 (사기 확률 %)
     """
     try:
         sender_id = str(request.sender_id) if request.sender_id else None
@@ -213,7 +222,10 @@ async def api_analyze_incoming(request: IncomingRequest):
             risk_level=result.risk_level.value,
             reasons=result.reasons,
             recommended_action=result.recommended_action,
-            is_secret_recommended=False
+            is_secret_recommended=False,
+            category=result.category,
+            category_name=result.category_name,
+            scam_probability=result.scam_probability
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -548,4 +560,6 @@ def check_secret_status(
 if __name__ == "__main__":
     import uvicorn
     print("Starting DualGuard Agent API on port 8002...")
+    print("Category fields: category, category_name, scam_probability enabled")
+    print("Server reload triggered at startup")
     uvicorn.run(app, host="0.0.0.0", port=8002)

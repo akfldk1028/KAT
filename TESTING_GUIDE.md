@@ -1,231 +1,50 @@
 # Kanana DualGuard 테스트 가이드
 
-> **⚠️ 중요: 모든 테스트는 가상환경을 활성화한 상태에서 실행해야 합니다!**
+## 서버 구성
 
-## 목차
-
-1. [환경 설정 확인](#1-환경-설정-확인)
-2. [Agent 단위 테스트](#2-agent-단위-테스트)
-3. [LLM 모델 테스트](#3-llm-모델-테스트)
-4. [FastAPI 서버 테스트](#4-fastapi-서버-테스트)
-5. [Node.js 서버 테스트](#5-nodejs-서버-테스트)
-6. [통합 테스트](#6-통합-테스트)
-7. [트러블슈팅](#7-트러블슈팅)
+| 포트 | 서비스 | 설명 |
+|------|--------|------|
+| **3000** | 프론트엔드 | KakaoTalk React 클라이언트 |
+| **8001** | 백엔드 API | FastAPI 메인 서버 |
+| **8002** | Agent API | MCP + 위협 분석 서버 |
 
 ---
 
-## 1. 환경 설정 확인
+## 1. 서버 시작
 
-### 1.1 가상환경 활성화
+### 1.1 전체 서버 시작 (3개)
 
 ```bash
-# Windows
+# 터미널 1: 프론트엔드 (3000)
+cd D:\Data\18_KAT\KAT\frontend\KakaoTalk\client
+npm start
+
+# 터미널 2: 백엔드 API (8001)
 cd D:\Data\18_KAT\KAT\backend
-.\venv\Scripts\activate
+D:\Data\18_KAT\KAT\backend\venv_gpu\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 
-# 확인: 프롬프트 앞에 (venv)가 표시되어야 함
+# 터미널 3: Agent API (8002)
+cd D:\Data\18_KAT\KAT\backend
+D:\Data\18_KAT\KAT\backend\venv_gpu\Scripts\python.exe -m uvicorn api.server:app --host 0.0.0.0 --port 8002 --reload
 ```
 
-### 1.2 Python 버전 확인
+### 1.2 포트 확인
 
-```bash
-python --version
-# 예상 결과: Python 3.8 이상
-```
-
-### 1.3 필수 패키지 설치 확인
-
-```bash
-pip list | grep -E "fastapi|transformers|torch"
-# 또는 Windows에서
-pip list | findstr "fastapi transformers torch"
-```
-
-**예상 결과:**
-```
-fastapi                   0.xxx
-torch                     2.x.x
-transformers              4.x.x
+```powershell
+Get-NetTCPConnection -LocalPort 3000,8001,8002 | Select-Object LocalPort, State
 ```
 
 ---
 
-## 2. Agent 단위 테스트
+## 2. Agent A 테스트 (안심 전송 - 발신 보호)
 
-### 2.1 AgentManager 테스트
+**기능**: 발신 메시지에서 민감정보(PII) 감지
 
-```python
-# Python 인터프리터 실행
-python
+### 2.1 API 테스트 (curl/PowerShell)
 
-# 테스트 코드
-from agent.agent_manager import AgentManager
-
-# Outgoing Agent 가져오기
-outgoing = AgentManager.get_outgoing()
-print(outgoing)  # <agent.outgoing.OutgoingAgent object ...>
-
-# Incoming Agent 가져오기
-incoming = AgentManager.get_incoming()
-print(incoming)  # <agent.incoming.IncomingAgent object ...>
-
-# 등록된 Agent 목록
-print(AgentManager.list_agents())  # ['outgoing', 'incoming']
-```
-
-**예상 결과:**
-```
-[AgentManager] Creating instance of 'outgoing' agent...
-<agent.outgoing.OutgoingAgent object at 0x...>
-[AgentManager] Creating instance of 'incoming' agent...
-<agent.incoming.IncomingAgent object at 0x...>
-['outgoing', 'incoming']
-```
-
-### 2.2 Outgoing Agent 테스트
-
-```python
-from agent.agent_manager import AgentManager
-
-agent = AgentManager.get_outgoing()
-
-# 테스트 1: 계좌번호 감지
-result = agent.analyze("이 계좌로 보내줘 123-45-67890")
-print(f"위험도: {result.risk_level}")
-print(f"이유: {result.reasons}")
-print(f"시크릿 전송 추천: {result.is_secret_recommended}")
-
-# 테스트 2: 일반 메시지
-result = agent.analyze("오늘 점심 뭐 먹을래?")
-print(f"위험도: {result.risk_level}")
-```
-
-**예상 결과:**
-```
-위험도: RiskLevel.MEDIUM
-이유: ['계좌번호 패턴이 감지되었습니다.']
-시크릿 전송 추천: True
-
-위험도: RiskLevel.LOW
-```
-
-### 2.3 Incoming Agent 테스트
-
-```python
-from agent.agent_manager import AgentManager
-
-agent = AgentManager.get_incoming()
-
-# 테스트 1: 가족 사칭 + 급전 요구
-result = agent.analyze("엄마 나야. 폰 고장났어. 급해서 돈 좀 보내줘")
-print(f"위험도: {result.risk_level}")
-print(f"이유: {result.reasons}")
-
-# 테스트 2: 일반 메시지
-result = agent.analyze("오늘 날씨 좋네")
-print(f"위험도: {result.risk_level}")
-```
-
-**예상 결과:**
-```
-위험도: RiskLevel.CRITICAL
-이유: ['가족 사칭 및 금전 요구 패턴이 감지되었습니다.']
-
-위험도: RiskLevel.LOW
-```
-
----
-
-## 3. LLM 모델 테스트
-
-### 3.1 LLMManager 테스트 (선택 사항)
-
-> ⚠️ **주의**: Kanana Safeguard 8B 모델은 ~8GB 메모리를 사용합니다.
-> 처음 로드 시 5-10분 소요될 수 있습니다.
-
-```bash
-cd backend
-./venv/Scripts/python.exe ../test_kanana_safeguard.py
-```
-
-**예상 실행 시간:** 5-10분 (첫 실행 시)
-
-**예상 결과:**
-```
-🛡️ Kanana Safeguard 모델 직접 테스트
-[LLMManager] Loading safeguard model for the first time...
-Kanana LLM (safeguard) initializing on cpu...
-Loading checkpoint shards: 100%|██████████| 4/4
-Kanana LLM (safeguard) Loaded Successfully!
-
-[테스트 1] 가족 사칭 + 송금 요구
-안전 여부: ⚠️ 위험
-카테고리: UNSAFE-S4
-```
-
-### 3.2 LLM 없이 Rule-based만 테스트
-
-```python
-from agent.tools import analyze_incoming
-
-# use_ai=False로 LLM 없이 테스트
-result = analyze_incoming("엄마 나야. 돈 좀 보내줘", use_ai=False)
-print(f"위험도: {result.risk_level}")
-```
-
----
-
-## 4. FastAPI 서버 테스트
-
-### 4.1 서버 시작
-
-```bash
-cd backend
-./venv/Scripts/python.exe -m uvicorn app.main:app --reload --port 8000
-```
-
-**예상 결과:**
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000
-INFO:     Application startup complete.
-```
-
-### 4.2 헬스체크
-
-**새 터미널 열기:**
-
-```bash
-cd backend
-./venv/Scripts/python.exe -c "import requests; r = requests.get('http://127.0.0.1:8000/api/agents/health'); print(r.json())"
-```
-
-**예상 결과:**
-```json
-{
-  "status": "healthy",
-  "agents": {
-    "outgoing": "ready",
-    "incoming": "ready"
-  },
-  "message": "Kanana DualGuard Agents are operational"
-}
-```
-
-### 4.3 API 엔드포인트 테스트
-
-#### Outgoing Agent API
-
-```bash
-cd backend
-./venv/Scripts/python.exe -c "
-import requests
-import json
-response = requests.post(
-    'http://127.0.0.1:8000/api/agents/analyze/outgoing',
-    json={'text': '계좌번호 123-45-67890'}
-)
-print(json.dumps(response.json(), indent=2, ensure_ascii=False))
-"
+```powershell
+# 계좌번호 감지 테스트
+Invoke-RestMethod -Uri "http://localhost:8002/api/agents/analyze/outgoing" -Method POST -ContentType "application/json" -Body '{"text": "이 계좌로 보내줘 123-456-78901234"}'
 ```
 
 **예상 결과:**
@@ -238,224 +57,284 @@ print(json.dumps(response.json(), indent=2, ensure_ascii=False))
 }
 ```
 
-#### Incoming Agent API
+### 2.2 Python 직접 테스트
 
-```bash
-cd backend
-./venv/Scripts/python.exe -c "
-import requests
-import json
-response = requests.post(
-    'http://127.0.0.1:8000/api/agents/analyze/incoming',
-    json={'text': '엄마 나야. 급해서 돈 좀 보내줘'}
-)
-print(json.dumps(response.json(), indent=2, ensure_ascii=False))
-"
+```python
+# D:\Data\18_KAT\KAT\backend\venv_gpu\Scripts\python.exe
+import sys
+sys.path.insert(0, "D:/Data/18_KAT/KAT")
+
+from agent.mcp.tools import scan_pii, analyze_full
+
+# 테스트 1: PII 스캔
+result = scan_pii("내 계좌번호는 123-456-78901234이고 주민번호는 901234-1234567이야")
+print(f"감지된 PII: {result['found_pii']}")
+print(f"위험도: {result['highest_risk']}")
+
+# 테스트 2: 전체 분석
+result = analyze_full("계좌번호 110-123-456789로 50만원 보내줘")
+print(f"요약: {result['summary']}")
+```
+
+### 2.3 테스트 케이스
+
+| 입력 | 예상 위험도 | 감지 항목 |
+|------|------------|----------|
+| `계좌번호 123-456-78901234` | MEDIUM | 계좌번호 |
+| `주민번호 901234-1234567` | HIGH | 주민등록번호 |
+| `카드번호 1234-5678-9012-3456` | HIGH | 신용카드번호 |
+| `비밀번호 1234` | MEDIUM | 비밀번호 |
+| `오늘 날씨 좋네` | LOW | 없음 |
+
+---
+
+## 3. Agent B 테스트 (안심 가드 - 수신 보호)
+
+**기능**: 수신 메시지에서 피싱/사기 위협 감지 (MECE 카테고리 기반)
+
+### 3.1 MECE 카테고리 구조
+
+```
+A: 관계 사칭형 (Targeting Trust)
+├── A-1: 가족 사칭 (액정 파손)
+├── A-2: 지인/상사 사칭 (급전)
+└── A-3: 상품권 대리 구매
+
+B: 공포/권위 악용형 (Targeting Fear & Authority)
+├── B-1: 생활 밀착형 (택배/경조사)
+├── B-2: 기관 사칭 (건강/법무)
+└── B-3: 결제 승인 (낚시성)
+
+C: 욕망/감정 자극형 (Targeting Desire & Emotion)
+├── C-1: 투자 권유 (리딩방)
+├── C-2: 로맨스 스캠
+└── C-3: 몸캠 피싱
+```
+
+### 3.2 API 테스트 (curl/PowerShell)
+
+```powershell
+# 가족 사칭 테스트 (A-1)
+Invoke-RestMethod -Uri "http://localhost:8002/api/agents/analyze/incoming" -Method POST -ContentType "application/json" -Body '{"text": "엄마, 나 폰 액정 깨져서 수리 맡겼어. 급하게 인증번호 좀 받아줘."}'
 ```
 
 **예상 결과:**
 ```json
 {
   "risk_level": "CRITICAL",
-  "reasons": ["가족 사칭 및 금전 요구 패턴이 감지되었습니다."],
+  "reasons": ["[A-1] 가족 사칭 (액정 파손) 패턴 감지"],
   "recommended_action": "차단 및 경고",
   "is_secret_recommended": false
 }
 ```
 
-### 4.4 통합 테스트 스크립트 실행
+### 3.3 Python 직접 테스트
 
-```bash
-cd backend
-./venv/Scripts/python.exe ../test_api.py
-```
-
-**예상 결과:** 모든 테스트 케이스 통과 (✅)
-
----
-
-## 5. Node.js 서버 테스트
-
-### 5.1 서버 시작
-
-```bash
-cd frontend/KakaoTalk/server
-npm start
-```
-
-**예상 결과:**
-```
-[nodemon] starting `ts-node ./src/web.ts`
-info: listening on port 8001...
-info: Connected to DB successfully.
-```
-
-### 5.2 서버 연결 확인
-
-**새 터미널:**
-
-```bash
-curl http://localhost:8001/
-# 또는
-python -c "import requests; print(requests.get('http://localhost:8001/').status_code)"
-```
-
-**예상 결과:** `200` (또는 `404`는 정상 - 루트 엔드포인트가 없을 수 있음)
-
----
-
-## 6. 통합 테스트
-
-### 6.1 FastAPI + Node.js 통합 테스트
-
-**사전 조건:**
-- FastAPI 서버 실행 중 (포트 8000)
-- Node.js 서버 실행 중 (포트 8001)
-
-```bash
-cd backend
-./venv/Scripts/python.exe ../test_integration.py
-```
-
-**예상 결과:**
-```
-✅ 통합 테스트 완료!
-============================================================
-```
-
-### 6.2 전체 시스템 테스트 체크리스트
-
-- [ ] FastAPI 서버 정상 실행
-- [ ] Node.js 서버 정상 실행
-- [ ] Outgoing Agent API 정상 동작
-- [ ] Incoming Agent API 정상 동작
-- [ ] AgentManager를 통한 Agent 접근 정상
-- [ ] LLMManager를 통한 LLM 로드 정상 (선택)
-- [ ] Socket.io 연결 정상
-
----
-
-## 7. 트러블슈팅
-
-### 문제 1: 가상환경이 활성화되지 않음
-
-**증상:**
-```
-ModuleNotFoundError: No module named 'fastapi'
-```
-
-**해결:**
-```bash
-cd backend
-.\venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 문제 2: 포트 충돌
-
-**증상:**
-```
-Address already in use
-```
-
-**해결:**
-```bash
-# Windows에서 포트 사용 프로세스 확인
-netstat -ano | findstr :8000
-# PID 확인 후 종료
-taskkill /PID <PID> /F
-
-# 또는 다른 포트 사용
-uvicorn app.main:app --port 8001
-```
-
-### 문제 3: Kanana Safeguard 모델 로드 실패
-
-**증상:**
-```
-Failed to load Kanana LLM
-Running in fallback mode (Rule-based only).
-```
-
-**원인:** 메모리 부족 또는 네트워크 문제
-
-**해결:**
-1. 충분한 메모리 확보 (최소 8GB)
-2. 인터넷 연결 확인 (HuggingFace에서 다운로드)
-3. Rule-based만 사용하는 것도 가능 (`use_ai=False`)
-
-### 문제 4: AgentManager에서 Agent를 찾을 수 없음
-
-**증상:**
-```
-[AgentManager] Agent 'xxx' not found in registry.
-```
-
-**해결:**
 ```python
-# agent_manager.py 확인
-print(AgentManager.list_agents())  # 등록된 Agent 목록 확인
+# D:\Data\18_KAT\KAT\backend\venv_gpu\Scripts\python.exe
+import sys
+sys.path.insert(0, "D:/Data/18_KAT/KAT")
+sys.stdout.reconfigure(encoding='utf-8')
+
+from agent.core.threat_matcher import analyze_incoming_message, reload_threat_data
+
+reload_threat_data()
+
+# 테스트 메시지들
+test_cases = [
+    ("A-1", "엄마, 나 폰 액정 깨져서 수리 맡겼어. 급하게 인증번호 좀 받아줘."),
+    ("A-2", "김 대리, 나 지금 미팅 중이라 폰뱅킹이 안 되는데 급하게 300만원만 먼저 보내줄 수 있나?"),
+    ("A-3", "편의점 가서 구글 기프트카드 10만원짜리 5개만 사서 핀번호 사진 찍어 보내줘"),
+    ("B-1", "[CJ대한통운] 배송 보류. 주소 수정: bit.ly/xxx"),
+    ("B-2", "[국민건강보험] 건강검진 결과 통보서. 확인: han.gl/xxx"),
+    ("B-3", "[국외발신] 아마존 해외결제 980,000원. 본인 아닐 시 문의: 02-1234-5678"),
+    ("C-1", "이번에 세력 매집주 정보 입수했습니다. 300% 수익 보장. 체험방 들어오세요."),
+    ("C-2", "자기야, 세관에 걸려서 통관비 500만원이 필요해."),
+    ("SAFE", "오늘 저녁 뭐 먹을까?"),
+]
+
+print("=" * 70)
+print("Agent B (수신 보호) MECE 카테고리 테스트")
+print("=" * 70)
+
+for expected, text in test_cases:
+    result = analyze_incoming_message(text)
+    category = result['summary']['category'] or 'SAFE'
+    prob = result['summary']['probability']
+    pattern = result['summary']['pattern']
+
+    match = "O" if category == expected or (category is None and expected == "SAFE") else "X"
+    print(f"\n[{match}] 예상: {expected:5} | 감지: {str(category):5} | 확률: {prob}")
+    print(f"    패턴: {pattern}")
+    print(f"    입력: {text[:50]}...")
 ```
 
-### 문제 5: UTF-8 인코딩 오류 (Windows)
+### 3.4 MCP 도구 테스트
 
-**증상:**
-```
-UnicodeEncodeError: 'cp949' codec can't encode character
+```python
+from agent.mcp.tools import analyze_threat_full
+
+# MCP 도구로 전체 분석
+result = analyze_threat_full("엄마 나야 폰 고장났어 인증번호 좀 받아줘")
+
+print(f"카테고리: {result['summary']['category']}")
+print(f"패턴: {result['summary']['pattern']}")
+print(f"확률: {result['summary']['probability']}")
+print(f"MCP 요약: {result['mcp_summary']}")
 ```
 
-**해결:**
-테스트 스크립트에 다음 코드 추가:
+### 3.5 전체 테스트 케이스
+
+| 카테고리 | 입력 예시 | 예상 확률 |
+|----------|----------|----------|
+| **A-1** | 엄마, 폰 액정 깨져서 인증번호 좀 받아줘 | 90%+ |
+| **A-2** | 김 대리, 급하게 300만원만 보내줘 | 90%+ |
+| **A-3** | 편의점에서 기프트카드 사서 핀번호 보내줘 | 90%+ |
+| **B-1** | [택배] 배송 보류. 주소 수정: bit.ly/xxx | 85%+ |
+| **B-2** | [건강보험] 검진결과 확인: han.gl/xxx | 85%+ |
+| **B-3** | [국외발신] 해외결제 98만원. 문의: 02-xxx | 85%+ |
+| **C-1** | 세력 매집주 정보! 300% 수익 보장 | 75%+ |
+| **C-2** | 자기야, 통관비 500만원 필요해 | 75%+ |
+| **SAFE** | 오늘 날씨 좋네 | 0% |
+
+---
+
+## 4. 통합 테스트
+
+### 4.1 API 헬스체크
+
+```powershell
+# 8001 백엔드
+Invoke-RestMethod -Uri "http://localhost:8001/"
+
+# 8002 Agent API
+Invoke-RestMethod -Uri "http://localhost:8002/api/agents/health"
+
+# MCP 정보
+Invoke-RestMethod -Uri "http://localhost:8002/api/mcp/info"
+```
+
+### 4.2 전체 시스템 테스트 스크립트
+
+```python
+# test_all.py
+import sys
+sys.path.insert(0, "D:/Data/18_KAT/KAT")
+sys.stdout.reconfigure(encoding='utf-8')
+
+from agent.core.threat_matcher import analyze_incoming_message, reload_threat_data
+from agent.mcp.tools import scan_pii, analyze_full
+
+print("=" * 70)
+print("Kanana DualGuard 통합 테스트")
+print("=" * 70)
+
+# Agent A 테스트
+print("\n[Agent A - 발신 보호]")
+pii_result = scan_pii("계좌번호 123-456-78901234")
+print(f"  PII 감지: {len(pii_result['found_pii'])}개")
+print(f"  위험도: {pii_result['highest_risk']}")
+
+# Agent B 테스트
+print("\n[Agent B - 수신 보호]")
+reload_threat_data()
+
+tests = [
+    ("A-1", "엄마 폰 고장났어 인증번호 받아줘"),
+    ("B-1", "[택배] 배송보류 bit.ly/xxx"),
+    ("SAFE", "오늘 뭐 먹을까"),
+]
+
+passed = 0
+for expected, text in tests:
+    result = analyze_incoming_message(text)
+    detected = result['summary']['category'] or 'SAFE'
+    if detected == expected or (detected is None and expected == "SAFE"):
+        passed += 1
+        print(f"  [O] {expected}: {result['summary']['probability']}")
+    else:
+        print(f"  [X] 예상 {expected}, 감지 {detected}")
+
+print(f"\n결과: {passed}/{len(tests)} 통과")
+print("=" * 70)
+```
+
+---
+
+## 5. Swagger UI 테스트
+
+서버가 실행 중일 때 브라우저에서:
+
+- **8001 백엔드 API**: http://localhost:8001/docs
+- **8002 Agent API**: http://localhost:8002/docs
+
+Swagger UI에서 직접 API 테스트 가능.
+
+---
+
+## 6. 트러블슈팅
+
+### 포트 충돌
+
+```powershell
+# 포트 사용 확인
+Get-NetTCPConnection -LocalPort 8002 | Select-Object OwningProcess
+
+# 프로세스 종료
+Stop-Process -Id <PID> -Force
+```
+
+### 한글 인코딩 오류
+
 ```python
 import sys
-import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
+```
+
+### 모듈 import 오류
+
+```python
+import sys
+sys.path.insert(0, "D:/Data/18_KAT/KAT")
+```
+
+### 캐시 리셋
+
+```python
+from agent.core.threat_matcher import reload_threat_data
+reload_threat_data()
 ```
 
 ---
 
-## 빠른 테스트 명령어 모음
+## 7. 빠른 테스트 명령어
 
 ```bash
-# 1. 가상환경 활성화
-cd backend && .\venv\Scripts\activate
-
-# 2. Agent 단위 테스트 (Python 인터프리터)
-python
->>> from agent.agent_manager import AgentManager
->>> AgentManager.get_outgoing().analyze("계좌번호 123-45-67890")
-
-# 3. FastAPI 서버 시작
-./venv/Scripts/python.exe -m uvicorn app.main:app --reload --port 8000
-
-# 4. 통합 테스트 실행 (새 터미널)
-cd backend && ./venv/Scripts/python.exe ../test_integration.py
-
-# 5. Node.js 서버 시작 (새 터미널)
-cd frontend/KakaoTalk/server && npm start
+# Agent B 빠른 테스트 (PowerShell)
+D:\Data\18_KAT\KAT\backend\venv_gpu\Scripts\python.exe -c "
+import sys
+sys.path.insert(0, 'D:/Data/18_KAT/KAT')
+sys.stdout.reconfigure(encoding='utf-8')
+from agent.core.threat_matcher import analyze_incoming_message, reload_threat_data
+reload_threat_data()
+r = analyze_incoming_message('엄마 폰고장 인증번호 받아줘')
+print(f'카테고리: {r[\"summary\"][\"category\"]}')
+print(f'확률: {r[\"summary\"][\"probability\"]}')
+print(f'패턴: {r[\"summary\"][\"pattern\"]}')
+"
 ```
 
 ---
 
-## 테스트 성공 기준
+## 8. 테스트 성공 기준
 
-### ✅ 최소 통과 기준
-- [ ] FastAPI 서버 실행 성공
-- [ ] `/api/agents/health` 응답 200
-- [ ] Outgoing Agent 계좌번호 감지 성공
-- [ ] Incoming Agent 가족 사칭 감지 성공
+### 최소 통과 기준
+- [ ] 서버 3개 모두 실행 (3000, 8001, 8002)
+- [ ] Agent A: 계좌번호 감지 성공
+- [ ] Agent B: A-1 (가족 사칭) 감지 성공
+- [ ] Agent B: SAFE 메시지 0% 확률
 
-### ✅ 완전 통과 기준
-- [ ] 위 최소 기준 모두 통과
-- [ ] Node.js 서버 실행 성공
-- [ ] test_integration.py 모든 테스트 통과
-- [ ] Kanana Safeguard 모델 로드 성공 (선택)
-
----
-
-## 다음 단계
-
-테스트 통과 후:
-1. [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md) - 유지보수 가이드 참조
-2. 새 Agent 추가 또는 기존 Agent 수정
-3. 프론트엔드 UI 통합
+### 완전 통과 기준
+- [ ] Agent B: 9개 카테고리 모두 정확히 분류
+- [ ] MCP 도구 정상 동작
+- [ ] Swagger UI 접근 가능

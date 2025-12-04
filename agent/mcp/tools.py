@@ -37,27 +37,17 @@ from ..core.threat_matcher import (
 # MCP 서버 인스턴스
 mcp = FastMCP("DualGuard")
 
-# Agent 인스턴스 (Lazy Singleton)
-_outgoing_agent = None
-_incoming_agent = None
-
-
+# Agent 인스턴스 (매번 새로 생성 - 코드 변경 시 리로드 보장)
 def _get_outgoing_agent():
-    """OutgoingAgent 싱글톤 (lazy import)"""
-    global _outgoing_agent
-    if _outgoing_agent is None:
-        from ..agents.outgoing import OutgoingAgent
-        _outgoing_agent = OutgoingAgent()
-    return _outgoing_agent
+    """OutgoingAgent 인스턴스 생성"""
+    from ..agents.outgoing import OutgoingAgent
+    return OutgoingAgent()
 
 
 def _get_incoming_agent():
-    """IncomingAgent 싱글톤 (lazy import)"""
-    global _incoming_agent
-    if _incoming_agent is None:
-        from ..agents.incoming import IncomingAgent
-        _incoming_agent = IncomingAgent()
-    return _incoming_agent
+    """IncomingAgent 인스턴스 생성"""
+    from ..agents.incoming import IncomingAgent
+    return IncomingAgent()
 
 
 @mcp.tool()
@@ -465,20 +455,24 @@ def analyze_threat_full(text: str) -> Dict[str, Any]:
     """
     result = analyze_incoming_message(text)
 
-    # 요약 추가
-    threat_level = result["final_assessment"]["threat_level"]
-    threat_count = result["threat_detection"]["count"]
+    # 요약 추가 (새 MECE 카테고리 기반)
+    risk_level = result["final_assessment"]["risk_level"]
+    scam_probability = result["final_assessment"]["scam_probability"]
+    category = result["summary"]["category"]  # A-1, B-2 등
+    pattern_name = result["summary"]["pattern"]
 
-    if threat_level == "SAFE":
+    if risk_level == "safe":
         summary = "안전한 메시지입니다. 위협 요소가 감지되지 않았습니다."
-    elif threat_level == "SUSPICIOUS":
-        summary = f"{threat_count}개의 의심 패턴 감지. 발신자를 확인하세요."
-    elif threat_level == "DANGEROUS":
-        summary = f"위험! {threat_count}개의 위협 패턴 감지. 링크 클릭/정보 제공 금지."
-    else:  # CRITICAL
-        summary = f"피싱/사기 의심! {threat_count}개의 심각한 위협 감지. 절대 응답하지 마세요."
+    elif risk_level == "low":
+        summary = f"낮은 위험. 사기확률 {scam_probability}%. 발신자를 확인하세요."
+    elif risk_level == "medium":
+        summary = f"주의! [{category}] {pattern_name} 패턴 감지. 사기확률 {scam_probability}%."
+    elif risk_level == "high":
+        summary = f"위험! [{category}] {pattern_name}. 사기확률 {scam_probability}%. 링크 클릭/정보 제공 금지."
+    else:  # critical
+        summary = f"피싱/사기 의심! [{category}] {pattern_name}. 사기확률 {scam_probability}%. 절대 응답하지 마세요."
 
-    result["summary"] = summary
+    result["mcp_summary"] = summary
     return result
 
 
@@ -683,7 +677,11 @@ def analyze_incoming_full(
 
     # Stage 1: 텍스트 패턴 분석
     stage1 = analyze_incoming_message(text)
-    threat_level = stage1.get("final_assessment", {}).get("threat_level", "SAFE")
+    # threat_matcher는 소문자(safe/low/medium/high/critical) 반환
+    # action_policy는 대문자(LOW/MEDIUM/HIGH/CRITICAL) 사용
+    level_map = {"safe": "LOW", "low": "LOW", "medium": "MEDIUM", "high": "HIGH", "critical": "CRITICAL"}
+    raw_level = stage1.get("final_assessment", {}).get("risk_level", "safe")
+    threat_level = level_map.get(raw_level, "LOW")
 
     # Stage 2: 신고 DB 조회
     stage2 = check_scam_in_message(text)
@@ -705,13 +703,17 @@ def analyze_incoming_full(
         scenario_match=scenario_match
     )
 
-    # 요약 생성
-    final_level = stage4["final_risk_level"]
+    # 요약 생성 (새 MECE 카테고리 기반)
+    final_level = stage4["final_risk_level"]  # 대문자 (LOW/MEDIUM/HIGH/CRITICAL)
+    category = stage1.get("summary", {}).get("category")  # A-1, B-2 등
+    pattern_name = stage1.get("summary", {}).get("pattern", "")
+    scam_prob = stage1.get("final_assessment", {}).get("scam_probability", 0)
+
     summary_messages = {
         "LOW": "안전한 메시지입니다.",
-        "MEDIUM": "주의가 필요한 메시지입니다. 발신자를 확인하세요.",
-        "HIGH": "위험한 메시지입니다! 링크 클릭이나 정보 제공을 하지 마세요.",
-        "CRITICAL": "피싱/사기 메시지로 강력히 의심됩니다! 절대 응답하지 마세요."
+        "MEDIUM": f"주의! [{category}] {pattern_name}. 사기확률 {scam_prob}%.",
+        "HIGH": f"위험! [{category}] {pattern_name}. 사기확률 {scam_prob}%. 링크/정보 제공 금지.",
+        "CRITICAL": f"피싱/사기 의심! [{category}] {pattern_name}. 사기확률 {scam_prob}%. 절대 응답 금지."
     }
 
     return {

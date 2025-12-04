@@ -201,7 +201,7 @@ const SecretLink = styled.div`
   display: inline-block;
   padding: 10px 14px;
   border-radius: 12px;
-  margin-bottom: 7px;
+  margin-bottom: 4px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   cursor: pointer;
@@ -235,6 +235,13 @@ const SecretLink = styled.div`
     min-width: 30px;
     color: #ffec42;
   }
+`;
+
+// 시크릿 메시지 아래 에이전트 라벨
+const SecretAgentLabel = styled.div`
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 7px;
 `;
 
 interface ChatProps {
@@ -291,6 +298,7 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
           <span className="time" style={{ left: '-70px', textAlign: 'right' }}>{localeTime}</span>
           <span className="not-read" style={{ left: '-35px', bottom: '18px', textAlign: 'right' }}>{notRead > 0 ? notRead : ''}</span>
         </SecretLink>
+        <SecretAgentLabel>시크릿전송에이전트</SecretAgentLabel>
         {showSecretViewer && (
           <SecretMessageViewer
             secretId={secretId}
