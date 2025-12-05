@@ -12,6 +12,13 @@ import re
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
+# KISA 피싱사이트 API 통합 (선택 - API Key 있을 때만 활성화)
+try:
+    from .kisa_phishing_api import check_url_kisa
+    KISA_AVAILABLE = True
+except ImportError:
+    KISA_AVAILABLE = False
+
 
 # JSON 데이터 캐시
 _threat_cache: Optional[Dict] = None
@@ -279,16 +286,24 @@ def _get_risk_level(probability: int, data: Dict) -> str:
 def detect_urls(text: str) -> Dict[str, Any]:
     """
     MCP Tool: 텍스트에서 URL 감지 및 안전성 분석
+    (Pattern-based + KISA 피싱사이트 DB 조회)
 
     Args:
         text: 분석할 텍스트
 
     Returns:
         URL 분석 결과
+        - urls_found: 발견된 모든 URL
+        - suspicious_urls: 의심스러운 URL (whitelist 제외)
+        - safe_urls: 안전한 URL (whitelist 포함)
+        - has_suspicious_url: Boolean
+        - has_shortened_url: Boolean
+        - kisa_phishing_urls: KISA DB에서 발견된 피싱 URL (신규)
+        - phishing_count: 피싱 URL 개수 (신규)
     """
     data = _get_threat_data()
 
-    # URL 추출 정규식
+    # [1] Pattern-based 분석 (기존 로직)
     url_pattern = r'https?://[^\s<>"{}|\\^`\[\]]+'
     urls_found = re.findall(url_pattern, text)
 
@@ -309,12 +324,27 @@ def detect_urls(text: str) -> Dict[str, Any]:
         else:
             suspicious_urls.append(url)
 
+    # [2] KISA API 조회 (API Key 있을 때만)
+    kisa_phishing_urls = []
+    if KISA_AVAILABLE and suspicious_urls:
+        for url in suspicious_urls:
+            kisa_result = check_url_kisa(url)
+            if kisa_result and kisa_result.get("is_phishing"):
+                kisa_phishing_urls.append({
+                    "url": url,
+                    "matched_url": kisa_result["matched_url"],
+                    "reported_date": kisa_result["reported_date"],
+                    "source": "KISA"
+                })
+
     return {
         "urls_found": urls_found,
         "suspicious_urls": suspicious_urls,
         "safe_urls": safe_urls,
-        "has_suspicious_url": bool(suspicious_urls),
-        "has_shortened_url": bool(short_urls)
+        "has_suspicious_url": bool(suspicious_urls) or bool(kisa_phishing_urls),
+        "has_shortened_url": bool(short_urls),
+        "kisa_phishing_urls": kisa_phishing_urls,
+        "phishing_count": len(kisa_phishing_urls)
     }
 
 
@@ -339,6 +369,13 @@ def analyze_incoming_message(text: str) -> Dict[str, Any]:
     if urls["has_suspicious_url"] and threats["scam_probability"] > 0:
         threats["scam_probability"] = min(
             int(threats["scam_probability"] * 1.1),
+            100
+        )
+
+    # KISA 피싱 URL 발견 시 확률 추가 조정 (15% 부스트)
+    if urls.get("phishing_count", 0) > 0:
+        threats["scam_probability"] = min(
+            int(threats["scam_probability"] * 1.15),
             100
         )
 
