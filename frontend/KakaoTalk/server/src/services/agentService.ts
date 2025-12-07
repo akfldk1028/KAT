@@ -33,7 +33,7 @@ export const analyzeOutgoing = async (
       text,
       sender_id,
       receiver_id,
-      use_ai: false  // Outgoing은 Rule-based PII 탐지만 사용 (빠른 응답)
+      use_ai: true  // Kanana LLM 분석 활성화
     };
 
     const response = await axios.post<AgentApiResponse>(
