@@ -3,12 +3,20 @@ Scam Checker - 사기 신고 DB 조회 모듈
 계좌번호/전화번호로 신고 이력을 확인
 
 실제 운영 환경에서는 경찰청/금감원 API와 연동
-현재는 Mock DB (scam_db.json) 사용
+현재는 Mock DB (scam_db.json) + TheCheat API 병행 사용
 """
 import json
 import re
 from pathlib import Path
 from typing import Dict, Any, Optional, List
+
+# TheCheat API 통합
+try:
+    from .thecheat_api import check_phone_thecheat, check_account_thecheat
+    THECHEAT_AVAILABLE = True
+except ImportError:
+    THECHEAT_AVAILABLE = False
+    print("[ScamChecker] TheCheat API 모듈을 찾을 수 없습니다. Mock DB만 사용합니다.")
 
 
 # 데이터 로드
@@ -41,7 +49,7 @@ def normalize_phone_number(phone: str) -> str:
 
 def check_reported_account(account_number: str) -> Dict[str, Any]:
     """
-    계좌번호 신고 이력 조회
+    계좌번호 신고 이력 조회 (Mock DB + TheCheat API 병행)
 
     Args:
         account_number: 조회할 계좌번호
@@ -51,15 +59,20 @@ def check_reported_account(account_number: str) -> Dict[str, Any]:
         report_info: 신고 정보 (있는 경우)
         risk_score: 위험 점수 (0-100)
         recommended_action: 권장 조치
+        sources: 조회된 소스 목록 ["MockDB", "TheCheat"]
     """
-    db = _load_scam_db()
     normalized = normalize_account_number(account_number)
+    sources = []
+
+    # 1. Mock DB 조회
+    db = _load_scam_db()
+    mock_result = None
 
     for record in db.get("reported_accounts", {}).get("data", []):
         record_normalized = normalize_account_number(record["account_number"])
         if record_normalized == normalized:
             status_info = db.get("status_definitions", {}).get(record["status"], {})
-            return {
+            mock_result = {
                 "is_reported": True,
                 "report_info": {
                     "account_number": record["account_number"],
@@ -68,23 +81,61 @@ def check_reported_account(account_number: str) -> Dict[str, Any]:
                     "report_type": record["report_type"],
                     "status": record["status"],
                     "status_name_ko": status_info.get("name_ko", record["status"]),
-                    "last_reported": record.get("last_reported", "")
+                    "last_reported": record.get("last_reported", ""),
+                    "source": "MockDB"
                 },
                 "risk_score": record["risk_score"],
                 "recommended_action": status_info.get("action", "warn")
             }
+            sources.append("MockDB")
+            break
 
-    return {
-        "is_reported": False,
-        "report_info": None,
-        "risk_score": 0,
-        "recommended_action": "none"
-    }
+    # 2. TheCheat API 조회
+    thecheat_result = None
+    if THECHEAT_AVAILABLE:
+        try:
+            tc_data = check_account_thecheat(account_number)
+            if tc_data and tc_data.get("is_reported"):
+                thecheat_result = {
+                    "is_reported": True,
+                    "report_info": {
+                        "account_number": tc_data.get("keyword", account_number),
+                        "bank": "알 수 없음",
+                        "report_count": 1,  # TheCheat API는 count 미제공
+                        "report_type": "fraud",
+                        "status": "reported",
+                        "status_name_ko": "사기 신고됨 (TheCheat)",
+                        "last_reported": tc_data.get("reported_date", ""),
+                        "details": tc_data.get("details", ""),
+                        "source": "TheCheat"
+                    },
+                    "risk_score": 95,  # TheCheat 신고건은 고위험으로 판정
+                    "recommended_action": "block_and_report"
+                }
+                sources.append("TheCheat")
+        except Exception as e:
+            print(f"[ScamChecker] TheCheat API 계좌 조회 실패: {e}")
+
+    # 3. 결과 병합 (TheCheat 우선)
+    if thecheat_result:
+        thecheat_result["sources"] = sources
+        return thecheat_result
+    elif mock_result:
+        mock_result["sources"] = sources
+        return mock_result
+    else:
+        return {
+            "is_reported": False,
+            "report_info": None,
+            "risk_score": 0,
+            "recommended_action": "none",
+            "sources": []
+        }
 
 
 def check_reported_phone(phone_number: str) -> Dict[str, Any]:
     """
-    전화번호 신고 이력 조회
+    전화번호 신고 이력 조회 (Mock DB + TheCheat API 병행)
 
     Args:
         phone_number: 조회할 전화번호
@@ -94,15 +145,20 @@ def check_reported_phone(phone_number: str) -> Dict[str, Any]:
         report_info: 신고 정보 (있는 경우)
         risk_score: 위험 점수 (0-100)
         recommended_action: 권장 조치
+        sources: 조회된 소스 목록 ["MockDB", "TheCheat"]
     """
-    db = _load_scam_db()
     normalized = normalize_phone_number(phone_number)
+    sources = []
+
+    # 1. Mock DB 조회
+    db = _load_scam_db()
+    mock_result = None
 
     for record in db.get("reported_phones", {}).get("data", []):
         record_normalized = normalize_phone_number(record["phone_number"])
         if record_normalized == normalized:
             status_info = db.get("status_definitions", {}).get(record["status"], {})
-            return {
+            mock_result = {
                 "is_reported": True,
                 "report_info": {
                     "phone_number": record["phone_number"],
@@ -111,18 +167,56 @@ def check_reported_phone(phone_number: str) -> Dict[str, Any]:
                     "caller_claim": record.get("caller_claim", ""),
                     "status": record["status"],
                     "status_name_ko": status_info.get("name_ko", record["status"]),
-                    "last_reported": record.get("last_reported", "")
+                    "last_reported": record.get("last_reported", ""),
+                    "source": "MockDB"
                 },
                 "risk_score": record["risk_score"],
                 "recommended_action": status_info.get("action", "warn")
             }
+            sources.append("MockDB")
+            break
 
-    return {
-        "is_reported": False,
-        "report_info": None,
-        "risk_score": 0,
-        "recommended_action": "none"
-    }
+    # 2. TheCheat API 조회
+    thecheat_result = None
+    if THECHEAT_AVAILABLE:
+        try:
+            tc_data = check_phone_thecheat(phone_number)
+            if tc_data and tc_data.get("is_reported"):
+                thecheat_result = {
+                    "is_reported": True,
+                    "report_info": {
+                        "phone_number": tc_data.get("keyword", phone_number),
+                        "report_count": 1,  # TheCheat API는 count 미제공
+                        "report_type": "fraud",
+                        "caller_claim": "",
+                        "status": "reported",
+                        "status_name_ko": "사기 신고됨 (TheCheat)",
+                        "last_reported": tc_data.get("reported_date", ""),
+                        "details": tc_data.get("details", ""),
+                        "source": "TheCheat"
+                    },
+                    "risk_score": 95,  # TheCheat 신고건은 고위험으로 판정
+                    "recommended_action": "block_and_report"
+                }
+                sources.append("TheCheat")
+        except Exception as e:
+            print(f"[ScamChecker] TheCheat API 전화번호 조회 실패: {e}")
+
+    # 3. 결과 병합 (TheCheat 우선)
+    if thecheat_result:
+        thecheat_result["sources"] = sources
+        return thecheat_result
+    elif mock_result:
+        mock_result["sources"] = sources
+        return mock_result
+    else:
+        return {
+            "is_reported": False,
+            "report_info": None,
+            "risk_score": 0,
+            "recommended_action": "none",
+            "sources": []
+        }
 
 
 def extract_identifiers_from_text(text: str) -> Dict[str, List[str]]:

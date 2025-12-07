@@ -27,12 +27,19 @@ class MessageAnalysisRequest(BaseModel):
     receiver_id: Optional[str] = None
 
 
+# === [수정] MECE 카테고리 필드 추가 ===
+# Incoming Agent의 Stage 1 분류 결과를 클라이언트에 전달
 class MessageAnalysisResponse(BaseModel):
     """메시지 분석 응답"""
     risk_level: str
     reasons: List[str]
     recommended_action: str
     is_secret_recommended: bool = False
+    # MECE 카테고리 정보 (Incoming Agent 전용)
+    category: Optional[str] = None  # "A-1", "B-2", "C-3" 등
+    category_name: Optional[str] = None  # "가족 사칭 (액정 파손)" 등
+    scam_probability: Optional[int] = None  # 0-100
+# === [수정 끝] ===
 
 
 # ===== 서브에이전트는 AgentManager를 통해 관리 =====
@@ -94,12 +101,18 @@ async def analyze_incoming_message(request: MessageAnalysisRequest):
             sender_id=request.sender_id
         )
 
+        # === [수정] MECE 카테고리 정보 포함 ===
         return MessageAnalysisResponse(
             risk_level=result.risk_level.value,
             reasons=result.reasons,
             recommended_action=result.recommended_action,
-            is_secret_recommended=False
+            is_secret_recommended=False,
+            # MECE 카테고리 정보 (있으면 전달)
+            category=getattr(result, 'category', None),
+            category_name=getattr(result, 'category_name', None),
+            scam_probability=getattr(result, 'scam_probability', None)
         )
+        # === [수정 끝] ===
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Incoming analysis failed: {str(e)}")
 

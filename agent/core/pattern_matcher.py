@@ -73,6 +73,36 @@ def get_document_types() -> List[Dict]:
     ]
 
 
+# === [수정] 의미 기반 정규화 함수 추가 ===
+# 프롬프트에서 약속한 "공일공-일이삼사-오육칠팔" → "010-1234-5678" 변환 기능 구현
+# 제1원칙 (유일성 차단)의 Semantic Normalization 기술 구현
+def normalize_korean_numbers(text: str) -> str:
+    """
+    한글 숫자를 아라비아 숫자로 정규화
+
+    변칙 표기를 표준 포맷으로 변환하여 탐지율 향상
+    예: "공일공-일이삼사-오육칠팔" → "010-1234-5678"
+
+    Args:
+        text: 원본 텍스트
+
+    Returns:
+        정규화된 텍스트
+    """
+    korean_num_map = {
+        '공': '0', '일': '1', '이': '2', '삼': '3', '사': '4',
+        '오': '5', '육': '6', '칠': '7', '팔': '8', '구': '9',
+        '영': '0'  # "영" 도 "0"으로 매핑
+    }
+
+    result = text
+    for korean, arabic in korean_num_map.items():
+        result = result.replace(korean, arabic)
+
+    return result
+# === [수정 끝] ===
+
+
 def get_combination_rules() -> Dict[str, Any]:
     """
     MCP Tool: 조합 규칙 반환
@@ -106,6 +136,11 @@ def detect_pii(text: str) -> Dict[str, Any]:
             "highest_risk": "MEDIUM"
         }
     """
+    # === [수정] 의미 기반 정규화 적용 ===
+    # "공일공-일이삼사-오육칠팔" → "010-1234-5678" 변환하여 탐지율 향상
+    normalized_text = normalize_korean_numbers(text)
+    # === [수정 끝] ===
+
     data = _get_patterns_data()
     found_pii = []
     categories_found = set()
@@ -159,9 +194,11 @@ def detect_pii(text: str) -> Dict[str, Any]:
         regex = item["regex"]
 
         try:
-            for match in re.finditer(regex, text):
+            # === [수정] 정규화된 텍스트로 패턴 매칭 ===
+            for match in re.finditer(regex, normalized_text):
                 start, end = match.start(), match.end()
-                matched_value = match.group()
+                matched_value = match.group()  # 정규화된 값 사용
+                # === [수정 끝] ===
 
                 # 이미 매칭된 범위와 겹치면 스킵
                 if is_overlapping(start, end):

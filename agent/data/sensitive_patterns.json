@@ -357,6 +357,12 @@
       "description": "신원을 도용하여 대출, 휴대폰 개통 등에 악용 가능",
       "patterns": [
         {
+          "required": ["name", "phone"],
+          "result_risk": "HIGH",
+          "reason": "이름+전화번호 조합으로 본인인증 우회 가능",
+          "_comment": "[수정] Tier 2+3 조합 규칙 추가 - 프롬프트와 일치"
+        },
+        {
           "required": ["name", "resident_id"],
           "result_risk": "CRITICAL",
           "reason": "이름과 주민번호 조합으로 신원도용 가능"
