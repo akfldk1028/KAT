@@ -35,25 +35,32 @@ class IncomingAgent(BaseAgent):
         text: str,
         sender_id: int = None,
         user_id: int = None,
+        conversation_history: list = None,
         use_ai: bool = True,
         **kwargs
     ) -> AnalysisResponse:
         """
         수신 메시지 위협 분석 (4단계 파이프라인)
 
+        v2.0: 대화 히스토리 기반 맥락 분석 지원
+        - conversation_history: 최근 대화 목록 (시간순)
+        - 단일 메시지가 아닌 전체 대화 흐름을 분석하여 사기 "가능성" 판단
+
         Args:
             text: 분석할 메시지
             sender_id: 발신자 ID (선택, 3단계 분석용)
             user_id: 수신자 ID (선택, 3단계 분석용)
+            conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
             use_ai: LLM 정밀 분석 활성화 (기본: True)
 
         Returns:
             AnalysisResponse: 분석 결과
         """
-        print(f"[IncomingAgent] 4단계 분석 시작: text={text[:50]}...")
+        history_count = len(conversation_history) if conversation_history else 0
+        print(f"[IncomingAgent] 4단계 분석 시작: text={text[:50]}... (대화 히스토리: {history_count}개)")
 
-        # 4단계 완전 분석
-        result = self._analyze_4_stages(text, user_id, sender_id, use_ai)
+        # 4단계 완전 분석 (대화 히스토리 포함)
+        result = self._analyze_4_stages(text, user_id, sender_id, conversation_history, use_ai)
         return self._convert_full_result_to_response(result)
 
     def _analyze_4_stages(
@@ -61,12 +68,15 @@ class IncomingAgent(BaseAgent):
         text: str,
         user_id: int = None,
         sender_id: int = None,
+        conversation_history: list = None,
         use_ai: bool = True
     ) -> dict:
         """
         4단계 완전 분석 파이프라인
 
-        Stage 1: 텍스트 패턴 분석
+        v2.0: 대화 히스토리 기반 맥락 분석 지원
+
+        Stage 1: 텍스트 패턴 분석 + 대화 흐름 분석
         Stage 2: 사기 신고 DB 조회
         Stage 3: 발신자 신뢰도 분석
         Stage 4: 정책 기반 최종 판정
@@ -75,11 +85,46 @@ class IncomingAgent(BaseAgent):
         from ..core.conversation_analyzer import analyze_sender_risk
         from ..core.action_policy import get_combined_policy, format_warning_for_ui
 
-        # ========== Stage 1: 텍스트 패턴 분석 ==========
-        print("[IncomingAgent] Stage 1: 텍스트 패턴 분석...")
+        # ========== Stage 1: 텍스트 패턴 분석 + AI 분석 + 대화 흐름 분석 ==========
+        print(f"[IncomingAgent] Stage 1: 텍스트 패턴 분석 (use_ai={use_ai})...")
 
-        # Rule-based 분석 먼저 수행 (항상)
-        stage1 = analyze_incoming_message(text)
+        # use_ai=True면 Hybrid Analyzer (Rule + LLM) 사용
+        if use_ai:
+            from ..core.hybrid_threat_analyzer import HybridThreatAnalyzer
+            hybrid = HybridThreatAnalyzer()
+            # 대화 맥락을 Hybrid Analyzer에 전달 (SE-OmniGuard 연구 기반)
+            hybrid_result = hybrid.analyze(
+                text,
+                use_llm=True,
+                conversation_history=conversation_history  # 대화 맥락 전달!
+            )
+            print(f"[IncomingAgent] Hybrid 분석 결과: llm_used={hybrid_result.get('llm_used')}, context_analyzed={hybrid_result.get('context_analyzed', False)}")
+
+            # Hybrid 결과를 stage1 형식으로 변환
+            stage1 = self._convert_hybrid_to_stage1(hybrid_result, text)
+        else:
+            # Rule-based만 분석 (단일 메시지)
+            stage1 = analyze_incoming_message(text)
+
+        # 대화 흐름 분석 (히스토리가 있는 경우)
+        flow_analysis = None
+        if conversation_history and len(conversation_history) > 1:
+            from ..core.threat_matcher import analyze_conversation_flow
+            flow_analysis = analyze_conversation_flow(conversation_history, sender_id)
+            print(f"[IncomingAgent] 대화 흐름 분석 결과: {flow_analysis}")
+
+            # 대화 흐름에서 사기 패턴이 감지되면 확률 조정
+            if flow_analysis and flow_analysis.get("flow_matched"):
+                flow_multiplier = flow_analysis.get("probability_multiplier", 1.0)
+                original_prob = stage1.get("final_assessment", {}).get("scam_probability", 0)
+                adjusted_prob = min(int(original_prob * flow_multiplier), 100)
+
+                # 흐름 분석으로 확률이 상승한 경우
+                if adjusted_prob > original_prob:
+                    stage1["final_assessment"]["scam_probability"] = adjusted_prob
+                    stage1["final_assessment"]["flow_boost"] = True
+                    stage1["final_assessment"]["flow_pattern"] = flow_analysis.get("matched_flow")
+                    print(f"[IncomingAgent] 대화 흐름으로 확률 조정: {original_prob}% → {adjusted_prob}%")
         # analyze_incoming_message는 risk_level을 반환 (safe/low/medium/high/critical)
         risk_level_raw = stage1.get("final_assessment", {}).get("risk_level", "safe")
         # 소문자 → 대문자 변환 (SAFE → safe 호환)
@@ -233,6 +278,90 @@ class IncomingAgent(BaseAgent):
             category_name=category_name,
             scam_probability=scam_probability
         )
+
+    def _convert_hybrid_to_stage1(self, hybrid_result: dict, text: str) -> dict:
+        """
+        HybridThreatAnalyzer 결과를 stage1 형식으로 변환
+
+        Hybrid 결과 형식:
+        - threat_level: SAFE/SUSPICIOUS/DANGEROUS/CRITICAL
+        - threat_score: int
+        - is_likely_scam: bool
+        - detected_threats: list
+        - llm_used: bool
+
+        Stage1 형식 (analyze_incoming_message 호환):
+        - final_assessment: {scam_probability, risk_level, ...}
+        - threat_detection: {found_threats, ...}
+        """
+        threat_level = hybrid_result.get("threat_level", "SAFE")
+        threat_score = hybrid_result.get("threat_score", 0)
+
+        # threat_level → risk_level 변환
+        level_map = {
+            "SAFE": "safe",
+            "SUSPICIOUS": "medium",
+            "DANGEROUS": "high",
+            "CRITICAL": "critical"
+        }
+        risk_level = level_map.get(threat_level, "safe")
+
+        # threat_score → scam_probability (0-100)
+        scam_probability = min(threat_score, 100) if threat_score else 0
+
+        # LLM이 위험으로 판단하면 최소 확률 보장
+        if hybrid_result.get("llm_used") and hybrid_result.get("is_likely_scam"):
+            scam_probability = max(scam_probability, 60)
+
+        # detected_threats에서 카테고리 추출
+        detected_threats = hybrid_result.get("detected_threats", [])
+        matched_category = None
+        matched_pattern = None
+        pattern_name = None
+
+        if detected_threats:
+            first_threat = detected_threats[0]
+            matched_pattern = first_threat.get("id", "")
+            matched_category = matched_pattern.split("-")[0] if "-" in str(matched_pattern) else None
+            pattern_name = first_threat.get("name_ko", "")
+
+        # 응답 템플릿
+        response_templates = {
+            "safe": {"message": "안전한 메시지입니다.", "action": "none", "color": "green"},
+            "medium": {"message": "주의가 필요한 메시지입니다.", "action": "warn", "color": "yellow"},
+            "high": {"message": "위험한 메시지입니다!", "action": "strong_warn", "color": "orange"},
+            "critical": {"message": "피싱/사기 메시지로 강력히 의심됩니다!", "action": "block_recommend", "color": "red"}
+        }
+        template = response_templates.get(risk_level, response_templates["safe"])
+
+        return {
+            "text": text[:100] + "..." if len(text) > 100 else text,
+            "threat_detection": {
+                "found_threats": detected_threats,
+                "matched_patterns": detected_threats
+            },
+            "url_analysis": hybrid_result.get("url_analysis", {}),
+            "scenario_match": hybrid_result.get("scenario_match", {}),
+            "final_assessment": {
+                "scam_probability": scam_probability,
+                "risk_level": risk_level,
+                "matched_category": matched_category,
+                "matched_pattern": matched_pattern,
+                "pattern_name": pattern_name or "안전",
+                "warning_message": template["message"],
+                "recommended_action": template["action"],
+                "display_color": template["color"],
+                "llm_used": hybrid_result.get("llm_used", False),
+                "analysis_time_ms": hybrid_result.get("analysis_time_ms", 0)
+            },
+            "summary": {
+                "probability": f"{scam_probability}%",
+                "category": matched_pattern,
+                "category_main": matched_category,
+                "pattern": pattern_name or "안전",
+                "warning": template["message"]
+            }
+        }
 
     # Legacy 메서드 (호환성 유지)
     def _analyze_rule_based(self, text: str) -> AnalysisResponse:

@@ -1,7 +1,7 @@
 import requests
 import json
 
-BASE_URL = "http://localhost:8003/api/security"
+BASE_URL = "http://localhost:8002/api/security"
 
 def test_outgoing():
     print("\nTesting Outgoing Analysis...")

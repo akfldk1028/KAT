@@ -91,3 +91,5 @@ frontend/KakaoTalk/server/dist/
 frontend/KakaoTalk/nul
 nul
 backend/kanana
+backend/README.md
+doc/Architecture/AGENT_STATUS_SUMMARY.md

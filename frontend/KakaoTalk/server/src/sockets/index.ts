@@ -103,10 +103,26 @@ const message = (socket: socketIO.Socket, io: socketIO.Server) => {
         // 수신자에게 보낼 때는 Incoming Agent 분석 결과 포함
         let incomingAnalysis = null;
         if (message_type !== 'image' && message_type !== 'agent_alert') {
+          // 대화 히스토리 조회 (최근 10개 메시지) - Agent B 맥락 분석용
+          const conversationHistory = await Chatting.findAll({
+            where: { room_id },
+            order: [['id', 'DESC']],
+            limit: 10,
+            attributes: ['send_user_id', 'message', 'createdAt']
+          });
+
+          // 시간순 정렬 후 Agent B에 전달
+          const historyForAgent = conversationHistory.reverse().map(chat => ({
+            sender_id: chat.send_user_id,
+            message: chat.message,
+            timestamp: chat.createdAt
+          }));
+
           incomingAnalysis = await analyzeIncoming(
             message,
             send_user_id,
-            messageObj.participant[0]?.id
+            messageObj.participant[0]?.id,
+            historyForAgent  // 대화 맥락 전달
           );
         }
 

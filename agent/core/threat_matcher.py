@@ -470,3 +470,144 @@ def get_threat_response(threat_level: str) -> Dict[str, str]:
         "CRITICAL": "critical"
     }
     return get_response_for_level(level_map.get(threat_level, "safe"))
+
+
+# ============================================================
+# 대화 흐름 분석 (Conversation Flow Analysis)
+# Agent B가 대화 맥락을 보고 사기 "가능성"을 판단
+# 패턴 데이터는 threat_patterns.json의 conversation_flows 섹션에서 로드
+# ============================================================
+
+def _get_conversation_flow_patterns() -> Dict[str, Any]:
+    """
+    conversation_flows 패턴을 JSON에서 로드 (유지보수 편의성)
+    threat_patterns.json 파일을 수정하면 패턴이 자동 반영됨
+    """
+    data = _get_threat_data()
+    flows = data.get("conversation_flows", {})
+
+    # description, usage 같은 메타 필드 제외하고 패턴만 반환
+    return {k: v for k, v in flows.items() if k not in ["description", "usage"]}
+
+
+def analyze_conversation_flow(
+    conversation_history: List[Dict],
+    current_sender_id: int = None
+) -> Dict[str, Any]:
+    """
+    대화 흐름 분석 - 여러 메시지에 걸친 사기 패턴 감지
+
+    Agent B의 핵심 기능: 단일 메시지가 아닌 대화 전체 맥락을 분석하여
+    사기 "가능성"을 판단합니다.
+
+    Args:
+        conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
+        current_sender_id: 현재 분석 대상 발신자 ID
+
+    Returns:
+        {
+            "flow_matched": bool,
+            "matched_flow": str (예: "A-1"),
+            "matched_stages": list,
+            "stages_matched_count": int,
+            "probability_multiplier": float,
+            "flow_description": str
+        }
+    """
+    if not conversation_history or len(conversation_history) < 2:
+        return {
+            "flow_matched": False,
+            "matched_flow": None,
+            "matched_stages": [],
+            "stages_matched_count": 0,
+            "probability_multiplier": 1.0,
+            "flow_description": "대화 히스토리 부족"
+        }
+
+    # 발신자의 메시지만 추출 (current_sender_id가 있으면 해당 발신자만)
+    sender_messages = []
+    for msg in conversation_history:
+        msg_sender = msg.get("sender_id")
+        msg_text = msg.get("message", "")
+
+        # current_sender_id가 지정되면 해당 발신자 메시지만, 아니면 전체
+        if current_sender_id is None or str(msg_sender) == str(current_sender_id):
+            sender_messages.append(msg_text)
+
+    if not sender_messages:
+        return {
+            "flow_matched": False,
+            "matched_flow": None,
+            "matched_stages": [],
+            "stages_matched_count": 0,
+            "probability_multiplier": 1.0,
+            "flow_description": "발신자 메시지 없음"
+        }
+
+    # 전체 대화 텍스트 (발신자 메시지들 결합)
+    combined_text = " ".join(sender_messages)
+
+    best_match = {
+        "flow_matched": False,
+        "matched_flow": None,
+        "matched_stages": [],
+        "stages_matched_count": 0,
+        "probability_multiplier": 1.0,
+        "flow_description": "패턴 미감지"
+    }
+
+    # JSON에서 대화 흐름 패턴 로드 (유지보수 편의성)
+    flow_patterns = _get_conversation_flow_patterns()
+
+    # 각 흐름 패턴 검사
+    for flow_id, flow_pattern in flow_patterns.items():
+        matched_stages = []
+
+        for stage in flow_pattern["stages"]:
+            stage_matched = False
+
+            # 키워드 매칭
+            for keyword in stage["keywords"]:
+                if keyword in combined_text:
+                    stage_matched = True
+                    break
+
+            # 컨텍스트 키워드로 추가 확인
+            if stage_matched and stage["context"]:
+                context_found = any(ctx in combined_text for ctx in stage["context"])
+                # 컨텍스트가 없으면 약한 매칭
+                if not context_found:
+                    stage_matched = True  # 여전히 매칭이지만 약함
+
+            if stage_matched:
+                matched_stages.append(stage["name"])
+
+        # 2개 이상의 stage가 매칭되면 흐름 감지
+        if len(matched_stages) >= 2:
+            # 확률 배율 계산
+            total_stages = len(flow_pattern["stages"])
+            matched_count = len(matched_stages)
+
+            if matched_count == total_stages:
+                multiplier = flow_pattern["full_match_multiplier"]
+            else:
+                # 비례 배율
+                base = flow_pattern["base_multiplier"]
+                full = flow_pattern["full_match_multiplier"]
+                ratio = matched_count / total_stages
+                multiplier = base + (full - base) * ratio
+
+            # 더 많은 stage가 매칭된 패턴 선택
+            if matched_count > best_match["stages_matched_count"]:
+                best_match = {
+                    "flow_matched": True,
+                    "matched_flow": flow_id,
+                    "matched_flow_name": flow_pattern["name_ko"],
+                    "matched_stages": matched_stages,
+                    "stages_matched_count": matched_count,
+                    "total_stages": total_stages,
+                    "probability_multiplier": round(multiplier, 2),
+                    "flow_description": f"{flow_pattern['name_ko']} 패턴 감지 ({matched_count}/{total_stages} 단계)"
+                }
+
+    return best_match

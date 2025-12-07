@@ -128,10 +128,18 @@ class OutgoingRequest(BaseModel):
     use_ai: bool = True  # Kanana LLM 사용 (테스트용 기본값 True)
 
 
+class ConversationMessage(BaseModel):
+    """대화 히스토리 메시지"""
+    sender_id: int
+    message: str
+    timestamp: Optional[str] = None
+
+
 class IncomingRequest(BaseModel):
     text: str
     sender_id: Optional[int] = None
     receiver_id: Optional[int] = None
+    conversation_history: Optional[List[ConversationMessage]] = None  # 대화 맥락
     use_ai: bool = True  # Kanana LLM 사용 (테스트용 기본값 True)
 
 
@@ -206,6 +214,10 @@ async def api_analyze_incoming(request: IncomingRequest):
     안심 가드 Agent - 수신 메시지 분석
     피싱, 사기, 가족 사칭 등을 감지합니다.
 
+    v2.0: 대화 히스토리 기반 맥락 분석 지원
+    - conversation_history: 최근 대화 목록 (시간순)
+    - Agent B가 대화 흐름을 분석하여 사기 "가능성"을 판단
+
     응답에 MECE 카테고리 정보 포함:
     - category: A-1, B-2 등 (MECE 카테고리 코드)
     - category_name: 가족 사칭 (액정 파손) 등
@@ -213,9 +225,26 @@ async def api_analyze_incoming(request: IncomingRequest):
     """
     try:
         sender_id = str(request.sender_id) if request.sender_id else None
+        user_id = str(request.receiver_id) if request.receiver_id else None
+
+        # 대화 히스토리를 dict 리스트로 변환
+        conversation_history = None
+        if request.conversation_history:
+            conversation_history = [
+                {
+                    "sender_id": msg.sender_id,
+                    "message": msg.message,
+                    "timestamp": msg.timestamp
+                }
+                for msg in request.conversation_history
+            ]
+            print(f"[API] 대화 히스토리 {len(conversation_history)}개 메시지 수신")
+
         result = analyze_incoming(
             request.text,
             sender_id=sender_id,
+            user_id=user_id,
+            conversation_history=conversation_history,  # 대화 맥락 전달
             use_ai=request.use_ai
         )
         return AnalysisResponse(

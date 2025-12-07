@@ -33,7 +33,7 @@ export const analyzeOutgoing = async (
       text,
       sender_id,
       receiver_id,
-      use_ai: true  // Kanana LLM + ReAct 패턴 활성화
+      use_ai: false  // Outgoing은 Rule-based PII 탐지만 사용 (빠른 응답)
     };
 
     const response = await axios.post<AgentApiResponse>(
@@ -65,19 +65,34 @@ export const analyzeOutgoing = async (
 };
 
 /**
+ * 대화 히스토리 타입 정의
+ */
+interface ConversationMessage {
+  sender_id: number;
+  message: string;
+  timestamp: Date;
+}
+
+/**
  * 안심 가드 Agent (Incoming) - 수신 메시지 분석
  * 피싱, 사기, 가족 사칭 등을 감지합니다.
+ *
+ * v2.0: 대화 히스토리 기반 맥락 분석 지원
+ * - conversation_history: 최근 대화 목록 (시간순)
+ * - Agent B가 대화 흐름을 분석하여 사기 "가능성"을 판단
  */
 export const analyzeIncoming = async (
   text: string,
   sender_id?: number,
-  receiver_id?: number
+  receiver_id?: number,
+  conversation_history?: ConversationMessage[]
 ): Promise<SecurityAnalysis | null> => {
   try {
-    const request: IncomingAnalysisRequest = {
+    const request = {
       text,
       sender_id,
       receiver_id,
+      conversation_history: conversation_history || [],  // 대화 맥락 전달
       use_ai: true  // Kanana LLM 활성화
     };
 
@@ -99,7 +114,7 @@ export const analyzeIncoming = async (
       is_secret_recommended: false
     };
 
-    logger.info(`Incoming Agent Analysis: ${result.risk_level} - ${text.substring(0, 50)}`);
+    logger.info(`Incoming Agent Analysis: ${result.risk_level} - ${text.substring(0, 50)} (history: ${conversation_history?.length || 0} msgs)`);
     return result;
 
   } catch (error) {

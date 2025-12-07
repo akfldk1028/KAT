@@ -69,21 +69,40 @@ def analyze_outgoing(text: str, use_ai: bool = False) -> AnalysisResponse:
 
 
 @mcp.tool()
-def analyze_incoming(text: str, sender_id: str = None, use_ai: bool = False) -> AnalysisResponse:
+def analyze_incoming(
+    text: str,
+    sender_id: str = None,
+    user_id: str = None,
+    conversation_history: List[Dict] = None,
+    use_ai: bool = False
+) -> AnalysisResponse:
     """
     Analyze incoming message for phishing or scams.
     수신 메시지의 피싱/사기 위협을 탐지합니다.
 
+    v2.0: 대화 히스토리 기반 맥락 분석 지원
+    - conversation_history: 최근 대화 목록 (시간순)
+    - Agent B가 대화 흐름을 분석하여 사기 "가능성"을 판단
+    - 단일 메시지가 아닌 전체 대화 맥락을 봄
+
     Args:
         text: 분석할 메시지 내용
         sender_id: 발신자 ID (선택)
+        user_id: 수신자 ID (선택)
+        conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
         use_ai: Kanana Safeguard AI 사용 여부 (기본: False)
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
     agent = _get_incoming_agent()
-    return agent.analyze(text, sender_id=sender_id, use_ai=use_ai)
+    return agent.analyze(
+        text,
+        sender_id=sender_id,
+        user_id=user_id,
+        conversation_history=conversation_history,
+        use_ai=use_ai
+    )
 
 
 @mcp.tool()

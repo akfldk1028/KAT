@@ -68,6 +68,36 @@ JSON으로 답하세요:
 {{"판단":"피싱/정상","유형":"","근거":"","위험도":"SAFE/SUSPICIOUS/DANGEROUS/CRITICAL"}}"""
 
 
+# ============================================================
+# 대화 맥락 분석용 프롬프트 (SE-OmniGuard 연구 기반)
+# 참고: https://arxiv.org/html/2503.15552
+# ============================================================
+LLM_CONTEXT_ANALYSIS_PROMPT = """당신은 보이스피싱/메신저피싱 탐지 전문가입니다.
+
+[이전 대화 기록]
+{history}
+
+[현재 분석할 메시지]
+"{current_message}"
+
+위 대화 흐름을 분석하여 사기 패턴을 탐지하세요:
+
+[사기 진행 단계]
+1단계 - 관계형성: 가족/지인으로 위장, 친밀감 형성
+2단계 - 상황조성: 긴급상황 언급, 불안/공포 조성
+3단계 - 요구실행: 금전 송금, 개인정보/금융정보 요청
+
+[탐지 포인트]
+- 새 번호/폰 고장 등 연락처 변경 핑계
+- 급하다/지금 당장 등 시간 압박
+- 계좌번호, 비밀번호, OTP 요청
+- 검찰/경찰/금감원 사칭
+- 의심스러운 링크 전송
+
+JSON으로 답하세요:
+{{"판단":"사기의심/정상","현재단계":"관계형성/상황조성/요구실행/없음","신뢰도":"high/medium/low","근거":"구체적 이유"}}"""
+
+
 class HybridThreatAnalyzer:
     """
     Smart Tiered 위협 분석기 (Kanana 3B 최적화)
@@ -105,19 +135,28 @@ class HybridThreatAnalyzer:
                 self._llm_initialized = True
         return self.llm
 
-    def analyze(self, text: str, use_llm: bool = True) -> Dict[str, Any]:
+    def analyze(
+        self,
+        text: str,
+        use_llm: bool = True,
+        conversation_history: List[Dict] = None
+    ) -> Dict[str, Any]:
         """
         Smart Tiered 위협 분석 수행
 
         Args:
             text: 분석할 수신 메시지
             use_llm: LLM 분석 사용 여부
+            conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
 
         Returns:
             통합 분석 결과
         """
         start_time = time.time()
         self.stats["total_calls"] += 1
+
+        has_context = conversation_history and len(conversation_history) > 1
+        print(f"[HybridThreatAnalyzer] 분석 시작: use_llm={use_llm}, 대화맥락={len(conversation_history) if conversation_history else 0}개")
 
         # ========================================
         # Tier 1: Rule-based 분석 (~1ms)
@@ -130,6 +169,23 @@ class HybridThreatAnalyzer:
             rule_result["analysis_time_ms"] = (time.time() - start_time) * 1000
             rule_result["llm_used"] = False
             return rule_result
+
+        # ========================================
+        # 대화 맥락이 있으면: Context-aware LLM 분석 우선
+        # (SE-OmniGuard 연구 기반 - 다중 턴 대화 분석)
+        # ========================================
+        if has_context:
+            print(f"[HybridThreatAnalyzer] 대화 맥락 분석 모드 (히스토리 {len(conversation_history)}개)")
+            context_result = self._llm_context_analyze(text, conversation_history)
+
+            if context_result:
+                # Context 분석 결과와 Rule 결과 병합
+                merged = self._merge_results(rule_result, context_result)
+                merged["analysis_time_ms"] = (time.time() - start_time) * 1000
+                merged["llm_used"] = True
+                merged["context_analyzed"] = True
+                merged["context_length"] = len(conversation_history)
+                return merged
 
         # ========================================
         # Smart Skip: SAFE면 LLM 호출 안함 (최적화 핵심)
@@ -172,17 +228,45 @@ class HybridThreatAnalyzer:
     def _rule_based_analyze(self, text: str) -> Dict[str, Any]:
         """Rule-based 위협 분석 (~1ms)"""
         result = analyze_incoming_message(text)
+        assessment = result.get("final_assessment", {})
+
+        # risk_level (safe/low/medium/high/critical) → threat_level 변환
+        risk_level = assessment.get("risk_level", "safe")
+        level_map = {
+            "safe": "SAFE",
+            "low": "SAFE",
+            "medium": "SUSPICIOUS",
+            "high": "DANGEROUS",
+            "critical": "CRITICAL"
+        }
+        threat_level = level_map.get(str(risk_level).lower(), "SAFE")
+
+        # scam_probability를 threat_score로 사용
+        scam_prob = assessment.get("scam_probability", 0)
+
+        # matched_patterns를 detected_threats 형식으로 변환 (name_ko 키 추가)
+        matched_patterns = result.get("threat_detection", {}).get("matched_patterns", [])
+        detected_threats = []
+        for p in matched_patterns:
+            threat = {
+                **p,
+                "name_ko": p.get("pattern_name_ko", p.get("category_name_ko", "위협"))
+            }
+            detected_threats.append(threat)
 
         return {
             "method": "rule_based",
-            "threat_level": result["final_assessment"]["threat_level"],
-            "threat_score": result["final_assessment"]["threat_score"],
-            "is_likely_scam": result["final_assessment"]["is_likely_scam"],
-            "detected_threats": result["threat_detection"]["found_threats"],
-            "url_analysis": result["url_analysis"],
-            "scenario_match": result["scenario_match"],
-            "warning_message": result["final_assessment"]["warning_message"],
-            "recommended_action": result["final_assessment"]["recommended_action"]
+            "threat_level": threat_level,
+            "threat_score": scam_prob,
+            "is_likely_scam": scam_prob >= 60,
+            "detected_threats": detected_threats,
+            "url_analysis": result.get("url_analysis", {}),
+            "scenario_match": result.get("scenario_match", {}),
+            "warning_message": assessment.get("warning_message", ""),
+            "recommended_action": assessment.get("recommended_action", "none"),
+            "matched_category": assessment.get("matched_category"),
+            "matched_pattern": assessment.get("matched_pattern"),
+            "pattern_name": assessment.get("pattern_name", "")
         }
 
     def _llm_quick_classify(self, text: str) -> Optional[Dict[str, Any]]:
@@ -266,6 +350,142 @@ class HybridThreatAnalyzer:
         except Exception as e:
             print(f"[HybridThreatAnalyzer] LLM 상세분석 오류: {e}")
             return None
+
+    def _llm_context_analyze(
+        self,
+        current_message: str,
+        conversation_history: List[Dict]
+    ) -> Optional[Dict[str, Any]]:
+        """
+        대화 맥락 기반 LLM 분석 (SE-OmniGuard 연구 기반)
+
+        다중 턴 대화에서 사기 패턴의 진행 단계를 분석:
+        1단계 - 관계형성: 가족/지인으로 위장
+        2단계 - 상황조성: 긴급상황, 불안 조성
+        3단계 - 요구실행: 금전/정보 요청
+
+        Args:
+            current_message: 현재 분석할 메시지
+            conversation_history: 이전 대화 기록
+
+        Returns:
+            분석 결과 또는 None
+        """
+        llm = self._get_llm()
+        if not llm:
+            return None
+
+        try:
+            # 대화 히스토리를 텍스트로 변환 (최근 10개만)
+            recent_history = conversation_history[-10:] if len(conversation_history) > 10 else conversation_history
+            history_text = ""
+            for i, msg in enumerate(recent_history[:-1], 1):  # 마지막은 current_message이므로 제외
+                sender = "발신자" if msg.get("sender_id") else "나"
+                message = msg.get("message", "")[:100]  # 메시지 길이 제한
+                history_text += f"{i}. [{sender}] {message}\n"
+
+            if not history_text:
+                history_text = "(이전 대화 없음)"
+
+            # 프롬프트 생성
+            prompt = LLM_CONTEXT_ANALYSIS_PROMPT.format(
+                history=history_text,
+                current_message=current_message[:200]  # 현재 메시지도 길이 제한
+            )
+
+            print(f"[HybridThreatAnalyzer] 대화 맥락 LLM 분석 시작...")
+            response = llm.analyze(text=prompt, system_prompt="")
+            print(f"[HybridThreatAnalyzer] LLM 응답: {response[:100]}...")
+
+            # JSON 파싱 시도
+            result = self._parse_context_response(response)
+            if result:
+                result["method"] = "llm_context"
+                result["context_used"] = True
+                self.stats["llm_calls"] += 1
+                return result
+
+            return None
+
+        except Exception as e:
+            print(f"[HybridThreatAnalyzer] 대화맥락 분석 오류: {e}")
+            return None
+
+    def _parse_context_response(self, response: str) -> Optional[Dict[str, Any]]:
+        """대화 맥락 분석 응답 파싱"""
+        # JSON 추출 시도
+        patterns = [
+            r'\{[^{}]*\}',
+            r'```json\s*(\{[^`]*\})\s*```',
+        ]
+
+        for pattern in patterns:
+            matches = re.findall(pattern, response, re.DOTALL)
+            for match in matches:
+                try:
+                    data = json.loads(match if isinstance(match, str) else match)
+
+                    # 판단 추출
+                    judgment = data.get("판단", "정상").lower()
+                    is_scam = "사기" in judgment or "의심" in judgment or "피싱" in judgment
+
+                    # 단계 추출
+                    stage = data.get("현재단계", "없음")
+                    confidence = data.get("신뢰도", "low")
+                    evidence = data.get("근거", "")
+
+                    # 신뢰도에 따른 위험도 결정
+                    if is_scam:
+                        if confidence == "high":
+                            threat_level = "CRITICAL"
+                        elif confidence == "medium":
+                            threat_level = "DANGEROUS"
+                        else:
+                            threat_level = "SUSPICIOUS"
+                    else:
+                        threat_level = "SAFE"
+
+                    # 단계에 따른 위험도 보정
+                    stage_boost = {
+                        "요구실행": 1,  # 가장 위험
+                        "상황조성": 0,
+                        "관계형성": -1,  # 아직 초기
+                    }
+                    if stage in stage_boost and is_scam:
+                        boost = stage_boost[stage]
+                        level_order = ["SAFE", "SUSPICIOUS", "DANGEROUS", "CRITICAL"]
+                        current_idx = level_order.index(threat_level)
+                        new_idx = max(0, min(3, current_idx + boost))
+                        threat_level = level_order[new_idx]
+
+                    return {
+                        "threat_level": threat_level,
+                        "is_likely_scam": is_scam,
+                        "scam_stage": stage,
+                        "confidence": confidence,
+                        "detected_threats": [{
+                            "id": f"context_{stage}",
+                            "name_ko": f"대화맥락 분석: {stage}",
+                            "evidence": evidence,
+                            "source": "llm_context"
+                        }] if is_scam else [],
+                        "llm_reasoning": evidence
+                    }
+
+                except json.JSONDecodeError:
+                    continue
+
+        # JSON 파싱 실패 시 텍스트 분석
+        response_lower = response.lower()
+        is_scam = "사기" in response_lower or "의심" in response_lower or "피싱" in response_lower
+
+        return {
+            "threat_level": "SUSPICIOUS" if is_scam else "SAFE",
+            "is_likely_scam": is_scam,
+            "scam_stage": "unknown",
+            "detected_threats": [],
+            "llm_raw_response": response[:200]
+        }
 
     def _parse_llm_json(self, response: str) -> Optional[Dict[str, Any]]:
         """LLM JSON 응답 파싱"""
@@ -368,13 +588,15 @@ class HybridThreatAnalyzer:
         # LLM 위협을 Rule 형식으로 변환
         llm_threats_normalized = []
         for t in llm_threats:
+            # name_ko를 먼저 찾고, 없으면 type_ko, 그것도 없으면 type, 마지막으로 "알수없음"
+            threat_name = t.get("name_ko") or t.get("type_ko") or t.get("type") or "LLM 감지"
             llm_threats_normalized.append({
-                "id": t.get("type", "unknown"),
+                "id": t.get("id", t.get("type", "unknown")),
                 "category": "llm_detected",
                 "category_name_ko": "LLM 감지",
-                "name_ko": t.get("type_ko", t.get("type", "알수없음")),
+                "name_ko": threat_name,
                 "risk_level": self._confidence_to_risk(t.get("confidence", "medium")),
-                "source": "llm",
+                "source": t.get("source", "llm"),
                 "evidence": t.get("evidence", "")
             })
 

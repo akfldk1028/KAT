@@ -357,10 +357,27 @@ export const MyChat: React.FC<ChatProps> = props => {
   );
 };
 
-// 다른 사람이 보낸 채팅
+// 다른 사람이 보낸 채팅 (연속 메시지, 썸네일 없음)
 export const FriendChat: React.FC<ChatProps> = props => {
+  const { securityAnalysis } = props;
+  // 위협 경고 표시 여부 (LOW가 아닌 경우에만)
+  const showWarning = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
+
   return (
     <LeftBlock>
+      {showWarning && (
+        <ThreatWarning riskLevel={securityAnalysis!.risk_level}>
+          <span className="warning-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
+          <div className="warning-content">
+            <div className="warning-title">
+              {getThreatLabel(securityAnalysis!.risk_level)}
+            </div>
+            <div className="warning-reasons">
+              {securityAnalysis!.reasons.slice(0, 2).join(', ')}
+            </div>
+          </div>
+        </ThreatWarning>
+      )}
       <div>
         <Chat {...props} />
       </div>
