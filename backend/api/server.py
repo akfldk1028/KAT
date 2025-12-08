@@ -25,6 +25,18 @@ backend_path = str(Path(__file__).parent.parent)
 if backend_path in sys.path:
     sys.path.remove(backend_path)
 
+# === Prometheus 메트릭 모듈 로드 ===
+METRICS_ENABLED = False
+kat_metrics = None
+setup_metrics = None
+try:
+    sys.path.insert(0, str(PROJECT_ROOT / "ops" / "monitoring"))
+    from metrics import setup_metrics, kat_metrics
+    METRICS_ENABLED = True
+    print("[Metrics] 메트릭 모듈 로드 성공")
+except ImportError as e:
+    print(f"[Metrics] 메트릭 모듈 로드 실패 (무시됨): {e}")
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -102,6 +114,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# === Prometheus 메트릭 설정 ===
+if METRICS_ENABLED and setup_metrics:
+    setup_metrics(app)
+    print("[Metrics] Prometheus /metrics 엔드포인트 활성화")
+
 # MCP 서버를 FastAPI에 마운트 (SSE 방식)
 # /mcp 경로에서 MCP 프로토콜 지원
 try:
@@ -162,6 +179,84 @@ async def health_check():
     return {"status": "ok", "service": "DualGuard Agent API"}
 
 
+@app.get("/api/mcp/health")
+async def mcp_health_check():
+    """
+    MCP 서버 헬스체크 - 실제 동작 상태 확인
+
+    Returns:
+        status: healthy/degraded/unhealthy
+        mcp_server: MCP 서버 인스턴스 상태
+        tools_registered: 등록된 도구 수
+        tools_list: 실제 등록된 도구 목록
+        test_call: 간단한 도구 호출 테스트 결과
+    """
+    import time
+    start_time = time.time()
+
+    health_result = {
+        "status": "unhealthy",
+        "timestamp": datetime.now().isoformat(),
+        "checks": {}
+    }
+
+    try:
+        # 1. MCP 서버 인스턴스 확인
+        if mcp is None:
+            health_result["checks"]["mcp_instance"] = {"status": "fail", "message": "MCP 인스턴스 없음"}
+        else:
+            health_result["checks"]["mcp_instance"] = {"status": "pass", "name": mcp.name}
+
+        # 2. 등록된 도구 목록 확인 (실제 list_tools 호출)
+        try:
+            # FastMCP의 _tool_manager에서 도구 목록 가져오기
+            tools = list(mcp._tool_manager._tools.keys()) if hasattr(mcp, '_tool_manager') else []
+            health_result["checks"]["tools_registered"] = {
+                "status": "pass" if len(tools) > 0 else "warn",
+                "count": len(tools),
+                "tools": tools[:10]  # 처음 10개만
+            }
+        except Exception as e:
+            health_result["checks"]["tools_registered"] = {"status": "fail", "error": str(e)}
+
+        # 3. 간단한 도구 호출 테스트 (analyze_outgoing with safe text)
+        try:
+            test_result = analyze_outgoing("테스트 메시지", use_ai=False)
+            health_result["checks"]["tool_test"] = {
+                "status": "pass",
+                "tool": "analyze_outgoing",
+                "response_time_ms": round((time.time() - start_time) * 1000, 2)
+            }
+        except Exception as e:
+            health_result["checks"]["tool_test"] = {"status": "fail", "error": str(e)}
+
+        # 4. 최종 상태 결정
+        checks = health_result["checks"]
+        if all(c.get("status") == "pass" for c in checks.values()):
+            health_result["status"] = "healthy"
+        elif any(c.get("status") == "fail" for c in checks.values()):
+            health_result["status"] = "unhealthy"
+        else:
+            health_result["status"] = "degraded"
+
+        # 5. 메트릭 기록 (MCP 서버 상태)
+        if METRICS_ENABLED and kat_metrics:
+            is_healthy = health_result["status"] == "healthy"
+            tools_count = health_result["checks"].get("tools_registered", {}).get("count", 0)
+            duration = time.time() - start_time
+
+            kat_metrics.record_mcp_server_status(is_healthy, tools_count)
+            kat_metrics.record_mcp_health_check(duration)
+
+        health_result["response_time_ms"] = round((time.time() - start_time) * 1000, 2)
+        return health_result
+
+    except Exception as e:
+        health_result["status"] = "unhealthy"
+        health_result["error"] = str(e)
+        return health_result
+
+
 @app.get("/api/mcp/info")
 async def mcp_info():
     """MCP 서버 정보"""
@@ -198,6 +293,16 @@ async def api_analyze_outgoing(request: OutgoingRequest):
     """
     try:
         result = analyze_outgoing(request.text, use_ai=request.use_ai)
+
+        # 메트릭 기록 (Agent A)
+        if METRICS_ENABLED and kat_metrics:
+            kat_metrics.record_agent_a_detection(
+                risk_level=result.risk_level.value,
+                pii_type=result.reasons[0] if result.reasons else "unknown"
+            )
+            if result.risk_level.value in ["HIGH", "CRITICAL"]:
+                kat_metrics.record_agent_a_blocked(result.risk_level.value)
+
         return AnalysisResponse(
             risk_level=result.risk_level.value,
             reasons=result.reasons,
@@ -247,6 +352,16 @@ async def api_analyze_incoming(request: IncomingRequest):
             conversation_history=conversation_history,  # 대화 맥락 전달
             use_ai=request.use_ai
         )
+
+        # 메트릭 기록 (Agent B)
+        if METRICS_ENABLED and kat_metrics:
+            kat_metrics.record_agent_b_threat(
+                risk_level=result.risk_level.value,
+                category=result.category or "unknown"
+            )
+            if result.scam_probability:
+                kat_metrics.record_scam_probability(result.scam_probability)
+
         return AnalysisResponse(
             risk_level=result.risk_level.value,
             reasons=result.reasons,

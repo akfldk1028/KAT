@@ -1,0 +1,5 @@
+# KAT DualGuard Monitoring - Python Dependencies
+# pip install -r requirements.txt
+
+prometheus-client>=0.17.0
+prometheus-fastapi-instrumentator>=6.1.0

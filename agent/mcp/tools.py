@@ -9,6 +9,20 @@ from mcp.server.fastmcp import FastMCP
 from typing import Dict, List, Any
 from ..core.models import RiskLevel, AnalysisResponse
 
+# === MCP 메트릭 (선택적 로드) ===
+_kat_metrics = None
+try:
+    import sys
+    from pathlib import Path
+    # ops/monitoring/metrics 경로 추가
+    _monitoring_path = Path(__file__).parent.parent.parent / "ops" / "monitoring"
+    if _monitoring_path.exists():
+        sys.path.insert(0, str(_monitoring_path))
+        from metrics import kat_metrics as _kat_metrics
+        print("[MCP Tools] 메트릭 모듈 로드 성공")
+except ImportError:
+    print("[MCP Tools] 메트릭 모듈 없음 (무시됨)")
+
 # Agent A (발신 보호) - PII 패턴 매칭
 from ..core.pattern_matcher import (
     get_pii_patterns,
@@ -64,8 +78,14 @@ def analyze_outgoing(text: str, use_ai: bool = False) -> AnalysisResponse:
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
-    agent = _get_outgoing_agent()
-    return agent.analyze(text, use_ai=use_ai)
+    # MCP 메트릭 기록
+    if _kat_metrics:
+        with _kat_metrics.measure_mcp_call("analyze_outgoing"):
+            agent = _get_outgoing_agent()
+            return agent.analyze(text, use_ai=use_ai)
+    else:
+        agent = _get_outgoing_agent()
+        return agent.analyze(text, use_ai=use_ai)
 
 
 @mcp.tool()
@@ -95,14 +115,26 @@ def analyze_incoming(
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
-    agent = _get_incoming_agent()
-    return agent.analyze(
-        text,
-        sender_id=sender_id,
-        user_id=user_id,
-        conversation_history=conversation_history,
-        use_ai=use_ai
-    )
+    # MCP 메트릭 기록
+    if _kat_metrics:
+        with _kat_metrics.measure_mcp_call("analyze_incoming"):
+            agent = _get_incoming_agent()
+            return agent.analyze(
+                text,
+                sender_id=sender_id,
+                user_id=user_id,
+                conversation_history=conversation_history,
+                use_ai=use_ai
+            )
+    else:
+        agent = _get_incoming_agent()
+        return agent.analyze(
+            text,
+            sender_id=sender_id,
+            user_id=user_id,
+            conversation_history=conversation_history,
+            use_ai=use_ai
+        )
 
 
 @mcp.tool()
@@ -124,12 +156,21 @@ def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
+    # MCP 메트릭 시작
+    if _kat_metrics:
+        _kat_metrics.mcp_active.labels(tool_name="analyze_image").inc()
+
+    import time
+    start_time = time.time()
+    status = "success"
+
     try:
         # Step 1: Vision 모델로 OCR (lazy import)
         from ..llm.kanana import LLMManager
         print("[analyze_image] Step 1: Loading Vision model for OCR...")
         vision_model = LLMManager.get("vision")
         if not vision_model:
+            status = "error"
             return AnalysisResponse(
                 risk_level=RiskLevel.LOW,
                 reasons=["Vision Model loading failed"],
@@ -149,12 +190,20 @@ def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
         return analyze_outgoing(extracted_text, use_ai=use_ai)
 
     except Exception as e:
+        status = "error"
         return AnalysisResponse(
             risk_level=RiskLevel.LOW,
             reasons=[f"이미지 분석 중 오류 발생: {str(e)}"],
             recommended_action="분석 실패",
             is_secret_recommended=False
         )
+    finally:
+        # MCP 메트릭 기록
+        if _kat_metrics:
+            _kat_metrics.mcp_active.labels(tool_name="analyze_image").dec()
+            duration = time.time() - start_time
+            _kat_metrics.mcp_duration.labels(tool_name="analyze_image").observe(duration)
+            _kat_metrics.mcp_calls.labels(tool_name="analyze_image", status=status).inc()
 
 
 # ============================================================

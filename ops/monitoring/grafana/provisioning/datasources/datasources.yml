@@ -1,0 +1,38 @@
+# Grafana Datasources Auto-Provisioning
+# KAT DualGuard Monitoring
+
+apiVersion: 1
+
+datasources:
+  # ===========================================
+  # Prometheus - Metrics
+  # ===========================================
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    url: http://prometheus:9090
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false
+    jsonData:
+      httpMethod: POST
+      manageAlerts: true
+      prometheusType: Prometheus
+      prometheusVersion: 2.47.0
+
+  # ===========================================
+  # Loki - Logs
+  # ===========================================
+  - name: Loki
+    type: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+    jsonData:
+      maxLines: 1000

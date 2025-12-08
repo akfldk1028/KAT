@@ -93,3 +93,6 @@ nul
 backend/kanana
 backend/README.md
 doc/Architecture/AGENT_STATUS_SUMMARY.md
+doc/Architecture/SYSTEM_ARCHITECTURE.md
+doc/Architecture/AGENT_A_LOGIC.md
+doc/Architecture
