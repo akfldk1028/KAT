@@ -82,6 +82,86 @@ def check_counterscam(phone_number: str) -> str:
     except Exception as e:
         return f"CounterScam Error: {str(e)}"
 
+@mcp.tool()
+def check_google_safe_browsing(url: str) -> str:
+    """
+    Check a URL against Google Safe Browsing API (Malware/Phishing).
+    Requires 'GOOGLE_API_KEY' environment variable.
+    """
+    import os
+    api_key = os.environ.get('GOOGLE_API_KEY')
+    if not api_key:
+        return "Error: 'GOOGLE_API_KEY' environment variable is missing. Please set it to use this tool."
+
+    api_url = f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={api_key}"
+    
+    payload = {
+        "client": {
+            "clientId": "mcp-fraud-check",
+            "clientVersion": "1.0.0"
+        },
+        "threatInfo": {
+            "threatTypes": ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
+            "platformTypes": ["ANY_PLATFORM"],
+            "threatEntryTypes": ["URL"],
+            "threatEntries": [{"url": url}]
+        }
+    }
+
+    try:
+        response = requests.post(api_url, json=payload, headers=HEADERS, timeout=10)
+        data = response.json()
+        
+        matches = data.get('matches', [])
+        if not matches:
+            return "Google Safe Browsing: No threats found (Clean)."
+        else:
+            threats = [m.get('threatType') for m in matches]
+            return f"Google Safe Browsing: WARNING! Threats detected: {', '.join(threats)}"
+            
+    except Exception as e:
+        return f"Google Safe Browsing Error: {str(e)}"
+
+@mcp.tool()
+def check_virustotal(url: str) -> str:
+    """
+    Check a URL against VirusTotal API.
+    Requires 'VIRUSTOTAL_API_KEY' environment variable.
+    """
+    import os
+    api_key = os.environ.get('VIRUSTOTAL_API_KEY')
+    if not api_key:
+        return "Error: 'VIRUSTOTAL_API_KEY' environment variable is missing. Please set it to use this tool."
+
+    # Using v2 API for simplicity in URL reporting
+    api_url = "https://www.virustotal.com/vtapi/v2/url/report"
+    params = {'apikey': api_key, 'resource': url}
+
+    try:
+        response = requests.get(api_url, params=params, headers=HEADERS, timeout=10)
+        
+        if response.status_code == 204:
+            return "VirusTotal: Rate limit exceeded. Please try again later."
+        elif response.status_code == 403:
+            return "VirusTotal: Invalid API Key."
+            
+        data = response.json()
+        
+        if data.get('response_code') == 0:
+            return "VirusTotal: URL not found in database (No previous scan)."
+        
+        positives = data.get('positives', 0)
+        total = data.get('total', 0)
+        scan_date = data.get('scan_date', 'Unknown')
+        
+        if positives > 0:
+            return f"VirusTotal: WARNING! {positives}/{total} engines detected this URL as malicious. (Scanned: {scan_date})"
+        else:
+            return f"VirusTotal: Clean. 0/{total} engines detected this URL. (Scanned: {scan_date})"
+
+    except Exception as e:
+        return f"VirusTotal Error: {str(e)}"
+
 if __name__ == "__main__":
     # Run the server using stdio transport
     mcp.run(transport='stdio')

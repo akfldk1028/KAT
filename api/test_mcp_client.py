@@ -32,5 +32,21 @@ async def run():
             result2 = await session.call_tool("check_counterscam", arguments={"phone_number": "01012345678"})
             print(f"Result: {result2.content[0].text}")
 
+            # Test check_google_safe_browsing (Expect Error due to missing key)
+            print("\n--- Testing check_google_safe_browsing ---")
+            try:
+                result3 = await session.call_tool("check_google_safe_browsing", arguments={"url": "http://google.com"})
+                print(f"Result: {result3.content[0].text}")
+            except Exception as e:
+                print(f"Error: {e}")
+
+            # Test check_virustotal (Expect Error due to missing key)
+            print("\n--- Testing check_virustotal ---")
+            try:
+                result4 = await session.call_tool("check_virustotal", arguments={"url": "http://google.com"})
+                print(f"Result: {result4.content[0].text}")
+            except Exception as e:
+                print(f"Error: {e}")
+
 if __name__ == "__main__":
     asyncio.run(run())

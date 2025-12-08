@@ -14,12 +14,20 @@
     *   **인자 (Arguments)**:
         *   `phone_number`: 조회할 전화번호 (숫자만 입력 권장)
 
+3.  **`check_google_safe_browsing`**: Google Safe Browsing API를 통해 악성/피싱 URL 여부를 확인합니다.
+    *   **인자**: `url`
+    *   **필수**: `GOOGLE_API_KEY` 환경 변수
+4.  **`check_virustotal`**: VirusTotal API를 통해 URL의 악성 여부를 검사합니다.
+    *   **인자**: `url`
+    *   **필수**: `VIRUSTOTAL_API_KEY` 환경 변수
+
 ## 필수 요구사항
 
 *   Python 3.10 이상
 *   `mcp` 패키지
 *   `requests`
 *   `beautifulsoup4`
+*   **API 키**: Google Cloud Console 및 VirusTotal에서 발급받은 API 키
 
 ## 설치 방법
 
@@ -29,25 +37,27 @@
 pip install mcp requests beautifulsoup4
 ```
 
-## 사용 방법
+## 환경 변수 설정 (API 키)
 
-이 서버는 `stdio` (표준 입출력) 방식을 사용하여 MCP 클라이언트(예: Claude Desktop, IDE 확장 프로그램 등)와 통신합니다.
+URL 검사 기능을 사용하려면 API 키를 환경 변수로 설정해야 합니다.
 
-### 서버 실행 명령어
-```bash
-python fraud_mcp_server.py
-```
+*   **Google Safe Browsing**: [Google Cloud Console](https://console.cloud.google.com/)에서 'Safe Browsing API'를 활성화하고 API 키를 생성합니다.
+*   **VirusTotal**: [VirusTotal](https://www.virustotal.com/) 회원가입 후 API 키를 확인합니다.
 
-### 클라이언트 설정 예시 (Claude Desktop)
+### Claude Desktop 설정 예시
 
-Claude Desktop 설정 파일(`claude_desktop_config.json`)에 다음과 같이 추가하여 사용할 수 있습니다:
+`claude_desktop_config.json` 파일의 `env` 섹션에 키를 추가합니다:
 
 ```json
 {
   "mcpServers": {
     "fraud-check": {
       "command": "python",
-      "args": ["D:\\project\\AIAgentcompetition\\testdata\\KAT\\api\\fraud_mcp_server.py"]
+      "args": ["D:\\project\\AIAgentcompetition\\testdata\\KAT\\api\\fraud_mcp_server.py"],
+      "env": {
+        "GOOGLE_API_KEY": "여기에_구글_API_키_입력",
+        "VIRUSTOTAL_API_KEY": "여기에_바이러스토탈_API_키_입력"
+      }
     }
   }
 }
