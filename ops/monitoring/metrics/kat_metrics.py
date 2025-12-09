@@ -8,6 +8,9 @@ Metrics:
 - kat_scam_db_hits_total: 신고 DB 조회 히트 횟수
 - kat_llm_inference_seconds: LLM 추론 시간
 - kat_analysis_total: 전체 분석 요청 수
+- kat_threat_intel_queries_total: 위협 정보 조회 요청 수
+- kat_threat_intel_hits_total: 위협 정보 조회 히트 수
+- kat_threat_intel_duration_seconds: 위협 정보 조회 응답 시간
 """
 
 from prometheus_client import Counter, Histogram, Gauge, REGISTRY, generate_latest
@@ -163,6 +166,28 @@ class KATMetrics:
             buckets=[0.01, 0.05, 0.1, 0.25, 0.5, 1.0]
         )
 
+        # ===========================================
+        # Threat Intelligence 메트릭
+        # ===========================================
+        self.threat_intel_queries = Counter(
+            'kat_threat_intel_queries_total',
+            '위협 정보 조회 요청 수',
+            ['source', 'type']  # source: lrl/kisa/thecheat/virustotal, type: phone/url/account
+        )
+
+        self.threat_intel_hits = Counter(
+            'kat_threat_intel_hits_total',
+            '위협 정보 조회 히트 수 (위협 발견)',
+            ['source', 'type']
+        )
+
+        self.threat_intel_duration = Histogram(
+            'kat_threat_intel_duration_seconds',
+            '위협 정보 조회 응답 시간',
+            ['source'],
+            buckets=[0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0]
+        )
+
         KATMetrics._initialized = True
 
     # ===========================================
@@ -288,6 +313,25 @@ class KATMetrics:
     def record_mcp_health_check(self, duration_seconds: float):
         """MCP 헬스체크 시간 기록"""
         self.mcp_health_check_duration.observe(duration_seconds)
+
+    # ===========================================
+    # Threat Intelligence 기록 메서드
+    # ===========================================
+    def record_threat_intel_query(self, source: str, type: str, hit: bool = False):
+        """위협 정보 조회 기록"""
+        self.threat_intel_queries.labels(source=source, type=type).inc()
+        if hit:
+            self.threat_intel_hits.labels(source=source, type=type).inc()
+
+    @contextmanager
+    def measure_threat_intel(self, source: str):
+        """위협 정보 조회 시간 측정 컨텍스트 매니저"""
+        start = time.time()
+        try:
+            yield
+        finally:
+            duration = time.time() - start
+            self.threat_intel_duration.labels(source=source).observe(duration)
 
 
 def setup_metrics(app: FastAPI) -> Instrumentator:

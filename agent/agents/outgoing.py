@@ -61,6 +61,7 @@ class OutgoingAgent(BaseAgent):
         - 숫자가 일정 길이 이상 연속되거나
         - "-"로 구분된 숫자 패턴이 있거나
         - 민감정보 관련 키워드가 있으면 True
+        - Tier 3 조합 패턴 (이름+생년+성별+주소)도 감지
         """
         import re
 
@@ -68,7 +69,11 @@ class OutgoingAgent(BaseAgent):
         if re.search(r'[\d-]{8,}', text):
             return True
 
-        # 민감정보 관련 키워드
+        # 연도 패턴 (1990년생, 90년생 등)
+        if re.search(r'\d{2,4}년생', text):
+            return True
+
+        # Tier 1-2 민감정보 관련 키워드 (즉시 True)
         sensitive_keywords = [
             '계좌', '통장', '카드', '번호',
             '주민', '등록', '여권', '면허',
@@ -78,6 +83,12 @@ class OutgoingAgent(BaseAgent):
         for keyword in sensitive_keywords:
             if keyword in text:
                 return True
+
+        # Tier 3 조합 감지 (2개 이상 매칭 시 True)
+        tier3_keywords = ['남자', '여자', '남성', '여성', '시 ', '군 ', '구 ', '동 ', '학교', '회사', '대학']
+        tier3_count = sum(1 for kw in tier3_keywords if kw in text)
+        if tier3_count >= 2:
+            return True
 
         return False
 

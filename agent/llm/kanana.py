@@ -291,18 +291,17 @@ class KananaLLM:
         """텍스트 응답에서 결과 추출"""
         content_lower = content.lower()
 
-        # 위험도 추출
+        # 위험도 추출 (CRITICAL -> HIGH -> MEDIUM -> LOW 순서로 체크)
         risk_level = "LOW"
-        if "high" in content_lower or "높" in content_lower or "위험" in content_lower:
+        if "critical" in content_lower or "매우 높" in content_lower or "즉시 차단" in content_lower:
+            risk_level = "CRITICAL"
+        elif "high" in content_lower or "높" in content_lower or "위험" in content_lower:
             risk_level = "HIGH"
-        elif "medium" in content_lower or "중간" in content_lower:
+        elif "medium" in content_lower or "중간" in content_lower or "주의" in content_lower:
             risk_level = "MEDIUM"
 
         # 시크릿 추천 여부
-        is_secret = risk_level in ["HIGH", "MEDIUM"] or \
-                    "시크릿" in content_lower or \
-                    "secret" in content_lower or \
-                    "민감" in content_lower
+        is_secret = risk_level in ["CRITICAL", "HIGH", "MEDIUM"] or                     "시크릿" in content_lower or                     "secret" in content_lower or                     "민감" in content_lower
 
         return {
             "risk_level": risk_level,

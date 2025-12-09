@@ -204,7 +204,17 @@ Observation: {{"pii_scan": {{"found_pii": [{{"id": "account", "value": "110-123-
 Thought: 이름과 계좌번호 조합으로 HIGH로 상향되었습니다.
 Answer: {{"risk_level": "HIGH", "detected_pii": ["이름", "계좌번호"], "reasons": ["금융사기 위험 - 이름과 계좌 조합"], "is_secret_recommended": true, "recommended_action": "시크릿 전송 강력 권장"}}
 
-### 예시 3: 주민등록번호 (CRITICAL)
+### 예시 3: 전화번호 (MEDIUM - Tier 2)
+User: 010-1234-5678로 연락해
+
+Thought: 전화번호 패턴(010-XXXX-XXXX)이 있습니다. Tier 2 항목이므로 분석이 필요합니다.
+Action: analyze_full
+Action Input: {{"text": "010-1234-5678로 연락해"}}
+Observation: {{"pii_scan": {{"found_pii": [{{"id": "phone", "value": "010-1234-5678", "risk_level": "MEDIUM"}}], "count": 1}}, "risk_evaluation": {{"final_risk": "MEDIUM"}}}}
+Thought: 전화번호 단독은 MEDIUM입니다. 연락처 노출 위험이 있습니다.
+Answer: {{"risk_level": "MEDIUM", "detected_pii": ["전화번호"], "reasons": ["전화번호 패턴이 감지되었습니다."], "is_secret_recommended": true, "recommended_action": "시크릿 전송 권장"}}
+
+### 예시 4: 주민등록번호 (CRITICAL)
 User: 내 주민번호 900101-1234567
 
 Thought: 주민등록번호 패턴입니다. CRITICAL 항목입니다.
@@ -213,6 +223,16 @@ Action Input: {{"text": "내 주민번호 900101-1234567"}}
 Observation: {{"risk_evaluation": {{"final_risk": "CRITICAL"}}, "summary": "1종의 민감정보 감지: 주민등록번호. 시크릿 전송 필수"}}
 Thought: 주민등록번호는 단독으로도 CRITICAL입니다.
 Answer: {{"risk_level": "CRITICAL", "detected_pii": ["주민등록번호"], "reasons": ["주민등록번호 패턴이 감지되었습니다."], "is_secret_recommended": true, "recommended_action": "시크릿 전송 필수"}}
+
+### 예시 5: Tier 3 조합 (이름+생년+성별+주소 = MEDIUM)
+User: 홍길동 1990년생 남자 서울시 강남구
+
+Thought: 이름, 생년, 성별, 주소가 모두 포함되어 있습니다. Tier 3 정보 4개가 조합되어 신원추론 위험이 있습니다.
+Action: analyze_full
+Action Input: {{"text": "홍길동 1990년생 남자 서울시 강남구"}}
+Observation: {{"pii_scan": {{"found_pii": [{{"id": "name", "value": "홍길동"}}, {{"id": "birth_year", "value": "1990년생"}}, {{"id": "gender", "value": "남자"}}, {{"id": "address", "value": "서울시 강남구"}}], "count": 4}}, "risk_evaluation": {{"final_risk": "MEDIUM", "escalation_reason": "Tier 3 정보 3개 이상 결합"}}}}
+Thought: Tier 3 정보 4개가 결합되어 MEDIUM으로 상향되었습니다.
+Answer: {{"risk_level": "MEDIUM", "detected_pii": ["이름", "생년", "성별", "주소"], "reasons": ["Tier 3 정보 3개 이상 결합으로 신원추론 위험"], "is_secret_recommended": true, "recommended_action": "시크릿 전송 권장"}}
 """
 
 # 이미지 분석용 프롬프트 (Vision -> Instruct 체인용)

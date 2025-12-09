@@ -794,3 +794,249 @@ def analyze_incoming_full(
         "recommended_action": stage4["policy"].get("action_type", "none"),
         "ui_warning": format_warning_for_ui(stage4["policy"])
     }
+
+
+# ============================================================
+# Threat Intelligence MCP Tool - 통합 위협 정보 조회
+# ============================================================
+
+@mcp.tool()
+def threat_intelligence_mcp(identifier: str, type: str) -> Dict[str, Any]:
+    """
+    Threat intelligence lookup for phone, URL, or account.
+    전화번호, URL, 계좌번호의 위협 정보를 통합 조회합니다.
+
+    통합 소스:
+    - TheCheat API: 전화번호/계좌번호 사기 신고 조회
+    - KISA Phishing API: 피싱 사이트 URL 조회
+    - lrl.kr API: 안전한링크 URL 검증
+    - VirusTotal API: URL 악성코드 검사
+
+    Args:
+        identifier: 조회할 식별자 (전화번호, URL, 계좌번호)
+        type: 식별자 타입 ("phone" | "url" | "account")
+
+    Returns:
+        has_reported: 신고/위협 여부 (bool)
+        source: 조회된 소스 (예: "TheCheat", "KISA", "lrl.kr", "VirusTotal")
+        report_count: 신고 건수 (int)
+        prior_probability: 사전 확률 (float, 0.0~1.0)
+                          계산식: report_count / (report_count + 100)
+        threat_type: 위협 유형 (URL인 경우: "phishing" | "malware" | "safe" | "suspicious")
+        details: 상세 정보 (Dict)
+
+    Examples:
+        전화번호 조회:
+        threat_intelligence_mcp("010-1234-5678", "phone")
+        → {has_reported: true, source: "TheCheat", report_count: 1, prior_probability: 0.0099}
+
+        URL 조회:
+        threat_intelligence_mcp("http://phishing-site.com", "url")
+        → {has_reported: true, source: "KISA", threat_type: "phishing", prior_probability: 0.0099}
+
+        계좌번호 조회:
+        threat_intelligence_mcp("123-456-789012", "account")
+        → {has_reported: false, source: null, report_count: 0, prior_probability: 0.0}
+    """
+    from ..core.threat_intelligence import check_identifier
+
+    try:
+        result = check_identifier(identifier, type)
+        return result
+    except ValueError as e:
+        return {
+            "has_reported": False,
+            "source": None,
+            "report_count": 0,
+            "prior_probability": 0.0,
+            "error": str(e),
+            "details": {}
+        }
+
+
+# ============================================================
+# Bayesian Calculator MCP Tool - 베이지안 사후 확률 계산
+# ============================================================
+
+@mcp.tool()
+def bayesian_calculator_mcp(
+    pattern_conf: float,
+    db_prior: float,
+    trust_score: float,
+    weights: List[float] = None
+) -> Dict[str, Any]:
+    """
+    Calculate Bayesian posterior probability for fraud detection.
+    베이지안 사후 확률을 계산하여 최종 사기 위험도를 판정합니다.
+
+    이론적 근거:
+    - Bayesian Inference (Nature 2025)
+    - SHAP Weight (NeurIPS 2017): Pattern 40%, DB 30%, Trust 30%
+
+    Args:
+        pattern_conf: 패턴 매칭 신뢰도 (0.0 ~ 1.0)
+                     context_analyzer_mcp 결과의 confidence
+        db_prior: DB 사전 확률 (0.0 ~ 1.0)
+                 threat_intelligence_mcp 결과의 prior_probability
+        trust_score: 발신자 신뢰도 (0.0 ~ 1.0)
+                    social_graph_mcp 결과의 trust_score
+        weights: 가중치 [pattern, db, trust] (기본: [0.4, 0.3, 0.3])
+
+    Returns:
+        posterior_probability: 최종 사후 확률 (0.0 ~ 1.0)
+        confidence_interval: 신뢰 구간 (lower, upper)
+        uncertainty: 불확실성 (0.08)
+        final_risk: 위험도 레벨 ("CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "SAFE")
+        weighted_probability: 조정 전 가중 평균
+        context_adjusted: 맥락 조정 적용 여부
+
+    Examples:
+        # 가족 사칭 + DB 신고 + 5년 이력
+        bayesian_calculator_mcp(0.92, 0.77, 0.85)
+        → {"posterior_probability": 0.29, "final_risk": "LOW"}
+
+        # 기관 사칭 + DB 신고 + 첫 메시지
+        bayesian_calculator_mcp(0.95, 0.90, 0.0)
+        → {"posterior_probability": 0.68, "final_risk": "HIGH"}
+    """
+    from ..core.bayesian_calculator import bayesian_calculate
+    return bayesian_calculate(pattern_conf, db_prior, trust_score, weights)
+
+
+# ============================================================
+# Entity Extractor MCP Tool - 식별자 추출
+# ============================================================
+
+@mcp.tool()
+def entity_extractor_mcp(message: str) -> Dict[str, Any]:
+    """
+    Extract identifiers (phone, URL, account, email) from message.
+    메시지에서 전화번호, URL, 계좌번호, 이메일을 추출합니다.
+
+    threat_intelligence_mcp 호출 전에 사용하여 조회할 식별자를 추출.
+
+    Args:
+        message: 분석할 메시지
+
+    Returns:
+        phone_numbers: 추출된 전화번호 리스트
+        urls: 추출된 URL 리스트
+        accounts: 추출된 계좌번호 리스트
+        emails: 추출된 이메일 리스트
+        total_count: 총 추출 수
+        has_suspicious: 의심 요소 포함 여부 (단축 URL 등)
+
+    Examples:
+        entity_extractor_mcp("전화 010-1234-5678, 입금 110-123-456789")
+        → {"phone_numbers": ["010-1234-5678"], "accounts": ["110-123-456789"], ...}
+
+        entity_extractor_mcp("자세한 내용: bit.ly/scam123")
+        → {"urls": ["bit.ly/scam123"], "has_suspicious": true, ...}
+    """
+    from ..core.entity_extractor import extract_entities
+    return extract_entities(message)
+
+
+# ============================================================
+# Context Analyzer MCP Tool - MECE 카테고리 + Cialdini 분류
+# ============================================================
+
+# Cialdini 6원리 매핑
+CIALDINI_MAPPING = {
+    "A-1": ["Urgency", "Liking"],           # 가족 사칭
+    "A-2": ["Authority", "Urgency"],        # 지인/상사 사칭
+    "A-3": ["Liking", "Reciprocity"],       # 상품권 대리구매
+    "B-1": ["Urgency", "Fear"],             # 택배/경조사
+    "B-2": ["Authority", "Fear"],           # 기관 사칭
+    "B-3": ["Urgency", "Fear"],             # 결제 승인
+    "C-1": ["Scarcity", "Social Proof"],    # 투자 권유
+    "C-2": ["Liking", "Reciprocity"],       # 로맨스 스캠
+    "C-3": ["Fear", "Urgency"],             # 몸캠 피싱
+    "NORMAL": []
+}
+
+@mcp.tool()
+def context_analyzer_mcp(message: str, context: List[str] = None) -> Dict[str, Any]:
+    """
+    Analyze message context and classify into MECE categories with Cialdini mapping.
+    메시지를 MECE 9-카테고리로 분류하고 Cialdini 심리 원리를 매핑합니다.
+
+    MECE 카테고리:
+    - A-1: 가족 사칭 (액정 파손)
+    - A-2: 지인/상사 사칭 (급전)
+    - A-3: 상품권 대리 구매
+    - B-1: 생활 밀착형 (택배/경조사)
+    - B-2: 기관 사칭 (검찰/경찰)
+    - B-3: 결제 승인 (낚시성)
+    - C-1: 투자 권유 (리딩방)
+    - C-2: 로맨스 스캠
+    - C-3: 몸캠 피싱
+    - NORMAL: 정상 메시지
+
+    Cialdini 6원리:
+    - Authority (권위)
+    - Urgency (긴급성)
+    - Liking (호감)
+    - Scarcity (희소성)
+    - Reciprocity (상호성)
+    - Social Proof (사회적 증거)
+    - Fear (공포)
+
+    Args:
+        message: 분석할 메시지
+        context: 최근 대화 히스토리 (선택)
+
+    Returns:
+        category: MECE 카테고리 코드 ("A-1" ~ "C-3" | "NORMAL")
+        category_name: 카테고리 한글명
+        confidence: 분류 신뢰도 (0.0 ~ 1.0)
+        cialdini_principles: Cialdini 원리 리스트
+        reasoning: 분류 근거 설명
+        scam_probability: 사기 확률 (%)
+
+    Examples:
+        context_analyzer_mcp("엄마, 나 폰 고장나서 번호 바뀌었어")
+        → {"category": "A-1", "cialdini_principles": ["Urgency", "Liking"], ...}
+    """
+    from ..core.threat_matcher import analyze_incoming_message
+
+    # 기존 분석기 호출
+    result = analyze_incoming_message(message)
+
+    # 카테고리 및 기본 정보 추출
+    summary = result.get("summary", {})
+    category = summary.get("category", "NORMAL")
+    pattern_name = summary.get("pattern", "정상 메시지")
+
+    final_assessment = result.get("final_assessment", {})
+    scam_probability = final_assessment.get("scam_probability", 0)
+
+    # confidence 계산 (scam_probability 기반)
+    confidence = scam_probability / 100.0 if scam_probability else 0.0
+
+    # Cialdini 매핑
+    cialdini_principles = CIALDINI_MAPPING.get(category, [])
+
+    # 위험도 → confidence 조정
+    risk_level = final_assessment.get("risk_level", "safe")
+    if risk_level == "critical":
+        confidence = max(confidence, 0.9)
+    elif risk_level == "high":
+        confidence = max(confidence, 0.7)
+    elif risk_level == "medium":
+        confidence = max(confidence, 0.5)
+
+    # reasoning 생성
+    detected_threats = result.get("threat_detection", {}).get("found_threats", [])
+    threat_names = [t.get("name_ko", "") for t in detected_threats[:3]]
+    reasoning = f"{pattern_name} 패턴. 감지: {', '.join(threat_names) if threat_names else '없음'}"
+
+    return {
+        "category": category,
+        "category_name": pattern_name,
+        "confidence": round(confidence, 2),
+        "cialdini_principles": cialdini_principles,
+        "reasoning": reasoning,
+        "scam_probability": scam_probability,
+        "raw_result": result  # 원본 결과 포함 (디버깅용)
+    }
