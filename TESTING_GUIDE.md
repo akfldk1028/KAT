@@ -73,7 +73,7 @@ print(f"위험도: {result['highest_risk']}")
 
 # 테스트 2: 전체 분석
 result = analyze_full("계좌번호 110-123-456789로 50만원 보내줘")
-print(f"요약: {result['summary']}")
+print(f"요약: {result['summary.md']}")
 ```
 
 ### 2.3 테스트 케이스
@@ -159,9 +159,9 @@ print("=" * 70)
 
 for expected, text in test_cases:
     result = analyze_incoming_message(text)
-    category = result['summary']['category'] or 'SAFE'
-    prob = result['summary']['probability']
-    pattern = result['summary']['pattern']
+    category = result['summary.md']['category'] or 'SAFE'
+    prob = result['summary.md']['probability']
+    pattern = result['summary.md']['pattern']
 
     match = "O" if category == expected or (category is None and expected == "SAFE") else "X"
     print(f"\n[{match}] 예상: {expected:5} | 감지: {str(category):5} | 확률: {prob}")
@@ -177,9 +177,9 @@ from agent.mcp.tools import analyze_threat_full
 # MCP 도구로 전체 분석
 result = analyze_threat_full("엄마 나야 폰 고장났어 인증번호 좀 받아줘")
 
-print(f"카테고리: {result['summary']['category']}")
-print(f"패턴: {result['summary']['pattern']}")
-print(f"확률: {result['summary']['probability']}")
+print(f"카테고리: {result['summary.md']['category']}")
+print(f"패턴: {result['summary.md']['pattern']}")
+print(f"확률: {result['summary.md']['probability']}")
 print(f"MCP 요약: {result['mcp_summary']}")
 ```
 
@@ -248,10 +248,10 @@ tests = [
 passed = 0
 for expected, text in tests:
     result = analyze_incoming_message(text)
-    detected = result['summary']['category'] or 'SAFE'
+    detected = result['summary.md']['category'] or 'SAFE'
     if detected == expected or (detected is None and expected == "SAFE"):
         passed += 1
-        print(f"  [O] {expected}: {result['summary']['probability']}")
+        print(f"  [O] {expected}: {result['summary.md']['probability']}")
     else:
         print(f"  [X] 예상 {expected}, 감지 {detected}")
 

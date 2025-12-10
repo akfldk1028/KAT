@@ -398,7 +398,7 @@ def analyze_incoming_message(text: str) -> Dict[str, Any]:
             "recommended_action": response_template["action"],
             "display_color": response_template["color"]
         },
-        "summary": {
+        "summary.md": {
             "probability": f"{threats['scam_probability']}%",
             "category": threats["primary_pattern"],  # A-1, B-2 형식으로 출력
             "category_main": threats["primary_category"],  # A, B, C

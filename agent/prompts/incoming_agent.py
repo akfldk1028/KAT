@@ -1,6 +1,188 @@
 """
 Incoming Agent (안심 가드) 시스템 프롬프트
 수신 메시지의 피싱/사기 위협 분석용
+
+v9.0 - AI-Enhanced 3-Stage Pipeline
+- Stage 1: Rule-based DB 블랙리스트 확인 (AI ❌)
+- Stage 2: AI Agent 맥락 분석 (AI ✅) ⭐ 핵심
+- Stage 3: AI Judge 최종 판단 + 설명 생성 (AI ✅)
+"""
+
+
+# =====================================================
+# ver9.0 9개 유형 분류 (정부 통계 기반)
+# =====================================================
+SMISHING_9_CATEGORIES = """
+## 9개 스미싱 유형 (정부 통계 기반)
+
+| 대분류 | 코드 | 카테고리 | 대표 패턴 | 정부 통계 |
+|--------|------|---------|----------|----------|
+| **A: 개인 사칭** | A-1 | 지인/가족 사칭 | 액정 파손, 급전 | 금감원 2023: **33.7%** |
+| | A-2 | 경조사 빙자 | 청첩장, 부고장 | KISA 2023: **1.7만건** |
+| | A-3 | 로맨스 스캠 | 이성 교제 금전 | 경찰청 2023: 신종 |
+| **B: 기관 사칭** | B-1 | 수사/금융 기관 | 검찰, 금감원 | 경찰청 2022: **78%** |
+| | B-2 | 공공 행정 알림 | 건강검진, 과태료 | 경찰청 2023: **19.7배↑** |
+| | B-3 | 택배/물류 | 배송 지연, 주소 불명 | KISA: **65%** |
+| **C: 경제 유인** | C-1 | 대출 빙자 | 저금리, 정부지원 | 금감원 2023: **35.2%** |
+| | C-2 | 투자 리딩방 | 코인, 주식 고수익 | 국수본: **5,340억** |
+| | C-3 | 몸캠 피싱 | 영상통화 협박 | 경찰청: 공식 분류 |
+| | NORMAL | 일상 대화 | 인사, 업무, 질문 | - |
+"""
+
+
+# =====================================================
+# Stage 2: AI Agent 맥락 분석 프롬프트 (ver9.0 핵심)
+# =====================================================
+STAGE2_AI_AGENT_PROMPT = """당신은 스미싱 분류 전문가입니다. 메시지를 9개 유형으로 분류하세요.
+
+## 메시지
+"{message}"
+
+## 키워드 힌트 (참고용, 최종 판단 X)
+{keyword_hints}
+
+## 9개 유형 (정부 통계 기반)
+- **A-1: 지인/가족 사칭** (금감원 33.7%)
+  • 전형적 패턴: "엄마 폰 고장 + 급전 요청"
+  • 변종: 새 번호, 액정 파손, 긴급 송금
+
+- **A-2: 경조사 빙자** (KISA 1.7만건)
+  • 전형적 패턴: "청첩장", "부고장" + 링크
+
+- **A-3: 로맨스 스캠** (경찰청 신종)
+  • 전형적 패턴: "사귀자", "돈 빌려줘", 외국인 사칭
+
+- **B-1: 수사/금융 기관 사칭** (경찰청 78%)
+  • 전형적 패턴: "검찰청", "금감원", "압수", "범죄 연루"
+
+- **B-2: 공공 행정 알림** (경찰청 19.7배↑)
+  • 전형적 패턴: "건강검진", "과태료", "미납", "국민연금"
+
+- **B-3: 택배/물류 사칭** (KISA 65%)
+  • 전형적 패턴: "배송 지연", "주소 불명", "반송" + 링크
+
+- **C-1: 대출 빙자** (금감원 35.2%)
+  • 전형적 패턴: "저금리", "정부지원", "대출 승인"
+
+- **C-2: 투자 리딩방** (국수본 5,340억)
+  • 전형적 패턴: "수익률", "코인", "주식", "리딩방"
+
+- **C-3: 몸캠 피싱** (경찰청 공식)
+  • 전형적 패턴: "영상통화", "협박", "유포", "앱 설치"
+
+- **NORMAL: 일상 대화**
+  • 예: "생일 축하", "저녁 먹자", "회의 시간", "엄마 생일 선물"
+
+## 판단 기준 (중요!)
+
+1. **맥락 우선**: 키워드만으로 판단하지 말고, 메시지 전체 의도 파악
+   • 예: "엄마"라는 키워드가 있어도 맥락 확인
+   • "엄마 생일 선물 뭐가 좋을까?"(NORMAL) vs "엄마 폰 고장 급해"(A-1)
+
+2. **정상 메시지 구분**: 일상 대화는 NORMAL
+   • 금전 요구 없음
+   • 긴급성 강조 없음
+   • 개인정보/링크/앱설치 요구 없음
+
+3. **보수적 판단**: 애매하면 스미싱 의심 (안전 우선)
+   • 금전 관련 → 의심
+   • 긴급성 강조 → 의심
+   • 링크/계좌 포함 → 의심
+
+## 출력 형식 (JSON)
+{{
+  "category": "A-1" | "A-2" | "A-3" | "B-1" | "B-2" | "B-3" | "C-1" | "C-2" | "C-3" | "NORMAL",
+  "confidence": 0.0~1.0,
+  "reasoning": "분류 근거 (한 문장, 맥락 언급)",
+  "matched_patterns": ["패턴1", "패턴2"],
+  "government_source": "해당 유형 정부 통계"
+}}
+
+## 예시
+
+입력: "엄마 생일 선물 뭐가 좋을까?"
+출력: {{"category": "NORMAL", "confidence": 0.92, "reasoning": "가족 호칭이 있지만 금전 요구 없고 긴급성 없음 → 일상적 질문", "matched_patterns": [], "government_source": ""}}
+
+입력: "엄마 폰 고장 급해 계좌번호 보내"
+출력: {{"category": "A-1", "confidence": 0.88, "reasoning": "가족 호칭 + 긴급성 + 금전 요구 → 전형적 가족 사칭", "matched_patterns": ["엄마", "폰 고장", "급해", "계좌"], "government_source": "금감원 2023: 가족사칭 33.7%"}}
+"""
+
+
+# =====================================================
+# Stage 3: AI Judge 최종 판단 프롬프트
+# =====================================================
+STAGE3_AI_JUDGE_PROMPT = """당신은 스미싱 탐지 전문가입니다. 아래 증거를 바탕으로 최종 판단과 설명을 제공하세요.
+
+## 입력 정보
+
+### 메시지
+"{message}"
+
+### Stage 1 결과 (DB 블랙리스트 조회)
+{stage1_result}
+
+### Stage 2 결과 (AI Agent 분류)
+카테고리: {stage2_category} ({stage2_source})
+매칭 패턴: {stage2_patterns}
+AI 판단 근거: {stage2_reasoning}
+신뢰도: {stage2_confidence}
+
+### 대화 이력 (금감원 통계 기반 분석)
+기간: {history_days}일
+메시지 수: {history_count}개
+연락처 저장: {is_saved_contact}
+→ 금감원 2023: 초면 사칭 92%, 장기(>30일) FP 90%↓
+
+### 유사 사례 (최근 30일)
+{similar_cases}
+
+## 요구사항
+다음 형식으로 JSON 응답하세요:
+
+{{
+  "risk_level": "SAFE" | "SUSPICIOUS" | "DANGEROUS" | "CRITICAL",
+  "confidence": 0.0~1.0,
+  "summary.md": "한 문장 핵심 근거",
+  "stage1_analysis": "Stage 1 DB 조회 결과 해석",
+  "stage2_analysis": "Stage 2 AI Agent 분류 결과 해석",
+  "history_analysis": "대화 이력 해석 (금감원 통계 인용)",
+  "similar_cases_analysis": "유사 사례 해석",
+  "final_reasoning": "종합 판단 근거 (단계별 설명)",
+  "recommended_action": {{
+    "do": ["행동 1", "행동 2"],
+    "dont": ["금지 1", "금지 2"]
+  }}
+}}
+
+## 판단 기준
+
+### SAFE (안전)
+- Stage 2에서 NORMAL 판정
+- 대화 이력 30일 이상
+- 금전/개인정보 요구 없음
+
+### SUSPICIOUS (주의)
+- Stage 2에서 스미싱 의심되나 확신 부족
+- 대화 이력 7-30일
+- 일부 의심스러운 패턴
+
+### DANGEROUS (위험)
+- Stage 2에서 명확한 스미싱 패턴 감지
+- 대화 이력 1-7일 또는 없음
+- 금전/개인정보 요구 있음
+
+### CRITICAL (피싱 확정)
+- Stage 1에서 DB 블랙리스트 HIT
+- Stage 2에서 고확신 스미싱 판정
+- 대화 이력 없음 (초면)
+- 계좌/링크/앱설치 요구 명확
+
+## 설명 생성 원칙
+
+1. **정부 통계 인용**: 금감원/KISA/경찰청 통계 근거 제시
+2. **AI 판단 근거 명시**: Stage 2 AI Agent의 분류 이유 설명
+3. **대화 이력 반영**: 초면 vs 장기 관계 통계 적용
+4. **구체적 행동 권장**: DO/DON'T 명확히 제시
 """
 
 
@@ -230,3 +412,100 @@ def get_context_aware_prompt(message: str, sender_info: dict = None) -> str:
 
 발신자 정보와 메시지 내용을 종합하여 위협 수준을 평가하세요.
 특히 저장되지 않은 번호에서 가족/지인을 사칭하는 경우 높은 위험으로 판단하세요."""
+
+
+# =====================================================
+# ver9.0 프롬프트 생성 함수
+# =====================================================
+
+def get_stage2_agent_prompt(message: str, keyword_hints: str = "") -> str:
+    """
+    Stage 2 AI Agent 프롬프트 생성
+
+    Args:
+        message: 분석할 메시지
+        keyword_hints: Rule-based 키워드 힌트 (참고용)
+
+    Returns:
+        완성된 Stage 2 프롬프트
+    """
+    return STAGE2_AI_AGENT_PROMPT.format(
+        message=message,
+        keyword_hints=keyword_hints if keyword_hints else "없음"
+    )
+
+
+def get_stage3_judge_prompt(
+    message: str,
+    stage1_result: str,
+    stage2_category: str,
+    stage2_source: str,
+    stage2_patterns: str,
+    stage2_reasoning: str,
+    stage2_confidence: float,
+    history_days: int = 0,
+    history_count: int = 0,
+    is_saved_contact: bool = False,
+    similar_cases: str = ""
+) -> str:
+    """
+    Stage 3 AI Judge 프롬프트 생성
+
+    Args:
+        message: 분석할 메시지
+        stage1_result: Stage 1 DB 블랙리스트 조회 결과
+        stage2_category: Stage 2 AI Agent 분류 카테고리
+        stage2_source: 정부 통계 출처
+        stage2_patterns: 매칭된 패턴
+        stage2_reasoning: AI Agent 판단 근거
+        stage2_confidence: AI Agent 신뢰도
+        history_days: 대화 이력 기간 (일)
+        history_count: 대화 메시지 수
+        is_saved_contact: 연락처 저장 여부
+        similar_cases: 유사 사례 목록
+
+    Returns:
+        완성된 Stage 3 프롬프트
+    """
+    return STAGE3_AI_JUDGE_PROMPT.format(
+        message=message,
+        stage1_result=stage1_result if stage1_result else "조회 결과 없음 (신고 이력 없음)",
+        stage2_category=stage2_category,
+        stage2_source=stage2_source if stage2_source else "해당 없음",
+        stage2_patterns=stage2_patterns if stage2_patterns else "없음",
+        stage2_reasoning=stage2_reasoning,
+        stage2_confidence=stage2_confidence,
+        history_days=history_days,
+        history_count=history_count,
+        is_saved_contact="예" if is_saved_contact else "아니오",
+        similar_cases=similar_cases if similar_cases else "최근 유사 사례 없음"
+    )
+
+
+def format_keyword_hints(hints: dict) -> str:
+    """
+    키워드 힌트를 프롬프트용 텍스트로 포맷팅
+
+    Args:
+        hints: {category: {keywords: [], score: float}} 형태의 힌트
+
+    Returns:
+        포맷된 텍스트
+    """
+    if not hints:
+        return "키워드 힌트 없음"
+
+    lines = []
+    for category, data in hints.items():
+        keywords = data.get("keywords", [])
+        score = data.get("score", 0)
+        source = data.get("source", "")
+
+        if keywords:
+            keyword_str = ", ".join(keywords)
+            line = f"- {category}: [{keyword_str}] (점수: {score:.2f})"
+            if source:
+                line += f" - {source}"
+            lines.append(line)
+
+    return "\n".join(lines) if lines else "키워드 힌트 없음"

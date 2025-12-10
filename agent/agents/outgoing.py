@@ -237,5 +237,5 @@ class OutgoingAgent(BaseAgent):
             "pii_scan": pii_result,
             "risk_evaluation": risk_result,
             "recommended_action": action,
-            "summary": summary
+            "summary.md": summary
         }

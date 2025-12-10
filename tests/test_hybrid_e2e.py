@@ -148,7 +148,7 @@ def test_scan_threats():
 
         # 전체 분석
         full_result = analyze_incoming_message(case['message'])
-        category = full_result.get('summary', {}).get('category', 'N/A')
+        category = full_result.get('summary.md', {}).get('category', 'N/A')
         risk_level = full_result.get('final_assessment', {}).get('risk_level', 'N/A')
         scam_prob = full_result.get('final_assessment', {}).get('scam_probability', 0)
 
@@ -182,8 +182,8 @@ def test_4stage_pipeline():
     # Stage 1: 텍스트 패턴 분석
     print("\n--- Stage 1: 텍스트 패턴 분석 ---")
     stage1 = analyze_incoming_message(message)
-    print(f"  카테고리: {stage1.get('summary', {}).get('category', 'N/A')}")
-    print(f"  패턴: {stage1.get('summary', {}).get('pattern', 'N/A')}")
+    print(f"  카테고리: {stage1.get('summary.md', {}).get('category', 'N/A')}")
+    print(f"  패턴: {stage1.get('summary.md', {}).get('pattern', 'N/A')}")
     print(f"  위험도: {stage1.get('final_assessment', {}).get('risk_level', 'N/A')}")
     print(f"  사기확률: {stage1.get('final_assessment', {}).get('scam_probability', 0)}%")
 
@@ -338,7 +338,7 @@ def test_context_analyzer():
     for msg, expected_cat in test_messages:
         print(f"\n[메시지] {msg[:30]}...")
         result = analyze_incoming_message(msg)
-        category = result.get("summary", {}).get("category", "NORMAL")
+        category = result.get("summary.md", {}).get("category", "NORMAL")
         cialdini = CIALDINI_MAPPING.get(category, [])
 
         print(f"  category: {category}")

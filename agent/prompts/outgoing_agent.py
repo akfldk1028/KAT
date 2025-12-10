@@ -141,7 +141,7 @@ scan_pii + evaluate_risk를 한 번에 수행합니다.
 Action: analyze_full
 Action Input: {"text": "분석할 텍스트"}
 ```
-반환: pii_scan, risk_evaluation, recommended_action, summary
+반환: pii_scan, risk_evaluation, recommended_action, summary.md
 """
 
 # ReAct 시스템 프롬프트 (동적 생성)
@@ -220,7 +220,7 @@ User: 내 주민번호 900101-1234567
 Thought: 주민등록번호 패턴입니다. CRITICAL 항목입니다.
 Action: analyze_full
 Action Input: {{"text": "내 주민번호 900101-1234567"}}
-Observation: {{"risk_evaluation": {{"final_risk": "CRITICAL"}}, "summary": "1종의 민감정보 감지: 주민등록번호. 시크릿 전송 필수"}}
+Observation: {{"risk_evaluation": {{"final_risk": "CRITICAL"}}, "summary.md": "1종의 민감정보 감지: 주민등록번호. 시크릿 전송 필수"}}
 Thought: 주민등록번호는 단독으로도 CRITICAL입니다.
 Answer: {{"risk_level": "CRITICAL", "detected_pii": ["주민등록번호"], "reasons": ["주민등록번호 패턴이 감지되었습니다."], "is_secret_recommended": true, "recommended_action": "시크릿 전송 필수"}}
 

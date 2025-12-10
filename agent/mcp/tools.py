@@ -98,23 +98,23 @@ def analyze_incoming(
     sender_id: str = None,
     user_id: str = None,
     conversation_history: List[Dict] = None,
-    use_ai: bool = False
+    use_ai: bool = True
 ) -> AnalysisResponse:
     """
     Analyze incoming message for phishing or scams.
     수신 메시지의 피싱/사기 위협을 탐지합니다.
 
-    v2.0: 대화 히스토리 기반 맥락 분석 지원
-    - conversation_history: 최근 대화 목록 (시간순)
-    - Agent B가 대화 흐름을 분석하여 사기 "가능성"을 판단
-    - 단일 메시지가 아닌 전체 대화 맥락을 봄
+    v9.0: AI-Enhanced 3-Stage Pipeline (AI 참여율 95%)
+    - Stage 1: DB 블랙리스트 확인 (5%, <10ms, AI X)
+    - Stage 2: AI Agent 맥락 분석 (85%, <50ms, AI O)
+    - Stage 3: AI Judge 최종 판단 (10%, <100ms, AI O)
 
     Args:
         text: 분석할 메시지 내용
         sender_id: 발신자 ID (선택)
         user_id: 수신자 ID (선택)
         conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
-        use_ai: Kanana Safeguard AI 사용 여부 (기본: False)
+        use_ai: AI 분석 활성화 (기본: True) - ver9.0 3-Stage Pipeline
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
@@ -353,7 +353,7 @@ def analyze_full(text: str) -> Dict[str, Any]:
         pii_scan: PII 스캔 결과
         risk_evaluation: 위험도 평가 결과
         recommended_action: 권장 조치
-        summary: 분석 요약 (한글)
+        summary.md: 분석 요약 (한글)
     """
     # 1. PII 스캔
     pii_result = detect_pii(text)
@@ -376,7 +376,7 @@ def analyze_full(text: str) -> Dict[str, Any]:
         "pii_scan": pii_result,
         "risk_evaluation": risk_result,
         "recommended_action": action,
-        "summary": summary
+        "summary.md": summary
     }
 
 
@@ -523,15 +523,15 @@ def analyze_threat_full(text: str) -> Dict[str, Any]:
         url_analysis: URL 분석 결과
         scenario_match: 시나리오 매칭 결과
         final_assessment: 최종 평가 (점수, 레벨, 경고, 권장조치)
-        summary: 분석 요약
+        summary.md: 분석 요약
     """
     result = analyze_incoming_message(text)
 
     # 요약 추가 (새 MECE 카테고리 기반)
     risk_level = result["final_assessment"]["risk_level"]
     scam_probability = result["final_assessment"]["scam_probability"]
-    category = result["summary"]["category"]  # A-1, B-2 등
-    pattern_name = result["summary"]["pattern"]
+    category = result["summary.md"]["category"]  # A-1, B-2 등
+    pattern_name = result["summary.md"]["pattern"]
 
     if risk_level == "safe":
         summary = "안전한 메시지입니다. 위협 요소가 감지되지 않았습니다."
@@ -738,7 +738,7 @@ def analyze_incoming_full(
         stage2_scam_check: 2단계 신고 DB 조회 결과
         stage3_sender_trust: 3단계 발신자 분석 결과
         stage4_final_policy: 4단계 최종 정책
-        summary: 분석 요약
+        summary.md: 분석 요약
         risk_level: 최종 위험 레벨
         recommended_action: 권장 조치
     """
@@ -777,8 +777,8 @@ def analyze_incoming_full(
 
     # 요약 생성 (새 MECE 카테고리 기반)
     final_level = stage4["final_risk_level"]  # 대문자 (LOW/MEDIUM/HIGH/CRITICAL)
-    category = stage1.get("summary", {}).get("category")  # A-1, B-2 등
-    pattern_name = stage1.get("summary", {}).get("pattern", "")
+    category = stage1.get("summary.md", {}).get("category")  # A-1, B-2 등
+    pattern_name = stage1.get("summary.md", {}).get("pattern", "")
     scam_prob = stage1.get("final_assessment", {}).get("scam_probability", 0)
 
     summary_messages = {
@@ -793,7 +793,7 @@ def analyze_incoming_full(
         "stage2_scam_check": stage2,
         "stage3_sender_trust": stage3,
         "stage4_final_policy": stage4,
-        "summary": summary_messages.get(final_level, "분석 완료"),
+        "summary.md": summary_messages.get(final_level, "분석 완료"),
         "risk_level": final_level,
         "recommended_action": stage4["policy"].get("action_type", "none"),
         "ui_warning": format_warning_for_ui(stage4["policy"])
@@ -1008,7 +1008,7 @@ def context_analyzer_mcp(message: str, context: List[str] = None) -> Dict[str, A
     result = analyze_incoming_message(message)
 
     # 카테고리 및 기본 정보 추출
-    summary = result.get("summary", {})
+    summary = result.get("summary.md", {})
     category = summary.get("category", "NORMAL")
     pattern_name = summary.get("pattern", "정상 메시지")
 
