@@ -1,5 +1,5 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "last_updated": "2025-12-09",
   "categories": {
     "personal_info": {
@@ -25,7 +25,7 @@
           "name_ko": "생년월일",
           "name_en": "Date of Birth",
           "risk_level": "LOW",
-          "regex": "(?:(?:19[2-9]\\d|200\\d|201[0-5])[.\\-/]\\d{1,2}[.\\-/]\\d{1,2}|(?:19[2-9]\\d|200\\d|201[0-5])년\\s*\\d{1,2}월\\s*\\d{1,2}일|[0-9]{2}년생|[0-9]{2,4}년\\s*\\d{1,2}월생)",
+          "regex": "(?:(?:19[2-9]\\d|200\\d|201[0-5])[.\\-/]\\d{1,2}[.\\-/]\\d{1,2}|(?:19[2-9]\\d|200\\d|201[0-5])년\\s*\\d{1,2}월\\s*\\d{1,2}일|[0-9]{2,4}년생|[0-9]{2,4}년\\s*\\d{1,2}월생)",
           "keywords": [
             "생년월일",
             "생일",
@@ -33,7 +33,21 @@
             "월생"
           ],
           "requires_ai": false,
-          "note": "1920~2015년 사이만 매칭 (미래 날짜 제외)"
+          "note": "1920~2015년 사이만 매칭. 2-4자리 년생 포함 (90년생, 1990년생 모두 감지)"
+        },
+        {
+          "id": "gender",
+          "name_ko": "성별",
+          "name_en": "Gender",
+          "risk_level": "LOW",
+          "regex": "남자|여자|남성|여성",
+          "keywords": [
+            "성별",
+            "남자",
+            "여자"
+          ],
+          "requires_ai": false,
+          "note": "Tier 3 조합 감지용 - 단독으로는 위험도 낮음"
         },
         {
           "id": "phone",
@@ -53,14 +67,15 @@
           "id": "address",
           "name_ko": "주소",
           "name_en": "Address",
-          "risk_level": "MEDIUM",
-          "regex": null,
+          "risk_level": "LOW",
+          "regex": "[가-힣]{1,10}(시|도)\\s*[가-힣]{1,10}(구|군|시)",
           "keywords": [
             "주소",
             "거주지",
             "사는곳"
           ],
-          "requires_ai": true
+          "requires_ai": false,
+          "note": "Tier 3 조합 감지용 - 시/도 + 구/군/시 패턴 매칭"
         },
         {
           "id": "apartment_unit",
@@ -106,6 +121,19 @@
             "주민등록번호"
           ],
           "requires_ai": false
+        },
+        {
+          "id": "resident_id_masked",
+          "name_ko": "주민등록번호(마스킹)",
+          "name_en": "Masked Resident Registration Number",
+          "risk_level": "HIGH",
+          "regex": "\\d{6}[\\-/]?[1-4][*X]{5,7}",
+          "keywords": [
+            "주민번호",
+            "주민등록번호"
+          ],
+          "requires_ai": false,
+          "note": "OCR에서 마스킹된 주민번호 패턴 감지 (예: 501041-1******)"
         },
         {
           "id": "passport",
@@ -480,8 +508,8 @@
             "name",
             "phone"
           ],
-          "result_risk": "HIGH",
-          "reason": "이름+전화번호 조합으로 본인인증 우회 가능",
+          "result_risk": "CRITICAL",
+          "reason": "이름+전화번호 조합으로 개인 특정 가능 (제2원칙)",
           "_comment": "[수정] Tier 2+3 조합 규칙 추가 - 프롬프트와 일치"
         },
         {

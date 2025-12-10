@@ -65,15 +65,19 @@ def _get_incoming_agent():
 
 
 @mcp.tool()
-def analyze_outgoing(text: str, use_ai: bool = False) -> AnalysisResponse:
+def analyze_outgoing(text: str, use_ai: bool = True) -> AnalysisResponse:
     """
     Analyze outgoing message for sensitive information.
     발신 메시지의 민감정보(계좌번호, 주민번호 등)를 감지합니다.
 
+    하이브리드 분석:
+    - Rule-based 패턴 매칭 (항상 실행)
+    - AI 분석 (use_ai=True, 추가 실행)
+    - 둘 중 높은 위험도 사용
+
     Args:
         text: 분석할 메시지 내용
-        use_ai: Kanana LLM 사용 여부 (기본: False = rule-based 분석)
-                True로 설정하면 Kanana Instruct 모델이 ReAct 패턴으로 분석
+        use_ai: 하이브리드 분석 활성화 (기본: True)
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치

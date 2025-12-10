@@ -477,7 +477,7 @@ async def api_analyze_text_from_image(request: ImageTextAnalysisRequest):
 @app.post("/api/agents/analyze/image", response_model=AnalysisResponse)
 async def api_analyze_image(
     file: UploadFile = File(...),
-    use_ai: bool = False  # Query parameter로 전달
+    use_ai: bool = True  # 기본값 True - 하이브리드 방식 (Rule-based + AI)
 ):
     """
     이미지 분석 - Vision OCR + PII 감지
@@ -485,10 +485,12 @@ async def api_analyze_image(
 
     순차 처리:
     1. Kanana Vision → 이미지에서 텍스트 추출
-    2. 추출된 텍스트를 rule-based 또는 AI로 분석
+    2. 추출된 텍스트를 하이브리드 방식으로 분석 (Rule-based + AI)
 
-    use_ai=True: Kanana Instruct로 ReAct 분석
-    use_ai=False: Rule-based 패턴 매칭 (기본값)
+    하이브리드 방식:
+    - Rule-based 패턴 매칭 (항상 실행)
+    - AI 분석 (use_ai=True일 때 추가 실행)
+    - 둘 중 높은 위험도 사용
     """
     # 임시 파일로 저장
     temp_path = None

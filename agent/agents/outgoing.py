@@ -27,10 +27,11 @@ class OutgoingAgent(BaseAgent):
 
     def analyze(self, text: str, use_ai: bool = True, **kwargs) -> AnalysisResponse:
         """
-        발신 메시지 민감정보 분석 (2-Tier 방식)
+        발신 메시지 민감정보 분석 (하이브리드 방식)
 
-        Tier 1: 빠른 Rule-based 필터링 (모든 메시지에 적용)
-        Tier 2: LLM 정밀 분석 (의심되는 메시지에만 적용, use_ai=True일 때)
+        1. Rule-based 패턴 매칭 (빠름, 확실한 패턴 감지)
+        2. AI 분석 (use_ai=True일 때, 맥락 이해)
+        3. 둘 중 높은 위험도 사용
 
         Args:
             text: 분석할 메시지
@@ -39,9 +40,8 @@ class OutgoingAgent(BaseAgent):
         Returns:
             AnalysisResponse: 분석 결과
         """
-        # Tier 1: 빠른 필터링 - 숫자 패턴이 있는지 체크
+        # Step 0: 빠른 필터링 - 의심스러운 패턴이 없으면 바로 통과
         if not self._has_suspicious_pattern(text):
-            # 의심스러운 패턴 없음 → 바로 통과
             return AnalysisResponse(
                 risk_level=RiskLevel.LOW,
                 reasons=[],
@@ -49,11 +49,35 @@ class OutgoingAgent(BaseAgent):
                 is_secret_recommended=False
             )
 
-        # Tier 2: 의심스러운 패턴 발견 → 정밀 분석
+        # Step 1: Rule-based 분석 (항상 실행 - 확실한 패턴 감지)
+        rule_result = self._analyze_rule_based(text)
+
+        # Step 2: AI 분석 (use_ai=True일 때)
         if use_ai:
-            return self._analyze_with_ai(text)
-        else:
-            return self._analyze_rule_based(text)
+            ai_result = self._analyze_with_ai(text)
+
+            # Step 3: 하이브리드 - 둘 중 높은 위험도 사용
+            risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
+
+            if risk_order[rule_result.risk_level.value] >= risk_order[ai_result.risk_level.value]:
+                # Rule-based가 더 높거나 같음 → Rule 결과 + AI 이유 병합
+                combined_reasons = list(rule_result.reasons)
+                for reason in ai_result.reasons:
+                    if reason not in combined_reasons:
+                        combined_reasons.append(reason)
+
+                return AnalysisResponse(
+                    risk_level=rule_result.risk_level,
+                    reasons=combined_reasons,
+                    recommended_action=rule_result.recommended_action,
+                    is_secret_recommended=rule_result.is_secret_recommended
+                )
+            else:
+                # AI가 더 높음 → AI 결과 사용
+                return ai_result
+
+        # use_ai=False면 Rule-based만 사용
+        return rule_result
 
     def _has_suspicious_pattern(self, text: str) -> bool:
         """
@@ -73,6 +97,13 @@ class OutgoingAgent(BaseAgent):
         if re.search(r'\d{2,4}년생', text):
             return True
 
+        # 마스킹된 패턴 (OCR 결과에서 주민번호 등이 마스킹된 경우)
+        # 예: 501041-1******* 또는 ******-******* 형태
+        if re.search(r'\d{6}[-/]?[1-4][*X]{5,7}', text):
+            return True
+        if re.search(r'[*X]{6,}', text):  # 연속된 마스킹 문자
+            return True
+
         # Tier 1-2 민감정보 관련 키워드 (즉시 True)
         sensitive_keywords = [
             '계좌', '통장', '카드', '번호',
@@ -81,6 +112,19 @@ class OutgoingAgent(BaseAgent):
             '송금', '이체', '입금'
         ]
         for keyword in sensitive_keywords:
+            if keyword in text:
+                return True
+
+        # 민감 문서 유형 키워드 (증명서, 등본 등 - 이미지 OCR에서 감지)
+        document_keywords = [
+            '가족관계', '증명서', '등본', '초본',
+            '주민등록', '운전면허', '건강보험',
+            '의료', '진단서', '처방전',
+            '소득', '재직', '졸업',
+            '인감', '법인', '사업자',
+            '출생', '혼인', '사망'
+        ]
+        for keyword in document_keywords:
             if keyword in text:
                 return True
 

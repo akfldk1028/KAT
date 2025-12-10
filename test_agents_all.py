@@ -28,7 +28,7 @@ AGENT_A_TESTS = [
     {
         "name": "계좌번호 감지",
         "text": "내 계좌번호는 110-123-456789이야",
-        "expected_risk": "MEDIUM",
+        "expected_risk": "CRITICAL",
         "expected_secret": True
     },
     # 주민등록번호
@@ -42,14 +42,14 @@ AGENT_A_TESTS = [
     {
         "name": "전화번호 감지",
         "text": "연락처는 010-1234-5678이야",
-        "expected_risk": "LOW",
-        "expected_secret": False
+        "expected_risk": "MEDIUM",
+        "expected_secret": True
     },
     # 신용카드번호
     {
         "name": "신용카드번호 감지",
         "text": "카드번호 1234-5678-9012-3456",
-        "expected_risk": "HIGH",
+        "expected_risk": "CRITICAL",
         "expected_secret": True
     },
     # 복합 민감정보
