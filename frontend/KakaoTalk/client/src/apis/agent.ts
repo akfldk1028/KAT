@@ -21,12 +21,17 @@ interface OCRResponse {
  * 이미지 분석 API (전체 Flow)
  * Vision OCR로 텍스트 추출 후 민감정보 분석
  *
+ * 하이브리드 분석:
+ * - Rule-based 패턴 매칭 (항상 실행)
+ * - AI 분석 (use_ai=true, 추가 실행)
+ * - 둘 중 높은 위험도 사용
+ *
  * @param imageFile 분석할 이미지 파일
- * @param useAi LLM 사용 여부 (기본: false = rule-based)
+ * @param useAi 하이브리드 분석 활성화 (기본: true)
  */
 export const analyzeImage = async (
   imageFile: File,
-  useAi: boolean = false
+  useAi: boolean = true
 ): Promise<SecurityAnalysis> => {
   const formData = new FormData();
   formData.append('file', imageFile);
@@ -85,16 +90,17 @@ export const analyzeTextFromImage = async (
  * 발신 메시지 분석 API (안심 전송)
  * 민감정보 감지 (계좌번호, 주민번호 등)
  *
- * 2-Tier 분석:
- * - Tier 1: 빠른 필터링 (~0ms)
- * - Tier 2: LLM 정밀 분석 (use_ai=true, ~1-3초)
+ * 하이브리드 분석:
+ * - Rule-based 패턴 매칭 (항상 실행)
+ * - AI 분석 (use_ai=true, 추가 실행)
+ * - 둘 중 높은 위험도 사용
  *
  * @param text 분석할 메시지
- * @param useAi LLM 사용 여부 (기본: false = rule-based)
+ * @param useAi 하이브리드 분석 활성화 (기본: true)
  */
 export const analyzeOutgoing = async (
   text: string,
-  useAi: boolean = false
+  useAi: boolean = true
 ): Promise<SecurityAnalysis> => {
   const response = await axios.post<SecurityAnalysis>(
     `${AGENT_HOST}/analyze/outgoing`,

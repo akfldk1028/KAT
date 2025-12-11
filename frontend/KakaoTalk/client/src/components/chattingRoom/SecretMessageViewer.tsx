@@ -127,7 +127,7 @@ const ContentSection = styled.div`
   overflow-y: auto;
 `;
 
-const MessageBox = styled.div`
+const MessageBox = styled.div<{ preventCapture?: boolean }>`
   background: #f5f5f5;
   border-radius: 16px;
   padding: 16px;
@@ -136,6 +136,17 @@ const MessageBox = styled.div`
   color: #1a1a1a;
   word-break: break-word;
   white-space: pre-wrap;
+
+  /* 캡처 방지 CSS */
+  ${({ preventCapture }) => preventCapture && `
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
+  `}
 `;
 
 const SecretImage = styled.img`
@@ -344,11 +355,13 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
             </TimerSection>
 
             <ContentSection>
-              <MessageBox>
+              <MessageBox preventCapture={content.prevent_capture}>
                 {content.message_type === 'image' ? (
                   <SecretImage
                     src={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
                     alt="시크릿 이미지"
+                    draggable={false}
+                    onContextMenu={(e) => content.prevent_capture && e.preventDefault()}
                   />
                 ) : (
                   content.message

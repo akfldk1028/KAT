@@ -1,6 +1,6 @@
 {
-  "version": "1.3.0",
-  "last_updated": "2025-11-29",
+  "version": "1.6.0",
+  "last_updated": "2025-12-09",
   "categories": {
     "personal_info": {
       "name_ko": "개인정보",
@@ -10,38 +10,72 @@
           "id": "name",
           "name_ko": "성명",
           "name_en": "Full Name",
-          "risk_level": "MEDIUM",
-          "regex": null,
-          "keywords": ["이름", "성명", "본명"],
-          "requires_ai": true
+          "risk_level": "LOW",
+          "regex": "(김|이|박|최|정|강|조|윤|장|임|한|오|서|신|권|황|안|송|류|홍|전|고|문|양|손|배|백|허|유|남|심|노|하|곽|성|차|주|우|구|표|제|남궁|황보|제갈|선우|사공)[가-힣]{1,2}",
+          "keywords": [
+            "이름",
+            "성명",
+            "본명"
+          ],
+          "requires_ai": false,
+          "note": "한국 대표 성씨 50개 + 복성(남궁,황보,제갈,선우,사공) 포함. 성씨+이름(1-2자) 패턴 매칭"
         },
         {
           "id": "birth_date",
           "name_ko": "생년월일",
           "name_en": "Date of Birth",
           "risk_level": "LOW",
-          "regex": "(?:(?:19[2-9]\\d|200\\d|201[0-5])[.\\-/]\\d{1,2}[.\\-/]\\d{1,2}|(?:19[2-9]\\d|200\\d|201[0-5])년\\s*\\d{1,2}월\\s*\\d{1,2}일|[0-9]{2}년생|[0-9]{2,4}년\\s*\\d{1,2}월생)",
-          "keywords": ["생년월일", "생일", "년생", "월생"],
+          "regex": "(?:(?:19[2-9]\\d|200\\d|201[0-5])[.\\-/]\\d{1,2}[.\\-/]\\d{1,2}|(?:19[2-9]\\d|200\\d|201[0-5])년\\s*\\d{1,2}월\\s*\\d{1,2}일|[0-9]{2,4}년생|[0-9]{2,4}년\\s*\\d{1,2}월생)",
+          "keywords": [
+            "생년월일",
+            "생일",
+            "년생",
+            "월생"
+          ],
           "requires_ai": false,
-          "note": "1920~2015년 사이만 매칭 (미래 날짜 제외)"
+          "note": "1920~2015년 사이만 매칭. 2-4자리 년생 포함 (90년생, 1990년생 모두 감지)"
+        },
+        {
+          "id": "gender",
+          "name_ko": "성별",
+          "name_en": "Gender",
+          "risk_level": "LOW",
+          "regex": "남자|여자|남성|여성",
+          "keywords": [
+            "성별",
+            "남자",
+            "여자"
+          ],
+          "requires_ai": false,
+          "note": "Tier 3 조합 감지용 - 단독으로는 위험도 낮음"
         },
         {
           "id": "phone",
           "name_ko": "전화번호",
           "name_en": "Phone Number",
-          "risk_level": "LOW",
+          "risk_level": "MEDIUM",
           "regex": "01[016789][\\s.\\-]?\\d{3,4}[\\s.\\-]?\\d{4}",
-          "keywords": ["전화번호", "휴대폰", "연락처", "폰번호"],
+          "keywords": [
+            "전화번호",
+            "휴대폰",
+            "연락처",
+            "폰번호"
+          ],
           "requires_ai": false
         },
         {
           "id": "address",
           "name_ko": "주소",
           "name_en": "Address",
-          "risk_level": "MEDIUM",
-          "regex": null,
-          "keywords": ["주소", "거주지", "사는곳"],
-          "requires_ai": true
+          "risk_level": "LOW",
+          "regex": "[가-힣]{1,10}(시|도)\\s*[가-힣]{1,10}(구|군|시)",
+          "keywords": [
+            "주소",
+            "거주지",
+            "사는곳"
+          ],
+          "requires_ai": false,
+          "note": "Tier 3 조합 감지용 - 시/도 + 구/군/시 패턴 매칭"
         },
         {
           "id": "apartment_unit",
@@ -49,16 +83,25 @@
           "name_en": "Apartment Unit",
           "risk_level": "MEDIUM",
           "regex": "\\d{1,4}동\\s*\\d{1,4}호",
-          "keywords": ["동", "호", "아파트"],
+          "keywords": [
+            "동",
+            "호",
+            "아파트"
+          ],
           "requires_ai": false
         },
         {
           "id": "email",
           "name_ko": "이메일 주소",
           "name_en": "Email Address",
-          "risk_level": "LOW",
+          "risk_level": "MEDIUM",
           "regex": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
-          "keywords": ["이메일", "메일", "email", "@"],
+          "keywords": [
+            "이메일",
+            "메일",
+            "email",
+            "@"
+          ],
           "requires_ai": false
         }
       ]
@@ -73,8 +116,24 @@
           "name_en": "Resident Registration Number",
           "risk_level": "CRITICAL",
           "regex": "\\d{6}[\\-/]?[1-4]\\d{6}",
-          "keywords": ["주민번호", "주민등록번호"],
+          "keywords": [
+            "주민번호",
+            "주민등록번호"
+          ],
           "requires_ai": false
+        },
+        {
+          "id": "resident_id_masked",
+          "name_ko": "주민등록번호(마스킹)",
+          "name_en": "Masked Resident Registration Number",
+          "risk_level": "HIGH",
+          "regex": "\\d{6}[\\-/]?[1-4][*X]{5,7}",
+          "keywords": [
+            "주민번호",
+            "주민등록번호"
+          ],
+          "requires_ai": false,
+          "note": "OCR에서 마스킹된 주민번호 패턴 감지 (예: 501041-1******)"
         },
         {
           "id": "passport",
@@ -82,7 +141,10 @@
           "name_en": "Passport Number",
           "risk_level": "CRITICAL",
           "regex": "[A-Z]{1,2}\\d{7,8}",
-          "keywords": ["여권번호", "여권"],
+          "keywords": [
+            "여권번호",
+            "여권"
+          ],
           "requires_ai": false
         },
         {
@@ -91,7 +153,10 @@
           "name_en": "Driver License Number",
           "risk_level": "HIGH",
           "regex": "\\d{2}-\\d{2}-\\d{6}-\\d{2}",
-          "keywords": ["면허번호", "운전면허"],
+          "keywords": [
+            "면허번호",
+            "운전면허"
+          ],
           "requires_ai": false
         },
         {
@@ -100,7 +165,9 @@
           "name_en": "Foreigner Registration Number",
           "risk_level": "CRITICAL",
           "regex": "\\d{6}-[5-8]\\d{6}",
-          "keywords": ["외국인등록번호"],
+          "keywords": [
+            "외국인등록번호"
+          ],
           "requires_ai": false
         }
       ]
@@ -113,18 +180,28 @@
           "id": "account",
           "name_ko": "계좌번호",
           "name_en": "Bank Account Number",
-          "risk_level": "MEDIUM",
+          "risk_level": "CRITICAL",
           "regex": "\\d{3}[\\-ㅡ]\\d{2,6}[\\-ㅡ]\\d{3,6}",
-          "keywords": ["계좌", "통장", "입금", "환불", "이체"],
+          "keywords": [
+            "계좌",
+            "통장",
+            "입금",
+            "환불",
+            "이체"
+          ],
           "requires_ai": false
         },
         {
           "id": "card",
           "name_ko": "신용카드번호",
           "name_en": "Credit Card Number",
-          "risk_level": "HIGH",
+          "risk_level": "CRITICAL",
           "regex": "\\d{4}-?\\d{4}-?\\d{4}-?\\d{4}",
-          "keywords": ["카드번호", "신용카드", "체크카드"],
+          "keywords": [
+            "카드번호",
+            "신용카드",
+            "체크카드"
+          ],
           "requires_ai": false
         },
         {
@@ -133,7 +210,11 @@
           "name_en": "Card Security Code",
           "risk_level": "HIGH",
           "regex": "(?:CVC|CVV|cvc|cvv|보안코드)[\\s:]*\\d{3,4}",
-          "keywords": ["CVC", "CVV", "보안코드"],
+          "keywords": [
+            "CVC",
+            "CVV",
+            "보안코드"
+          ],
           "requires_ai": false
         },
         {
@@ -142,7 +223,10 @@
           "name_en": "Card Expiry Date",
           "risk_level": "MEDIUM",
           "regex": "(?:유효기간|만료일|exp)[\\s:]*\\d{2}[/\\-]\\d{2,4}",
-          "keywords": ["유효기간", "만료일"],
+          "keywords": [
+            "유효기간",
+            "만료일"
+          ],
           "requires_ai": false
         }
       ]
@@ -157,7 +241,13 @@
           "name_en": "Password",
           "risk_level": "CRITICAL",
           "regex": "(?:비밀번호|비번|패스워드|password|pwd)[\\s:=는]*.{4,20}",
-          "keywords": ["비밀번호", "비번", "패스워드", "password", "아이디"],
+          "keywords": [
+            "비밀번호",
+            "비번",
+            "패스워드",
+            "password",
+            "아이디"
+          ],
           "requires_ai": false
         },
         {
@@ -166,7 +256,11 @@
           "name_en": "Login ID",
           "risk_level": "MEDIUM",
           "regex": "(?:아이디|ID|id)[\\s:=는]+[a-zA-Z0-9_]{4,20}",
-          "keywords": ["아이디", "ID", "로그인"],
+          "keywords": [
+            "아이디",
+            "ID",
+            "로그인"
+          ],
           "requires_ai": false
         },
         {
@@ -175,7 +269,11 @@
           "name_en": "API Key",
           "risk_level": "CRITICAL",
           "regex": "(?:api[_-]?key|token|secret)[\\s:=]+[a-zA-Z0-9_\\-]{20,}",
-          "keywords": ["api_key", "token", "secret"],
+          "keywords": [
+            "api_key",
+            "token",
+            "secret"
+          ],
           "requires_ai": false
         }
       ]
@@ -190,7 +288,10 @@
           "name_en": "Vehicle Registration Number",
           "risk_level": "MEDIUM",
           "regex": "\\d{2,3}[가-힣]\\s?\\d{4}",
-          "keywords": ["차량번호", "번호판"],
+          "keywords": [
+            "차량번호",
+            "번호판"
+          ],
           "requires_ai": false
         },
         {
@@ -199,7 +300,10 @@
           "name_en": "IP Address",
           "risk_level": "LOW",
           "regex": "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}",
-          "keywords": ["IP", "아이피"],
+          "keywords": [
+            "IP",
+            "아이피"
+          ],
           "requires_ai": false
         },
         {
@@ -208,7 +312,10 @@
           "name_en": "MAC Address",
           "risk_level": "LOW",
           "regex": "([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}",
-          "keywords": ["MAC", "맥주소"],
+          "keywords": [
+            "MAC",
+            "맥주소"
+          ],
           "requires_ai": false
         }
       ]
@@ -223,7 +330,15 @@
           "name_en": "Medical History",
           "risk_level": "HIGH",
           "regex": null,
-          "keywords": ["병력", "수술", "진료", "질병", "암", "당뇨", "고혈압"],
+          "keywords": [
+            "병력",
+            "수술",
+            "진료",
+            "질병",
+            "암",
+            "당뇨",
+            "고혈압"
+          ],
           "requires_ai": true
         },
         {
@@ -232,7 +347,11 @@
           "name_en": "Disability Information",
           "risk_level": "HIGH",
           "regex": null,
-          "keywords": ["장애", "장애등급", "장애유형"],
+          "keywords": [
+            "장애",
+            "장애등급",
+            "장애유형"
+          ],
           "requires_ai": true
         },
         {
@@ -241,7 +360,12 @@
           "name_en": "Medication/Health Check",
           "risk_level": "MEDIUM",
           "regex": null,
-          "keywords": ["투약", "약", "건강검진", "검진결과"],
+          "keywords": [
+            "투약",
+            "약",
+            "건강검진",
+            "검진결과"
+          ],
           "requires_ai": true
         }
       ]
@@ -256,7 +380,10 @@
           "name_en": "Signature",
           "risk_level": "MEDIUM",
           "regex": null,
-          "keywords": ["서명", "사인"],
+          "keywords": [
+            "서명",
+            "사인"
+          ],
           "requires_ai": true,
           "image_detection": true
         }
@@ -272,7 +399,10 @@
         "name_ko": "주민등록증",
         "name_en": "Resident ID Card",
         "risk_level": "CRITICAL",
-        "keywords": ["주민등록증", "신분증"],
+        "keywords": [
+          "주민등록증",
+          "신분증"
+        ],
         "image_detection": true
       },
       {
@@ -280,7 +410,10 @@
         "name_ko": "여권",
         "name_en": "Passport",
         "risk_level": "CRITICAL",
-        "keywords": ["여권", "passport"],
+        "keywords": [
+          "여권",
+          "passport"
+        ],
         "image_detection": true
       },
       {
@@ -288,7 +421,10 @@
         "name_ko": "운전면허증",
         "name_en": "Driver License",
         "risk_level": "HIGH",
-        "keywords": ["운전면허증", "면허증"],
+        "keywords": [
+          "운전면허증",
+          "면허증"
+        ],
         "image_detection": true
       },
       {
@@ -296,7 +432,10 @@
         "name_ko": "주민등록등본",
         "name_en": "Resident Registration",
         "risk_level": "HIGH",
-        "keywords": ["주민등록등본", "등본"],
+        "keywords": [
+          "주민등록등본",
+          "등본"
+        ],
         "image_detection": true
       },
       {
@@ -304,7 +443,10 @@
         "name_ko": "가족관계증명서",
         "name_en": "Family Relation Certificate",
         "risk_level": "HIGH",
-        "keywords": ["가족관계증명서", "가족관계"],
+        "keywords": [
+          "가족관계증명서",
+          "가족관계"
+        ],
         "image_detection": true
       },
       {
@@ -312,7 +454,9 @@
         "name_ko": "기본증명서",
         "name_en": "Basic Certificate",
         "risk_level": "MEDIUM",
-        "keywords": ["기본증명서"],
+        "keywords": [
+          "기본증명서"
+        ],
         "image_detection": true
       },
       {
@@ -320,7 +464,10 @@
         "name_ko": "종이서류",
         "name_en": "Paper Document",
         "risk_level": "MEDIUM",
-        "keywords": ["서류", "문서"],
+        "keywords": [
+          "서류",
+          "문서"
+        ],
         "image_detection": true
       }
     ]
@@ -357,43 +504,70 @@
       "description": "신원을 도용하여 대출, 휴대폰 개통 등에 악용 가능",
       "patterns": [
         {
-          "required": ["name", "phone"],
-          "result_risk": "HIGH",
-          "reason": "이름+전화번호 조합으로 본인인증 우회 가능",
+          "required": [
+            "name",
+            "phone"
+          ],
+          "result_risk": "CRITICAL",
+          "reason": "이름+전화번호 조합으로 개인 특정 가능 (제2원칙)",
           "_comment": "[수정] Tier 2+3 조합 규칙 추가 - 프롬프트와 일치"
         },
         {
-          "required": ["name", "resident_id"],
+          "required": [
+            "name",
+            "resident_id"
+          ],
           "result_risk": "CRITICAL",
           "reason": "이름과 주민번호 조합으로 신원도용 가능"
         },
         {
-          "required": ["name", "resident_id", "phone"],
+          "required": [
+            "name",
+            "resident_id",
+            "phone"
+          ],
           "result_risk": "CRITICAL",
           "reason": "본인인증 3요소(이름+주민번호+전화번호) 노출"
         },
         {
-          "required": ["name", "passport"],
+          "required": [
+            "name",
+            "passport"
+          ],
           "result_risk": "CRITICAL",
           "reason": "여권정보로 해외 신원도용 가능"
         },
         {
-          "required": ["name", "birth_date", "resident_id"],
+          "required": [
+            "name",
+            "birth_date",
+            "resident_id"
+          ],
           "result_risk": "CRITICAL",
           "reason": "신원확인 세트 완전 노출"
         },
         {
-          "required": ["name", "driver_license"],
+          "required": [
+            "name",
+            "driver_license"
+          ],
           "result_risk": "HIGH",
           "reason": "이름+운전면허로 신분증 위조 가능"
         },
         {
-          "required": ["name", "birth_date", "phone"],
+          "required": [
+            "name",
+            "birth_date",
+            "phone"
+          ],
           "result_risk": "HIGH",
           "reason": "본인인증 우회 가능한 정보 조합"
         },
         {
-          "required": ["name", "foreigner_id"],
+          "required": [
+            "name",
+            "foreigner_id"
+          ],
           "result_risk": "CRITICAL",
           "reason": "외국인 신원도용 가능"
         }
@@ -404,37 +578,60 @@
       "description": "보이스피싱, 금융사기에 악용 가능",
       "patterns": [
         {
-          "required": ["name", "account"],
+          "required": [
+            "name",
+            "account"
+          ],
           "result_risk": "HIGH",
           "reason": "금융사기 타겟팅 가능"
         },
         {
-          "required": ["name", "account", "phone"],
+          "required": [
+            "name",
+            "account",
+            "phone"
+          ],
           "result_risk": "CRITICAL",
           "reason": "보이스피싱 완벽 타겟 (이름+계좌+전화번호)"
         },
         {
-          "required": ["account", "card"],
+          "required": [
+            "account",
+            "card"
+          ],
           "result_risk": "CRITICAL",
           "reason": "금융정보 세트 노출"
         },
         {
-          "required": ["name", "card"],
+          "required": [
+            "name",
+            "card"
+          ],
           "result_risk": "HIGH",
           "reason": "카드 부정사용 위험"
         },
         {
-          "required": ["card", "cvc"],
+          "required": [
+            "card",
+            "cvc"
+          ],
           "result_risk": "CRITICAL",
           "reason": "카드번호+CVC로 실제 결제 가능"
         },
         {
-          "required": ["card", "card_expiry"],
+          "required": [
+            "card",
+            "card_expiry"
+          ],
           "result_risk": "HIGH",
           "reason": "카드번호+유효기간 노출"
         },
         {
-          "required": ["card", "cvc", "card_expiry"],
+          "required": [
+            "card",
+            "cvc",
+            "card_expiry"
+          ],
           "result_risk": "CRITICAL",
           "reason": "카드 결제 3요소 완전 노출"
         }
@@ -445,22 +642,36 @@
       "description": "물리적 위치 추적 및 스토킹에 악용 가능",
       "patterns": [
         {
-          "required": ["name", "address"],
+          "required": [
+            "name",
+            "address"
+          ],
           "result_risk": "HIGH",
           "reason": "물리적 위치 노출"
         },
         {
-          "required": ["name", "phone", "address"],
+          "required": [
+            "name",
+            "phone",
+            "address"
+          ],
           "result_risk": "CRITICAL",
           "reason": "완전한 연락처 정보 노출"
         },
         {
-          "required": ["name", "apartment_unit"],
+          "required": [
+            "name",
+            "apartment_unit"
+          ],
           "result_risk": "HIGH",
           "reason": "거주지 정보 노출"
         },
         {
-          "required": ["name", "apartment_unit", "vehicle_registration"],
+          "required": [
+            "name",
+            "apartment_unit",
+            "vehicle_registration"
+          ],
           "result_risk": "CRITICAL",
           "reason": "생활패턴 추적 가능"
         }
@@ -471,18 +682,29 @@
       "description": "온라인 계정 탈취에 악용 가능",
       "patterns": [
         {
-          "required": ["password"],
-          "any_of": ["name", "phone", "email"],
+          "required": [
+            "password"
+          ],
+          "any_of": [
+            "name",
+            "phone",
+            "email"
+          ],
           "result_risk": "CRITICAL",
           "reason": "계정 탈취 가능한 인증정보 조합"
         },
         {
-          "required": ["email", "password"],
+          "required": [
+            "email",
+            "password"
+          ],
           "result_risk": "CRITICAL",
           "reason": "이메일+비밀번호 크리덴셜 노출"
         },
         {
-          "required": ["api_key"],
+          "required": [
+            "api_key"
+          ],
           "result_risk": "CRITICAL",
           "reason": "API 키 단독 노출도 치명적"
         }
@@ -493,12 +715,18 @@
       "description": "스팸, 피싱 메일 타겟팅에 악용 가능",
       "patterns": [
         {
-          "required": ["email", "name"],
+          "required": [
+            "email",
+            "name"
+          ],
           "result_risk": "MEDIUM",
           "reason": "이메일+이름으로 표적 피싱 가능"
         },
         {
-          "required": ["email", "phone"],
+          "required": [
+            "email",
+            "phone"
+          ],
           "result_risk": "MEDIUM",
           "reason": "다중 채널 스팸 타겟팅 가능"
         }
@@ -509,17 +737,27 @@
       "description": "차별, 협박, 보험사기 등에 악용 가능",
       "patterns": [
         {
-          "required": ["name", "medical_history"],
+          "required": [
+            "name",
+            "medical_history"
+          ],
           "result_risk": "HIGH",
           "reason": "의료정보와 신원 연결"
         },
         {
-          "required": ["name", "resident_id", "medical_history"],
+          "required": [
+            "name",
+            "resident_id",
+            "medical_history"
+          ],
           "result_risk": "CRITICAL",
           "reason": "완전한 의료신원 노출"
         },
         {
-          "required": ["name", "disability"],
+          "required": [
+            "name",
+            "disability"
+          ],
           "result_risk": "HIGH",
           "reason": "장애정보 노출로 차별 위험"
         }
@@ -550,12 +788,18 @@
     ],
     "category_combination": [
       {
-        "categories": ["government_id", "financial_info"],
+        "categories": [
+          "government_id",
+          "financial_info"
+        ],
         "escalate_to": "CRITICAL",
         "reason": "신분증과 금융정보 동시 노출"
       },
       {
-        "categories": ["personal_info", "health_info"],
+        "categories": [
+          "personal_info",
+          "health_info"
+        ],
         "escalate_to": "HIGH",
         "reason": "개인정보와 건강정보 동시 노출"
       }

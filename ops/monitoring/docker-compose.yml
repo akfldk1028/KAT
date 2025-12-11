@@ -1,0 +1,92 @@
+# KAT DualGuard Monitoring Stack
+# Prometheus + Loki + Grafana (PLG Stack)
+# All components are open-source and FREE
+
+services:
+  # ===========================================
+  # Prometheus - Metrics Collection
+  # ===========================================
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: kat-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - kat-monitoring
+    restart: unless-stopped
+
+  # ===========================================
+  # Loki - Log Aggregation
+  # ===========================================
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: kat-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - kat-monitoring
+    restart: unless-stopped
+
+  # ===========================================
+  # Grafana - Visualization & Dashboards
+  # ===========================================
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: kat-grafana
+    ports:
+      - "3001:3000"  # 3001 to avoid conflict with React (3000)
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=katadmin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - kat-monitoring
+    restart: unless-stopped
+
+  # ===========================================
+  # Promtail - Log Collector (Optional)
+  # ===========================================
+  # promtail:
+  #   image: grafana/promtail:2.9.0
+  #   container_name: kat-promtail
+  #   volumes:
+  #     - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+  #     - /var/log:/var/log:ro
+  #   command: -config.file=/etc/promtail/config.yml
+  #   networks:
+  #     - kat-monitoring
+  #   restart: unless-stopped
+
+networks:
+  kat-monitoring:
+    driver: bridge
+    name: kat-monitoring
+
+volumes:
+  prometheus_data:
+    name: kat-prometheus-data
+  loki_data:
+    name: kat-loki-data
+  grafana_data:
+    name: kat-grafana-data

@@ -9,6 +9,20 @@ from mcp.server.fastmcp import FastMCP
 from typing import Dict, List, Any
 from ..core.models import RiskLevel, AnalysisResponse
 
+# === MCP 메트릭 (선택적 로드) ===
+_kat_metrics = None
+try:
+    import sys
+    from pathlib import Path
+    # ops/monitoring/metrics 경로 추가
+    _monitoring_path = Path(__file__).parent.parent.parent / "ops" / "monitoring"
+    if _monitoring_path.exists():
+        sys.path.insert(0, str(_monitoring_path))
+        from metrics import kat_metrics as _kat_metrics
+        print("[MCP Tools] 메트릭 모듈 로드 성공")
+except ImportError:
+    print("[MCP Tools] 메트릭 모듈 없음 (무시됨)")
+
 # Agent A (발신 보호) - PII 패턴 매칭
 from ..core.pattern_matcher import (
     get_pii_patterns,
@@ -51,39 +65,80 @@ def _get_incoming_agent():
 
 
 @mcp.tool()
-def analyze_outgoing(text: str, use_ai: bool = False) -> AnalysisResponse:
+def analyze_outgoing(text: str, use_ai: bool = True) -> AnalysisResponse:
     """
     Analyze outgoing message for sensitive information.
     발신 메시지의 민감정보(계좌번호, 주민번호 등)를 감지합니다.
 
+    하이브리드 분석:
+    - Rule-based 패턴 매칭 (항상 실행)
+    - AI 분석 (use_ai=True, 추가 실행)
+    - 둘 중 높은 위험도 사용
+
     Args:
         text: 분석할 메시지 내용
-        use_ai: Kanana LLM 사용 여부 (기본: False = rule-based 분석)
-                True로 설정하면 Kanana Instruct 모델이 ReAct 패턴으로 분석
+        use_ai: 하이브리드 분석 활성화 (기본: True)
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
-    agent = _get_outgoing_agent()
-    return agent.analyze(text, use_ai=use_ai)
+    # MCP 메트릭 기록
+    if _kat_metrics:
+        with _kat_metrics.measure_mcp_call("analyze_outgoing"):
+            agent = _get_outgoing_agent()
+            return agent.analyze(text, use_ai=use_ai)
+    else:
+        agent = _get_outgoing_agent()
+        return agent.analyze(text, use_ai=use_ai)
 
 
 @mcp.tool()
-def analyze_incoming(text: str, sender_id: str = None, use_ai: bool = False) -> AnalysisResponse:
+def analyze_incoming(
+    text: str,
+    sender_id: str = None,
+    user_id: str = None,
+    conversation_history: List[Dict] = None,
+    use_ai: bool = True
+) -> AnalysisResponse:
     """
     Analyze incoming message for phishing or scams.
     수신 메시지의 피싱/사기 위협을 탐지합니다.
 
+    v9.0: AI-Enhanced 3-Stage Pipeline (AI 참여율 95%)
+    - Stage 1: DB 블랙리스트 확인 (5%, <10ms, AI X)
+    - Stage 2: AI Agent 맥락 분석 (85%, <50ms, AI O)
+    - Stage 3: AI Judge 최종 판단 (10%, <100ms, AI O)
+
     Args:
         text: 분석할 메시지 내용
         sender_id: 발신자 ID (선택)
-        use_ai: Kanana Safeguard AI 사용 여부 (기본: False)
+        user_id: 수신자 ID (선택)
+        conversation_history: 대화 히스토리 [{sender_id, message, timestamp}]
+        use_ai: AI 분석 활성화 (기본: True) - ver9.0 3-Stage Pipeline
 
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
-    agent = _get_incoming_agent()
-    return agent.analyze(text, sender_id=sender_id, use_ai=use_ai)
+    # MCP 메트릭 기록
+    if _kat_metrics:
+        with _kat_metrics.measure_mcp_call("analyze_incoming"):
+            agent = _get_incoming_agent()
+            return agent.analyze(
+                text,
+                sender_id=sender_id,
+                user_id=user_id,
+                conversation_history=conversation_history,
+                use_ai=use_ai
+            )
+    else:
+        agent = _get_incoming_agent()
+        return agent.analyze(
+            text,
+            sender_id=sender_id,
+            user_id=user_id,
+            conversation_history=conversation_history,
+            use_ai=use_ai
+        )
 
 
 @mcp.tool()
@@ -105,12 +160,21 @@ def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
     Returns:
         AnalysisResponse: 위험도, 감지 이유, 권장 조치
     """
+    # MCP 메트릭 시작
+    if _kat_metrics:
+        _kat_metrics.mcp_active.labels(tool_name="analyze_image").inc()
+
+    import time
+    start_time = time.time()
+    status = "success"
+
     try:
         # Step 1: Vision 모델로 OCR (lazy import)
         from ..llm.kanana import LLMManager
         print("[analyze_image] Step 1: Loading Vision model for OCR...")
         vision_model = LLMManager.get("vision")
         if not vision_model:
+            status = "error"
             return AnalysisResponse(
                 risk_level=RiskLevel.LOW,
                 reasons=["Vision Model loading failed"],
@@ -130,12 +194,20 @@ def analyze_image(image_path: str, use_ai: bool = True) -> AnalysisResponse:
         return analyze_outgoing(extracted_text, use_ai=use_ai)
 
     except Exception as e:
+        status = "error"
         return AnalysisResponse(
             risk_level=RiskLevel.LOW,
             reasons=[f"이미지 분석 중 오류 발생: {str(e)}"],
             recommended_action="분석 실패",
             is_secret_recommended=False
         )
+    finally:
+        # MCP 메트릭 기록
+        if _kat_metrics:
+            _kat_metrics.mcp_active.labels(tool_name="analyze_image").dec()
+            duration = time.time() - start_time
+            _kat_metrics.mcp_duration.labels(tool_name="analyze_image").observe(duration)
+            _kat_metrics.mcp_calls.labels(tool_name="analyze_image", status=status).inc()
 
 
 # ============================================================
@@ -281,7 +353,7 @@ def analyze_full(text: str) -> Dict[str, Any]:
         pii_scan: PII 스캔 결과
         risk_evaluation: 위험도 평가 결과
         recommended_action: 권장 조치
-        summary: 분석 요약 (한글)
+        summary.md: 분석 요약 (한글)
     """
     # 1. PII 스캔
     pii_result = detect_pii(text)
@@ -304,7 +376,7 @@ def analyze_full(text: str) -> Dict[str, Any]:
         "pii_scan": pii_result,
         "risk_evaluation": risk_result,
         "recommended_action": action,
-        "summary": summary
+        "summary.md": summary
     }
 
 
@@ -451,15 +523,15 @@ def analyze_threat_full(text: str) -> Dict[str, Any]:
         url_analysis: URL 분석 결과
         scenario_match: 시나리오 매칭 결과
         final_assessment: 최종 평가 (점수, 레벨, 경고, 권장조치)
-        summary: 분석 요약
+        summary.md: 분석 요약
     """
     result = analyze_incoming_message(text)
 
     # 요약 추가 (새 MECE 카테고리 기반)
     risk_level = result["final_assessment"]["risk_level"]
     scam_probability = result["final_assessment"]["scam_probability"]
-    category = result["summary"]["category"]  # A-1, B-2 등
-    pattern_name = result["summary"]["pattern"]
+    category = result["summary.md"]["category"]  # A-1, B-2 등
+    pattern_name = result["summary.md"]["pattern"]
 
     if risk_level == "safe":
         summary = "안전한 메시지입니다. 위협 요소가 감지되지 않았습니다."
@@ -666,7 +738,7 @@ def analyze_incoming_full(
         stage2_scam_check: 2단계 신고 DB 조회 결과
         stage3_sender_trust: 3단계 발신자 분석 결과
         stage4_final_policy: 4단계 최종 정책
-        summary: 분석 요약
+        summary.md: 분석 요약
         risk_level: 최종 위험 레벨
         recommended_action: 권장 조치
     """
@@ -705,8 +777,8 @@ def analyze_incoming_full(
 
     # 요약 생성 (새 MECE 카테고리 기반)
     final_level = stage4["final_risk_level"]  # 대문자 (LOW/MEDIUM/HIGH/CRITICAL)
-    category = stage1.get("summary", {}).get("category")  # A-1, B-2 등
-    pattern_name = stage1.get("summary", {}).get("pattern", "")
+    category = stage1.get("summary.md", {}).get("category")  # A-1, B-2 등
+    pattern_name = stage1.get("summary.md", {}).get("pattern", "")
     scam_prob = stage1.get("final_assessment", {}).get("scam_probability", 0)
 
     summary_messages = {
@@ -721,8 +793,254 @@ def analyze_incoming_full(
         "stage2_scam_check": stage2,
         "stage3_sender_trust": stage3,
         "stage4_final_policy": stage4,
-        "summary": summary_messages.get(final_level, "분석 완료"),
+        "summary.md": summary_messages.get(final_level, "분석 완료"),
         "risk_level": final_level,
         "recommended_action": stage4["policy"].get("action_type", "none"),
         "ui_warning": format_warning_for_ui(stage4["policy"])
+    }
+
+
+# ============================================================
+# Threat Intelligence MCP Tool - 통합 위협 정보 조회
+# ============================================================
+
+@mcp.tool()
+def threat_intelligence_mcp(identifier: str, type: str) -> Dict[str, Any]:
+    """
+    Threat intelligence lookup for phone, URL, or account.
+    전화번호, URL, 계좌번호의 위협 정보를 통합 조회합니다.
+
+    통합 소스:
+    - TheCheat API: 전화번호/계좌번호 사기 신고 조회
+    - KISA Phishing API: 피싱 사이트 URL 조회
+    - lrl.kr API: 안전한링크 URL 검증
+    - VirusTotal API: URL 악성코드 검사
+
+    Args:
+        identifier: 조회할 식별자 (전화번호, URL, 계좌번호)
+        type: 식별자 타입 ("phone" | "url" | "account")
+
+    Returns:
+        has_reported: 신고/위협 여부 (bool)
+        source: 조회된 소스 (예: "TheCheat", "KISA", "lrl.kr", "VirusTotal")
+        report_count: 신고 건수 (int)
+        prior_probability: 사전 확률 (float, 0.0~1.0)
+                          계산식: report_count / (report_count + 100)
+        threat_type: 위협 유형 (URL인 경우: "phishing" | "malware" | "safe" | "suspicious")
+        details: 상세 정보 (Dict)
+
+    Examples:
+        전화번호 조회:
+        threat_intelligence_mcp("010-1234-5678", "phone")
+        → {has_reported: true, source: "TheCheat", report_count: 1, prior_probability: 0.0099}
+
+        URL 조회:
+        threat_intelligence_mcp("http://phishing-site.com", "url")
+        → {has_reported: true, source: "KISA", threat_type: "phishing", prior_probability: 0.0099}
+
+        계좌번호 조회:
+        threat_intelligence_mcp("123-456-789012", "account")
+        → {has_reported: false, source: null, report_count: 0, prior_probability: 0.0}
+    """
+    from ..core.threat_intelligence import check_identifier
+
+    try:
+        result = check_identifier(identifier, type)
+        return result
+    except ValueError as e:
+        return {
+            "has_reported": False,
+            "source": None,
+            "report_count": 0,
+            "prior_probability": 0.0,
+            "error": str(e),
+            "details": {}
+        }
+
+
+# ============================================================
+# Bayesian Calculator MCP Tool - 베이지안 사후 확률 계산
+# ============================================================
+
+@mcp.tool()
+def bayesian_calculator_mcp(
+    pattern_conf: float,
+    db_prior: float,
+    trust_score: float,
+    weights: List[float] = None
+) -> Dict[str, Any]:
+    """
+    Calculate Bayesian posterior probability for fraud detection.
+    베이지안 사후 확률을 계산하여 최종 사기 위험도를 판정합니다.
+
+    이론적 근거:
+    - Bayesian Inference (Nature 2025)
+    - SHAP Weight (NeurIPS 2017): Pattern 40%, DB 30%, Trust 30%
+
+    Args:
+        pattern_conf: 패턴 매칭 신뢰도 (0.0 ~ 1.0)
+                     context_analyzer_mcp 결과의 confidence
+        db_prior: DB 사전 확률 (0.0 ~ 1.0)
+                 threat_intelligence_mcp 결과의 prior_probability
+        trust_score: 발신자 신뢰도 (0.0 ~ 1.0)
+                    social_graph_mcp 결과의 trust_score
+        weights: 가중치 [pattern, db, trust] (기본: [0.4, 0.3, 0.3])
+
+    Returns:
+        posterior_probability: 최종 사후 확률 (0.0 ~ 1.0)
+        confidence_interval: 신뢰 구간 (lower, upper)
+        uncertainty: 불확실성 (0.08)
+        final_risk: 위험도 레벨 ("CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "SAFE")
+        weighted_probability: 조정 전 가중 평균
+        context_adjusted: 맥락 조정 적용 여부
+
+    Examples:
+        # 가족 사칭 + DB 신고 + 5년 이력
+        bayesian_calculator_mcp(0.92, 0.77, 0.85)
+        → {"posterior_probability": 0.29, "final_risk": "LOW"}
+
+        # 기관 사칭 + DB 신고 + 첫 메시지
+        bayesian_calculator_mcp(0.95, 0.90, 0.0)
+        → {"posterior_probability": 0.68, "final_risk": "HIGH"}
+    """
+    from ..core.bayesian_calculator import bayesian_calculate
+    return bayesian_calculate(pattern_conf, db_prior, trust_score, weights)
+
+
+# ============================================================
+# Entity Extractor MCP Tool - 식별자 추출
+# ============================================================
+
+@mcp.tool()
+def entity_extractor_mcp(message: str) -> Dict[str, Any]:
+    """
+    Extract identifiers (phone, URL, account, email) from message.
+    메시지에서 전화번호, URL, 계좌번호, 이메일을 추출합니다.
+
+    threat_intelligence_mcp 호출 전에 사용하여 조회할 식별자를 추출.
+
+    Args:
+        message: 분석할 메시지
+
+    Returns:
+        phone_numbers: 추출된 전화번호 리스트
+        urls: 추출된 URL 리스트
+        accounts: 추출된 계좌번호 리스트
+        emails: 추출된 이메일 리스트
+        total_count: 총 추출 수
+        has_suspicious: 의심 요소 포함 여부 (단축 URL 등)
+
+    Examples:
+        entity_extractor_mcp("전화 010-1234-5678, 입금 110-123-456789")
+        → {"phone_numbers": ["010-1234-5678"], "accounts": ["110-123-456789"], ...}
+
+        entity_extractor_mcp("자세한 내용: bit.ly/scam123")
+        → {"urls": ["bit.ly/scam123"], "has_suspicious": true, ...}
+    """
+    from ..core.entity_extractor import extract_entities
+    return extract_entities(message)
+
+
+# ============================================================
+# Context Analyzer MCP Tool - MECE 카테고리 + Cialdini 분류
+# ============================================================
+
+# Cialdini 6원리 매핑
+CIALDINI_MAPPING = {
+    "A-1": ["Urgency", "Liking"],           # 가족 사칭
+    "A-2": ["Authority", "Urgency"],        # 지인/상사 사칭
+    "A-3": ["Liking", "Reciprocity"],       # 상품권 대리구매
+    "B-1": ["Urgency", "Fear"],             # 택배/경조사
+    "B-2": ["Authority", "Fear"],           # 기관 사칭
+    "B-3": ["Urgency", "Fear"],             # 결제 승인
+    "C-1": ["Scarcity", "Social Proof"],    # 투자 권유
+    "C-2": ["Liking", "Reciprocity"],       # 로맨스 스캠
+    "C-3": ["Fear", "Urgency"],             # 몸캠 피싱
+    "NORMAL": []
+}
+
+@mcp.tool()
+def context_analyzer_mcp(message: str, context: List[str] = None) -> Dict[str, Any]:
+    """
+    Analyze message context and classify into MECE categories with Cialdini mapping.
+    메시지를 MECE 9-카테고리로 분류하고 Cialdini 심리 원리를 매핑합니다.
+
+    MECE 카테고리:
+    - A-1: 가족 사칭 (액정 파손)
+    - A-2: 지인/상사 사칭 (급전)
+    - A-3: 상품권 대리 구매
+    - B-1: 생활 밀착형 (택배/경조사)
+    - B-2: 기관 사칭 (검찰/경찰)
+    - B-3: 결제 승인 (낚시성)
+    - C-1: 투자 권유 (리딩방)
+    - C-2: 로맨스 스캠
+    - C-3: 몸캠 피싱
+    - NORMAL: 정상 메시지
+
+    Cialdini 6원리:
+    - Authority (권위)
+    - Urgency (긴급성)
+    - Liking (호감)
+    - Scarcity (희소성)
+    - Reciprocity (상호성)
+    - Social Proof (사회적 증거)
+    - Fear (공포)
+
+    Args:
+        message: 분석할 메시지
+        context: 최근 대화 히스토리 (선택)
+
+    Returns:
+        category: MECE 카테고리 코드 ("A-1" ~ "C-3" | "NORMAL")
+        category_name: 카테고리 한글명
+        confidence: 분류 신뢰도 (0.0 ~ 1.0)
+        cialdini_principles: Cialdini 원리 리스트
+        reasoning: 분류 근거 설명
+        scam_probability: 사기 확률 (%)
+
+    Examples:
+        context_analyzer_mcp("엄마, 나 폰 고장나서 번호 바뀌었어")
+        → {"category": "A-1", "cialdini_principles": ["Urgency", "Liking"], ...}
+    """
+    from ..core.threat_matcher import analyze_incoming_message
+
+    # 기존 분석기 호출
+    result = analyze_incoming_message(message)
+
+    # 카테고리 및 기본 정보 추출
+    summary = result.get("summary.md", {})
+    category = summary.get("category", "NORMAL")
+    pattern_name = summary.get("pattern", "정상 메시지")
+
+    final_assessment = result.get("final_assessment", {})
+    scam_probability = final_assessment.get("scam_probability", 0)
+
+    # confidence 계산 (scam_probability 기반)
+    confidence = scam_probability / 100.0 if scam_probability else 0.0
+
+    # Cialdini 매핑
+    cialdini_principles = CIALDINI_MAPPING.get(category, [])
+
+    # 위험도 → confidence 조정
+    risk_level = final_assessment.get("risk_level", "safe")
+    if risk_level == "critical":
+        confidence = max(confidence, 0.9)
+    elif risk_level == "high":
+        confidence = max(confidence, 0.7)
+    elif risk_level == "medium":
+        confidence = max(confidence, 0.5)
+
+    # reasoning 생성
+    detected_threats = result.get("threat_detection", {}).get("found_threats", [])
+    threat_names = [t.get("name_ko", "") for t in detected_threats[:3]]
+    reasoning = f"{pattern_name} 패턴. 감지: {', '.join(threat_names) if threat_names else '없음'}"
+
+    return {
+        "category": category,
+        "category_name": pattern_name,
+        "confidence": round(confidence, 2),
+        "cialdini_principles": cialdini_principles,
+        "reasoning": reasoning,
+        "scam_probability": scam_probability,
+        "raw_result": result  # 원본 결과 포함 (디버깅용)
     }

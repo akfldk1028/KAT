@@ -46,7 +46,7 @@ class KISAPhishingClient:
 
     API 스펙:
     - 엔드포인트: GET https://api.odcloud.kr/api/15109780/v1/uddi:707478dd-938f-4155-badb-fae6202ee7ed
-    - 인증: Authorization 헤더 또는 serviceKey 쿼리 파라미터
+    - 인증: serviceKey 쿼리 파라미터 (공공데이터포털 표준)
     - 응답: 페이지네이션 (27,582개 레코드)
 
     주의사항:
@@ -92,17 +92,13 @@ class KISAPhishingClient:
             params = {
                 "page": page,
                 "perPage": min(per_page, 1000),  # 최대 1000개
-                "returnType": "JSON"
-            }
-
-            headers = {
-                "Authorization": self.api_key
+                "returnType": "JSON",
+                "serviceKey": self.api_key  # 공공데이터포털 인증 방식
             }
 
             response = requests.get(
                 self.endpoint,
                 params=params,
-                headers=headers,
                 timeout=30
             )
 

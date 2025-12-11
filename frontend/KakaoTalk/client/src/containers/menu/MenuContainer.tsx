@@ -14,7 +14,8 @@ import { PAGE_PATHS } from '~/constants';
 import { Auth } from '~/types/auth';
 import { ProfileContainer, ChattingRoomContainer } from '~/containers';
 import { ChattingResponseDto, UpdateRoomListDto } from '~/types/chatting';
-import { analyzeIncoming } from '~/apis/agent';
+// Note: analyzeIncoming은 Node.js 서버(sockets/index.ts)에서 호출하고
+// security_analysis를 WebSocket 응답에 포함해서 보냄 - 클라이언트에서 중복 호출 불필요
 
 const Wrapper = styled.main`
   width: 100%;
@@ -39,22 +40,10 @@ class MenuContainer extends Component<Props> {
       props.userActions.fetchRoomList(auth.id);
       socket.emit('join', auth.id.toString());
       socket.on('message', async (response: ChattingResponseDto) => {
-        // Agent B (Incoming Guard): 수신 메시지 분석 - constructor에서도 처리
-        const userState = this.props.rootState.user;
-        if (
-          response.send_user_id !== userState.id &&
-          (!response.message_type || response.message_type === 'text') &&
-          response.message &&
-          response.message.length > 0
-        ) {
-          try {
-            console.log('[Agent B - Constructor] Analyzing:', response.message.substring(0, 50));
-            const analysis = await analyzeIncoming(response.message, response.send_user_id, true);
-            console.log('[Agent B - Constructor] Result:', analysis);
-            response.security_analysis = analysis;
-          } catch (error) {
-            console.error('[Agent B - Constructor] Failed:', error);
-          }
+        // Agent B 분석 결과는 서버(sockets/index.ts)에서 이미 포함되어 옴
+        // response.security_analysis에 위협 분석 결과가 있음
+        if (response.security_analysis) {
+          console.log('[Agent B] 서버에서 수신한 분석 결과:', response.security_analysis.risk_level);
         }
         this.updateRooms(response);
       });
@@ -89,29 +78,18 @@ class MenuContainer extends Component<Props> {
 
   async componentDidUpdate(prevProps: Props) {
     const chatState = this.props.rootState.chat;
-    const userState = this.props.rootState.user;
     if (prevProps.rootState.chat.room_id !== chatState.room_id) {
       const socket = this.props.rootState.auth.socket as typeof Socket;
       const { addChatting } = this.props.chatActions;
       await socket.off('message');
       await socket.on('message', async (response: ChattingResponseDto) => {
-        // Agent B (Incoming Guard): 수신 메시지 분석
-        // 조건: 내가 보낸게 아니고, 일반 텍스트 메시지인 경우
-        if (
-          response.send_user_id !== userState.id &&
-          (!response.message_type || response.message_type === 'text') &&
-          response.message &&
-          response.message.length > 0
-        ) {
-          try {
-            console.log('[Agent B] Analyzing incoming message:', response.message.substring(0, 50));
-            const analysis = await analyzeIncoming(response.message, response.send_user_id, true);
-            console.log('[Agent B] Analysis result:', analysis);
-            // 분석 결과를 response에 추가
-            response.security_analysis = analysis;
-          } catch (error) {
-            console.error('[Agent B] Incoming analysis failed:', error);
-          }
+        // Agent B 분석 결과는 서버(sockets/index.ts)에서 이미 포함되어 옴
+        // 수신자에게만 security_analysis가 포함됨 (발신자에게는 없음)
+        if (response.security_analysis) {
+          console.log('[Agent B] 수신 메시지 위협 분석:', {
+            risk_level: response.security_analysis.risk_level,
+            reasons: response.security_analysis.reasons
+          });
         }
 
         if (response.room_id === chatState.room_id) {
