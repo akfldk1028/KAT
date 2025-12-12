@@ -115,12 +115,13 @@
           "name_ko": "주민등록번호",
           "name_en": "Resident Registration Number",
           "risk_level": "CRITICAL",
-          "regex": "\\d{6}[\\-/]?[1-4]\\d{6}",
+          "regex": "(?:[0-9][0-9](?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|3[01]))[\\-/][1-4]\\d{6}",
           "keywords": [
             "주민번호",
             "주민등록번호"
           ],
-          "requires_ai": false
+          "requires_ai": false,
+          "note": "생년월일(YYMMDD) 유효성 검증 포함, 하이픈/슬래시 필수. 계좌번호 오탐 방지."
         },
         {
           "id": "resident_id_masked",
@@ -177,19 +178,35 @@
       "description": "금융 관련 민감 정보",
       "items": [
         {
+          "id": "account_prefix",
+          "name_ko": "계좌번호(은행접두사)",
+          "name_en": "Bank Account with Known Prefix",
+          "risk_level": "CRITICAL",
+          "regex": "(?:3333\\d{9}|1000\\d{8}|(?:100|777)\\d{9}|(?:110|140)\\d{9}|(?:1002|1005|1006)\\d{9}|(?:301|302|312)\\d{10}|(?:351|352|356)\\d{9,10}|(?:2000|020)\\d{8,10})",
+          "keywords": [
+            "계좌",
+            "은행"
+          ],
+          "requires_ai": false,
+          "note": "주요 은행 접두사 기반 탐지 (전화번호보다 높은 우선순위). 카카오(3333), 토스(1000), 케이(100/777), 신한(110/140), 우리(1002/1005/1006), 농협(301/302/312), 단위농협(351/352/356), 토스증권(2000), 카카오증권(020)."
+        },
+        {
           "id": "account",
           "name_ko": "계좌번호",
           "name_en": "Bank Account Number",
           "risk_level": "CRITICAL",
-          "regex": "\\d{3}[\\-ㅡ]\\d{2,6}[\\-ㅡ]\\d{3,6}",
+          "regex": "\\d{3,4}[\\s\\-ㅡ]\\d{2,6}[\\s\\-ㅡ]\\d{4,7}",
           "keywords": [
             "계좌",
             "통장",
             "입금",
             "환불",
-            "이체"
+            "이체",
+            "은행",
+            "예금주"
           ],
-          "requires_ai": false
+          "requires_ai": false,
+          "note": "하이픈 포함 일반 계좌번호 형식. 10-14자리."
         },
         {
           "id": "card",

@@ -35,17 +35,25 @@ class MenuContainer extends Component<Props> {
     const auth: Auth | undefined = props.rootState.auth.auth;
     if (auth) {
       const socket = props.rootState.auth.socket as typeof Socket;
+      const { updateChatSecurityHint } = props.chatActions;
+
       props.userActions.fetchUser(auth.user_id);
       props.userActions.fetchFriends(auth.id);
       props.userActions.fetchRoomList(auth.id);
       socket.emit('join', auth.id.toString());
+
+      // 메시지 수신 이벤트
       socket.on('message', async (response: ChattingResponseDto) => {
-        // Agent B 분석 결과는 서버(sockets/index.ts)에서 이미 포함되어 옴
-        // response.security_analysis에 위협 분석 결과가 있음
-        if (response.security_analysis) {
-          console.log('[Agent B] 서버에서 수신한 분석 결과:', response.security_analysis.risk_level);
-        }
         this.updateRooms(response);
+      });
+
+      // Agent B 보안 힌트 이벤트 (비동기, 나중에 표시)
+      socket.on('security_hint', (hint: { message_id: number; room_id: number; security_analysis: any }) => {
+        console.log('[Agent B] 보안 힌트 수신:', {
+          message_id: hint.message_id,
+          risk_level: hint.security_analysis.risk_level
+        });
+        updateChatSecurityHint(hint.message_id, hint.security_analysis);
       });
     }
   }
@@ -80,22 +88,32 @@ class MenuContainer extends Component<Props> {
     const chatState = this.props.rootState.chat;
     if (prevProps.rootState.chat.room_id !== chatState.room_id) {
       const socket = this.props.rootState.auth.socket as typeof Socket;
-      const { addChatting } = this.props.chatActions;
-      await socket.off('message');
-      await socket.on('message', async (response: ChattingResponseDto) => {
-        // Agent B 분석 결과는 서버(sockets/index.ts)에서 이미 포함되어 옴
-        // 수신자에게만 security_analysis가 포함됨 (발신자에게는 없음)
-        if (response.security_analysis) {
-          console.log('[Agent B] 수신 메시지 위협 분석:', {
-            risk_level: response.security_analysis.risk_level,
-            reasons: response.security_analysis.reasons
-          });
-        }
+      const { addChatting, updateChatSecurityHint } = this.props.chatActions;
 
+      // 기존 이벤트 리스너 제거
+      await socket.off('message');
+      await socket.off('security_hint');
+
+      // 메시지 수신 이벤트 (즉시 표시)
+      await socket.on('message', async (response: ChattingResponseDto) => {
         if (response.room_id === chatState.room_id) {
           await addChatting(response);
         }
         await this.updateRooms(response);
+      });
+
+      // Agent B 보안 힌트 이벤트 (비동기, 나중에 표시)
+      await socket.on('security_hint', (hint: { message_id: number; room_id: number; security_analysis: any }) => {
+        console.log('[Agent B] 보안 힌트 수신:', {
+          message_id: hint.message_id,
+          risk_level: hint.security_analysis.risk_level,
+          reasons: hint.security_analysis.reasons
+        });
+
+        // 해당 메시지에 보안 힌트 추가
+        if (hint.room_id === chatState.room_id) {
+          updateChatSecurityHint(hint.message_id, hint.security_analysis);
+        }
       });
     }
   }

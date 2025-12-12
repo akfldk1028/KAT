@@ -144,7 +144,7 @@ class IncomingAgent(BaseAgent):
 
         # ========== Stage 2: AI Agent 맥락 분석 ==========
         stage2_start = time.time()
-        stage2 = self._stage2_ai_agent_categorization(text)
+        stage2 = self._stage2_ai_agent_categorization(text, conversation_history, sender_id)
         stage2["time_ms"] = int((time.time() - stage2_start) * 1000)
         print(f"[Stage 2] AI Agent 분류: {stage2.get('category')} (신뢰도: {stage2.get('confidence', 0):.2f}, {stage2['time_ms']}ms)")
 
@@ -185,30 +185,86 @@ class IncomingAgent(BaseAgent):
         """
         Stage 1: Rule-based DB 블랙리스트 확인
 
-        - 계좌번호, URL, 전화번호 추출
-        - 신고 DB 조회
+        - 계좌번호, URL, 전화번호 추출 (entity_extractor)
+        - threat_intelligence MCP 통해 신고 DB 조회
         - HIT → 즉시 CRITICAL + 종료
 
         AI 참여: ❌ (팩트 기반 즉시 판단)
-        """
-        import re
-        from ..core.scam_checker import check_scam_in_message
 
-        # 엔티티 추출
+        DB 소스 (기획서 4.1.1 참조):
+        - TheCheat API: 전화번호, 계좌번호
+        - KISA 피싱사이트: URL (27,582개)
+        - VirusTotal: URL 악성 여부
+        """
+        from ..core.entity_extractor import extract_entities
+        from ..core.threat_intelligence import check_identifier
+
+        # 엔티티 추출 (entity_extractor_mcp 동일 로직)
+        extracted = extract_entities(text)
         entities = {
-            "accounts": re.findall(r'\d{2,3}-\d{3,6}-\d{4,8}', text),
-            "phones": re.findall(r'01[0-9]-?\d{3,4}-?\d{4}', text),
-            "urls": re.findall(r'(?:https?://)?(?:bit\.ly|tinyurl|url\.kr|han\.gl|[a-z0-9\-]+\.[a-z]{2,})/?\S*', text, re.I)
+            "accounts": extracted.get("accounts", []),
+            "phones": extracted.get("phone_numbers", []),
+            "urls": extracted.get("urls", [])
         }
 
-        # 신고 DB 조회
-        scam_check = check_scam_in_message(text)
+        # threat_intelligence MCP 통해 신고 DB 조회
+        reported_accounts = []
+        reported_phones = []
+        reported_urls = []
+        max_risk_score = 0
+        sources_used = []
+
+        # 계좌번호 조회 (TheCheat API)
+        for account in entities["accounts"]:
+            result = check_identifier(account, "account")
+            if result.get("has_reported"):
+                reported_accounts.append({
+                    "account": account,
+                    "source": result.get("source"),
+                    "prior_probability": result.get("prior_probability", 0),
+                    "details": result.get("details", {})
+                })
+                max_risk_score = max(max_risk_score, 95)
+                if result.get("source") not in sources_used:
+                    sources_used.append(result.get("source"))
+
+        # 전화번호 조회 (TheCheat API)
+        for phone in entities["phones"]:
+            result = check_identifier(phone, "phone")
+            if result.get("has_reported"):
+                reported_phones.append({
+                    "phone": phone,
+                    "source": result.get("source"),
+                    "prior_probability": result.get("prior_probability", 0),
+                    "details": result.get("details", {})
+                })
+                max_risk_score = max(max_risk_score, 95)
+                if result.get("source") not in sources_used:
+                    sources_used.append(result.get("source"))
+
+        # URL 조회 (KISA 캐시 → VirusTotal)
+        for url in entities["urls"]:
+            result = check_identifier(url, "url")
+            if result.get("has_reported"):
+                reported_urls.append({
+                    "url": url,
+                    "source": result.get("source"),
+                    "threat_type": result.get("threat_type", "unknown"),
+                    "prior_probability": result.get("prior_probability", 0),
+                    "details": result.get("details", {})
+                })
+                max_risk_score = max(max_risk_score, 95)
+                if result.get("source") not in sources_used:
+                    sources_used.append(result.get("source"))
 
         # 블랙리스트 HIT 확인
-        if scam_check.get("has_reported_identifier"):
-            reported_accounts = scam_check.get("reported_accounts", [])
-            reported_phones = scam_check.get("reported_phones", [])
+        has_reported = (
+            len(reported_accounts) > 0 or
+            len(reported_phones) > 0 or
+            len(reported_urls) > 0
+        )
 
+        if has_reported:
             return {
                 "stage": 1,
                 "decision": "CRITICAL",
@@ -216,8 +272,10 @@ class IncomingAgent(BaseAgent):
                 "db_hit": True,
                 "reported_accounts": reported_accounts,
                 "reported_phones": reported_phones,
-                "report_count": len(reported_accounts) + len(reported_phones),
-                "source": "금융감독원/경찰청 신고 DB",
+                "reported_urls": reported_urls,
+                "report_count": len(reported_accounts) + len(reported_phones) + len(reported_urls),
+                "max_risk_score": max_risk_score,
+                "sources": sources_used,
                 "terminate": True  # 즉시 종료
             }
 
@@ -227,35 +285,64 @@ class IncomingAgent(BaseAgent):
             "decision": None,
             "entities": entities,
             "db_hit": False,
-            "scam_check": scam_check,
+            "sources": sources_used,
             "terminate": False  # Stage 2로 진행
         }
 
-    def _stage2_ai_agent_categorization(self, text: str) -> dict:
+    def _stage2_ai_agent_categorization(self, text: str, conversation_history: list = None, current_sender_id: int = None) -> dict:
         """
         Stage 2: AI Agent 맥락 분석 (ver9.0 핵심)
 
         - 키워드 힌트 생성 (Rule-based, 참고용)
-        - Kanana Agent가 맥락 파악하여 9개 유형 분류
+        - Kanana Agent가 대화 맥락 파악하여 9개 유형 분류
         - NORMAL → SAFE 판정 + 종료 (85% 케이스)
 
         AI 참여: ✅ (Kanana Agent 맥락 분류)
+
+        v9.0.1: conversation_history 추가 - 멀티메시지 사기 패턴 감지 지원
+        v9.0.2: current_sender_id 추가 - [상대방]/[나] 구분으로 정확한 맥락 분석
         """
         from ..llm.kanana import LLMManager
-        from ..prompts.incoming_agent import get_stage2_agent_prompt, format_keyword_hints
+        from ..prompts.incoming_agent import get_stage2_agent_prompt_with_context, format_keyword_hints
 
         # Step 1: 키워드 힌트 생성 (Rule-based, 참고용)
-        keyword_hints = self._generate_keyword_hints(text)
+        # 현재 메시지 + 대화 히스토리 전체에서 키워드 추출
+        all_text = text
+        if conversation_history:
+            history_text = " ".join([msg.get("message", "") for msg in conversation_history[-10:]])
+            all_text = f"{history_text} {text}"
+
+        keyword_hints = self._generate_keyword_hints(all_text)
         hints_text = format_keyword_hints(keyword_hints)
 
-        # Step 2: Kanana Agent 호출
+        # Step 2: 대화 맥락 포맷팅 (발신자 구분)
+        # current_sender_id = 현재 메시지 발신자 = 상대방 (사기 의심자)
+        # 히스토리에서 동일 sender_id = [상대방], 다른 sender_id = [나]
+        context_text = ""
+        if conversation_history and len(conversation_history) > 0:
+            context_lines = []
+            for msg in conversation_history[-10:]:  # 최근 10개 메시지
+                message = msg.get("message", "")
+                msg_sender_id = msg.get("sender_id")
+
+                # 메시지가 있으면 추가 (빈 메시지 제외)
+                if message and message.strip():
+                    # 발신자 구분: current_sender_id와 같으면 [상대방], 다르면 [나]
+                    if current_sender_id and msg_sender_id:
+                        sender_label = "[상대방]" if str(msg_sender_id) == str(current_sender_id) else "[나]"
+                    else:
+                        sender_label = "[상대방]"  # ID 정보 없으면 기본값
+                    context_lines.append(f"  {sender_label} {message}")
+            context_text = "\n".join(context_lines)
+
+        # Step 3: Kanana Agent 호출
         try:
             llm = LLMManager.get("instruct")
             if not llm:
                 print("[Stage 2] LLM not available, fallback to rule-based")
                 return self._stage2_rule_fallback(text, keyword_hints)
 
-            prompt = get_stage2_agent_prompt(text, hints_text)
+            prompt = get_stage2_agent_prompt_with_context(text, hints_text, context_text)
             response = llm.analyze(prompt)
 
             # JSON 파싱
@@ -269,6 +356,7 @@ class IncomingAgent(BaseAgent):
                 "matched_patterns": result.get("matched_patterns", []),
                 "government_source": result.get("government_source", ""),
                 "keyword_hints": keyword_hints,
+                "context_used": len(conversation_history) if conversation_history else 0,
                 "llm_used": True
             }
 
@@ -400,15 +488,29 @@ class IncomingAgent(BaseAgent):
         category = stage2.get("category", "NORMAL")
         confidence = stage2.get("confidence", 0.5)
 
-        # 위험도 결정 로직
+        # 위험도 결정 로직 (ver9.0 기준)
+        # 1. DB HIT → CRITICAL
+        # 2. NORMAL → SAFE
+        # 3. 스미싱 유형 (A/B/C) + 고신뢰도 → DANGEROUS
+        # 4. 스미싱 유형 + 저신뢰도 → SUSPICIOUS
+        # 5. 기타 → SAFE
         if stage1.get("db_hit"):
             risk_level = "CRITICAL"
         elif category == "NORMAL":
             risk_level = "SAFE"
-        elif category in ["A-1", "A-2", "C-1", "C-2", "C-3"] and confidence >= 0.7:
-            risk_level = "DANGEROUS" if history_days < 7 else "SUSPICIOUS"
-        elif category in ["B-1", "B-2", "B-3"] and confidence >= 0.7:
-            risk_level = "SUSPICIOUS"
+        elif category in ["A-1", "A-2", "A-3", "B-1", "B-2", "B-3", "C-1", "C-2", "C-3"]:
+            # 모든 스미싱 유형: 고신뢰도(0.7 이상)면 DANGEROUS
+            # 신뢰도 + 대화 이력 고려
+            if confidence >= 0.7:
+                # 초면(7일 미만) 또는 연락처 미저장 → DANGEROUS
+                if history_days < 7 or not is_saved_contact:
+                    risk_level = "DANGEROUS"
+                else:
+                    # 장기 관계(7일 이상) + 연락처 저장 → SUSPICIOUS
+                    risk_level = "SUSPICIOUS"
+            else:
+                # 저신뢰도 → SUSPICIOUS
+                risk_level = "SUSPICIOUS"
         else:
             risk_level = "SUSPICIOUS" if confidence >= 0.5 else "SAFE"
 
@@ -417,7 +519,7 @@ class IncomingAgent(BaseAgent):
             "risk_level": risk_level,
             "confidence": confidence,
             "summary.md": f"Rule-based 판정: {category} → {risk_level}",
-            "final_reasoning": f"Stage 2 분류 결과와 대화 이력({history_days}일)을 기반으로 판정",
+            "final_reasoning": f"Stage 2 분류 결과({category}, 신뢰도 {confidence:.2f})와 대화 이력({history_days}일)을 기반으로 판정",
             "llm_used": False
         }
 
@@ -431,7 +533,7 @@ class IncomingAgent(BaseAgent):
         # 9개 유형별 키워드 (정부 통계 기반)
         category_keywords = {
             "A-1": {
-                "keywords": ["엄마", "아빠", "아들", "딸", "폰 고장", "액정", "급해", "계좌", "송금", "인증번호", "앱 설치"],
+                "keywords": ["엄마", "아빠", "아들", "딸", "폰 고장", "액정", "급해", "계좌", "송금", "인증번호", "앱 설치", "비밀로", "초기화", "번호가 날아", "계정 새로", "부탁드릴", "대리", "과장", "부장", "팀장"],
                 "source": "금감원 2023: 가족사칭 33.7%"
             },
             "A-2": {
@@ -439,7 +541,7 @@ class IncomingAgent(BaseAgent):
                 "source": "KISA 2023: 경조사 1.7만건"
             },
             "A-3": {
-                "keywords": ["사귀자", "좋아해", "보고싶어", "돈 빌려", "통관비", "항공료"],
+                "keywords": ["사귀자", "좋아해", "보고싶어", "돈 빌려", "통관비", "항공료", "번호 잘못", "잘못 저장", "친구로 지내", "친구가 없", "한국에 친구", "일본에서", "해외에서", "프로필이 좋", "인상이 좋"],
                 "source": "경찰청 2023: 로맨스 스캠"
             },
             "B-1": {
@@ -451,7 +553,7 @@ class IncomingAgent(BaseAgent):
                 "source": "경찰청 2023: 공공알림 19.7배↑"
             },
             "B-3": {
-                "keywords": ["택배", "배송", "주소", "반송", "운송장", "CJ대한통운", "우체국"],
+                "keywords": ["택배", "배송", "주소", "반송", "운송장", "CJ대한통운", "우체국", "당근", "당근마켓", "중고나라", "번개장터", "안전결제", "안전거래", "링크 보내", "택배 거래"],
                 "source": "KISA: 택배 65%"
             },
             "C-1": {

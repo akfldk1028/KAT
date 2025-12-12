@@ -1,0 +1,599 @@
+{
+  "test_date": "2025-12-12T01:31:36.042481",
+  "api_url": "http://localhost:8002/api/agents",
+  "results": [
+    {
+      "case_id": "A-001",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 69670,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 스미싱 패턴: 인사 → 상황 설명(폰 고장) → 급전 요청 → 계좌번호 제시로 이어짐",
+          "가족 사칭 스미싱 의심 메시지, 금전 요구 및 급박한 상황 연출로 위험도 높음."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "A-002",
+      "expected_category": "A-1",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 46990,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 패턴: 인사(아빠) → 상황 설명(폰 액정 깨짐) → 인증 요청 및 링크 클릭 유도 → 금전적 행동 요구(보험 신청, 인증 수락)로 이어짐",
+          "가족 사칭 및 링크 클릭 유도 등 전형적인 스미싱 의심 패턴이 감지됨."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "A-003",
+      "expected_category": "C-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 74730,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 전체 맥락에서 'VIP 수익 인증', '무료 체험방 마감 임박', '급등주 정보 제공', '링크 클릭 유도' 등 투자 리딩방(스미싱) 전형적 패턴이 반복적으로 나타남. '선착순 5분만 더 받을게요'라는 메시지는 추가 인원 모집 및 링크 클릭을 유도하는 전형적인 투자 리딩방 스미싱 유형임.",
+          "투자 리딩방 전형적 스미싱 패턴인 '선착순' 유도와 링크 클릭 요청이 감지되어 주의가 필요합니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "C-2",
+        "category_name": "투자 리딩방",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "A-004",
+      "expected_category": "C-1",
+      "actual_category": "C-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 67199,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "전체 대화 흐름에서 XX은행 대출 승인 안내 후 유선 상담 및 전화번호 제공을 요구하며, 대출 관련 금전적 안내와 통화 유도가 반복적으로 등장하여 전형적인 대출 빙자 스미싱 패턴에 해당함",
+          "대출 관련 유선 안내 및 전화번호 요구는 전형적인 스미싱 패턴으로, 초면 대화에서 발생할 경우 위험도가 매우 높음."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "C-1",
+        "category_name": "대출 빙자",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "A-005",
+      "expected_category": "B-3",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 56633,
+      "final_result": {
+        "risk_level": "MEDIUM",
+        "reasons": [
+          "대화 전체 맥락에서 '배송 지연', '주소지 불명', '반송', '주소 재입력' 등 택배/물류 사칭의 전형적 패턴이 반복적으로 나타나며, 사용자가 링크를 클릭하도록 유도하는 흐름이 확인됨",
+          "택배/물류 사칭 및 링크 클릭 유도 패턴이 감지되어 주의가 필요합니다."
+        ],
+        "recommended_action": "주의 표시",
+        "is_secret_recommended": false,
+        "category": "B-3",
+        "category_name": "택배/물류 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "B-006",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 5,
+      "elapsed_time_ms": 32443,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 패턴: 인사 → 폰 고장 설명 → 금전 요구(급전 요청) 전 단계. '톡만 돼. 답장 좀 줘봐.'는 상황 설명 후 추가 행동(답장)을 유도하며, 이전 대화에서 이미 폰 고장과 수리비 언급이 있어 신뢰 구축 후 금전 요구로 이어질 가능성이 높음.",
+          "가족 사칭 스미싱 의심, 금전 요구 전 단계 패턴 감지."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "B-007",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 57615,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 패턴: 인사 → 상황 설명(폰 고장) → 개인정보 및 금전 요구(문상 결제, 신분증/카드 사진 요구)로 이어짐",
+          "금전 및 개인정보 요구가 의심되는 가족 사칭 스미싱 패턴으로 판단됨."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "B-008",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 67894,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "이전 대화에서 '폰이 고장 나서 결제가 안 된다', '구글 기프트카드 사다 달라' 등 급전 요청과 비정상적 금전 요구가 반복되었고, 현재 메시지에서도 '저녁에 돈 바로 부쳐줄게. 지금 너무 급해서 그래'라는 금전 요구가 이어져 전형적인 지인/가족 사칭 스미싱 패턴에 해당함.",
+          "지인/가족 사칭 및 금전 요구가 반복되는 전형적인 스미싱 의심 메시지입니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "B-009",
+      "expected_category": "A-3",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 28354,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 흐름상 금전 요구, 계좌번호 요청, 링크 클릭 등 사기 징후가 없으며, 단순 부탁 요청으로 일상 대화에 해당함"
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    },
+    {
+      "case_id": "B-010",
+      "expected_category": "C-3",
+      "actual_category": "NORMAL",
+      "final_risk_level": "LOW",
+      "is_category_match": false,
+      "is_detected": false,
+      "is_pass": false,
+      "total_messages": 6,
+      "elapsed_time_ms": 19319,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 흐름상 금전 요구, 링크, 앱 설치, 수사기관 사칭 등 사기 징후가 없으며, 단순 자기소개 및 친구 요청으로 일상 대화에 해당함"
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    },
+    {
+      "case_id": "A-011",
+      "expected_category": "B-1",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 62802,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 전체 맥락에서 '계정 영구 동결', '보호 조치', '본인 확인 후 해제' 등 수사/금융 기관 사칭에 해당하는 위협적 메시지와 함께 링크 클릭을 유도하는 흐름이 확인됨. 실제 기관에서는 계정 동결을 빌미로 즉시 링크 클릭을 요구하지 않으며, 공식 절차와 다름.",
+          "계정 동결 위협과 기관 사칭 메시지로 스미싱 의심, 즉시 링크 클릭 유도 가능성 높음."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-1",
+        "category_name": "수사/금융 기관 사칭",
+        "scam_probability": 94
+      }
+    },
+    {
+      "case_id": "A-012",
+      "expected_category": "B-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 70135,
+      "final_result": {
+        "risk_level": "CRITICAL",
+        "reasons": [
+          "신고된 계좌/전화번호가 포함되어 있습니다! (신고 1건)"
+        ],
+        "recommended_action": "차단 및 신고",
+        "is_secret_recommended": false,
+        "category": null,
+        "category_name": "알 수 없음",
+        "scam_probability": 0
+      }
+    },
+    {
+      "case_id": "A-013",
+      "expected_category": "B-2",
+      "actual_category": "B-3",
+      "final_risk_level": "HIGH",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 74833,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름상 카드 배송 안내 후, 본인이 신청하지 않았거나 명의도용이 의심될 경우 즉시 신고하라는 안내와 함께 전화번호(01034887705)가 제시되어 택배/배송 사칭(스미싱) 유형과 일치함",
+          "신고 및 문의 전화번호를 통한 택배/배송 사칭 스미싱 의심"
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-3",
+        "category_name": "택배/물류 사칭",
+        "scam_probability": 92
+      }
+    },
+    {
+      "case_id": "A-014",
+      "expected_category": "B-1",
+      "actual_category": "B-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 79926,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 전체 맥락에서 수사기관(경찰청, KISA 등)을 사칭하여 범죄 연루 및 환급을 빌미로 금전 요구 및 개인정보(연락처) 제공을 유도하고 있어 전형적인 기관 사칭 스미싱 유형임",
+          "수사기관 사칭 및 범죄 연루 빌미로 금전·개인정보 요구가 의심되는 스미싱 메시지입니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-1",
+        "category_name": "수사/금융 기관 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "B-015",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 61204,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 패턴: 인사 → 상황 설명(통신사 보안, 인증번호 요청) → 금전/정보 요구(보안 설정 변경, 인증번호 제공)로 이어짐. 실제 가족 간 대화처럼 보이지만, 보안 설정 변경 및 인증번호 요구는 비정상적이며, 최근 SKT 해킹 이슈와 결합해 신뢰를 유도함.",
+          "가족 사칭 및 통신사 비밀번호 요구는 전형적인 스미싱 패턴으로, 최근 SKT 해킹 이슈와 결합해 신뢰를 유도하므로 위험도가 높음."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "B-016",
+      "expected_category": "B-2",
+      "actual_category": "B-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 59534,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "전체 대화 흐름에서 택배 발송을 빌미로 주소와 성함 등 개인정보를 요구하며, '보안 유심' 무료 발송이라는 명목으로 신뢰를 구축한 뒤 실질적인 개인정보(배송 정보)를 요구하는 전형적인 택배/물류 사칭 패턴에 해당함.",
+          "택배 발송을 빌미로 개인정보(배송 정보)를 요구하는 전형적인 스미싱 의심 메시지입니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-3",
+        "category_name": "택배/물류 사칭",
+        "scam_probability": 82
+      }
+    },
+    {
+      "case_id": "B-017",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 58221,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족/지인 사칭 패턴: 상대방의 불안 상황(결제 알림, 해킹 의심) 언급 후, 곧바로 카드 정보 요구로 이어져 금전적 요구를 시도함. 실제 가족/지인이라면 결제 내역 확인 등 추가 확인 절차를 거칠 가능성이 높음.",
+          "카드 정보 요구는 전형적인 가족/지인 사칭 스미싱 패턴으로, 실제 지인이라면 추가 확인 절차를 거칠 가능성이 높아 의심됩니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 94
+      }
+    },
+    {
+      "case_id": "A-018",
+      "expected_category": "A-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 77755,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "이전 대화 맥락에서 부고 및 장례식장 안내, 모바일 링크 제공 등 경조사 관련 내용이 반복적으로 언급되어 있으며, '상주 이영호 배상'이라는 메시지는 부고장 또는 경조사 안내의 전형적인 형식을 따름. 금전 요구 없이 장례 일정 안내 목적의 메시지로 판단됨.",
+          "금전 요구 없이 경조사(부고) 안내 형식의 메시지로, 스미싱 의심 요소가 없어 안전하다고 판단됩니다."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "A-2",
+        "category_name": "경조사 빙자",
+        "scam_probability": 98
+      }
+    },
+    {
+      "case_id": "A-019",
+      "expected_category": "A-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 33237,
+      "final_result": {
+        "risk_level": "MEDIUM",
+        "reasons": [
+          "대화 전체 맥락이 경조사(청첩장) 관련 인사와 모바일 청첩장 링크 제공으로, 경조사 빙자 스미싱의 전형적 패턴을 보임",
+          "경조사 빙자 스미싱 의심 메시지, 대화 이력 없어 주의 필요"
+        ],
+        "recommended_action": "주의 표시",
+        "is_secret_recommended": false,
+        "category": "A-2",
+        "category_name": "경조사 빙자",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "A-020",
+      "expected_category": "B-1",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 7,
+      "elapsed_time_ms": 70125,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 전체 맥락에서 검찰청 등 수사기관을 사칭하며 범죄 연루, 출석 요구, 링크 클릭 및 전화 유도 등 전형적인 기관 사칭(스미싱) 패턴을 보임",
+          "검찰청 등 수사기관 사칭 및 범죄 연루, 출석 요구 등 전형적인 스미싱 의심 패턴이 감지되어 위험으로 판단됩니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-1",
+        "category_name": "수사/금융 기관 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "A-021",
+      "expected_category": "C-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 9,
+      "elapsed_time_ms": 78605,
+      "final_result": {
+        "risk_level": "MEDIUM",
+        "reasons": [
+          "대화 흐름에서 '월 200~300만원', '상품 주문 및 리뷰', '건당 3~5만원', '선착순 모집', '체험단 신청 및 상담' 등 금전적 수익과 관련된 제안이 반복적으로 등장하며, 링크 클릭을 유도하고 있어 대출/알바/부업 빙자 스미싱 유형(C-1)에 해당함.",
+          "금전적 수익 제안과 체험단/상담 유도 등 스미싱 의심 패턴이 감지되어 주의가 필요합니다."
+        ],
+        "recommended_action": "주의 표시",
+        "is_secret_recommended": false,
+        "category": "C-1",
+        "category_name": "대출 빙자",
+        "scam_probability": 91
+      }
+    },
+    {
+      "case_id": "A-022",
+      "expected_category": "B-2",
+      "actual_category": "NORMAL",
+      "final_risk_level": "CRITICAL",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 78455,
+      "final_result": {
+        "risk_level": "MEDIUM",
+        "reasons": [
+          "대화 전체 맥락에서 국민건강보험공단을 사칭하여 환급금 신청 안내 및 링크 제공 등 공공 행정 서비스 관련 안내를 하고 있으며, 금전 요구 없이 공식 기관 안내에 따른 환급금 신청 절차만 안내하고 있음.",
+          "공공기관 사칭 및 환급금 안내로 의심되는 스미싱 유형으로, 링크 제공 등 의심스러운 패턴이 존재함."
+        ],
+        "recommended_action": "주의 표시",
+        "is_secret_recommended": false,
+        "category": "B-2",
+        "category_name": "공공 행정 알림 사칭",
+        "scam_probability": 95
+      }
+    },
+    {
+      "case_id": "B-023",
+      "expected_category": "C-3",
+      "actual_category": "NORMAL",
+      "final_risk_level": "LOW",
+      "is_category_match": false,
+      "is_detected": false,
+      "is_pass": false,
+      "total_messages": 8,
+      "elapsed_time_ms": 26789,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 전체 맥락에서 금전 요구, 링크, 개인정보 요구 등 사기 징후가 없으며, 상대방은 친구 요청 및 자기소개, 상황 설명 등 일상적인 대화 흐름을 보이고 있음."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    },
+    {
+      "case_id": "B-024",
+      "expected_category": "C-2",
+      "actual_category": "C-2",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 78396,
+      "final_result": {
+        "risk_level": "MEDIUM",
+        "reasons": [
+          "대화 전체 맥락에서 투자 손실 복구, 리딩방 초대, 수익률 인증 등 투자 관련 제안이 반복적으로 등장하며, 금전 요구 없이 정보방 참여를 유도하고 있어 투자 리딩방(스미싱) 유형에 해당함",
+          "투자 관련 리딩방 초대 문구로 의심되어 주의가 필요합니다."
+        ],
+        "recommended_action": "주의 표시",
+        "is_secret_recommended": false,
+        "category": "C-2",
+        "category_name": "투자 리딩방",
+        "scam_probability": 94
+      }
+    },
+    {
+      "case_id": "B-025",
+      "expected_category": "B-3",
+      "actual_category": "B-3",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 40038,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 흐름이 중고거래(당근) 관련 일상적 문의 및 안내로, 금전 요구·계좌번호 요청·링크 클릭 유도 등 사기 징후가 없음. '링크 따올게요'는 단순 안내성 멘트로 판단됨."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    },
+    {
+      "case_id": "B-026",
+      "expected_category": "B-2",
+      "actual_category": "B-3",
+      "final_risk_level": "HIGH",
+      "is_category_match": false,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 81986,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 전체 맥락에서 '통관', '관세 미납', '세금 체납' 등 공공 행정(관세청/세관) 관련 용어와 명의도용, 미납 세금 등 금전적 불이익을 언급하며 조치를 요구하는 흐름이 공공 행정 사칭(스미싱) 패턴에 해당함",
+          "공공 행정(통관) 사칭 및 금전적 불이익을 언급하며 즉시 조치를 요구하는 스미싱 의심 메시지입니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "B-2",
+        "category_name": "공공 행정 알림 사칭",
+        "scam_probability": 91
+      }
+    }
+  ]
+}

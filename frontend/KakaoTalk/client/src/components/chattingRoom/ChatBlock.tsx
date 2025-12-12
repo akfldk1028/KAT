@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { UserResponseDto } from '~/types/user';
 import { SecurityAnalysis } from '~/types/security';
 import { BASE_IMG_URL, HOST } from '~/constants';
 import { SeparationBlock } from './InfoBlock';
 import SecretMessageViewer from './SecretMessageViewer';
+import ImageViewerModal from './ImageViewerModal';
+import { checkSecretStatus, SecretMessageStatus } from '~/apis/secret';
 
 // 채팅방에서 채팅을 나타내는 컴포넌트
 const ChatWrapper = styled.div`
@@ -71,7 +73,7 @@ const LeftBlock = styled.div`
       }
     }
   }
-  & img {
+  & > img {
     position: absolute;
     top: 3px;
     left: 0;
@@ -155,43 +157,25 @@ const AgentText = styled.div`
   }
 `;
 
-// 수신 메시지 위협 경고 스타일
-const ThreatWarning = styled.div<{ riskLevel: string }>`
-  display: flex;
-  align-items: center;
-  background: ${props => {
+// 수신 메시지 위협 경고 스타일 (채팅 아래 회색 글씨)
+const ThreatHint = styled.div<{ riskLevel: string }>`
+  font-size: 11px;
+  color: ${props => {
     switch(props.riskLevel) {
-      case 'CRITICAL': return 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
-      case 'HIGH': return 'linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%)';
-      case 'MEDIUM': return 'linear-gradient(135deg, #ffa726 0%, #fb8c00 100%)';
-      default: return 'linear-gradient(135deg, #66bb6a 0%, #43a047 100%)';
+      case 'CRITICAL': return '#d32f2f';
+      case 'HIGH': return '#e65100';
+      case 'MEDIUM': return '#f57c00';
+      default: return '#888';
     }
   }};
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
+  margin-top: 2px;
   margin-bottom: 4px;
-  font-size: 12px;
-  max-width: 280px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  max-width: 70%;
+  line-height: 1.4;
+  word-wrap: break-word;
 
-  & .warning-icon {
-    margin-right: 8px;
-    font-size: 16px;
-  }
-
-  & .warning-content {
-    flex: 1;
-  }
-
-  & .warning-title {
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-
-  & .warning-reasons {
-    font-size: 11px;
-    opacity: 0.9;
+  & .hint-icon {
+    margin-right: 4px;
   }
 `;
 
@@ -241,7 +225,19 @@ const SecretLink = styled.div`
 const SecretAgentLabel = styled.div`
   font-size: 11px;
   color: #888;
+  margin-bottom: 4px;
+`;
+
+// 시크릿 메시지 읽음 상태 표시
+const SecretViewedLabel = styled.div`
+  font-size: 11px;
+  color: #888;
   margin-bottom: 7px;
+
+  & .check-icon {
+    color: #667eea;
+    margin-right: 4px;
+  }
 `;
 
 interface ChatProps {
@@ -253,6 +249,7 @@ interface ChatProps {
   imageUrl?: string;
   secretId?: string;
   securityAnalysis?: SecurityAnalysis;
+  isMine?: boolean;
 }
 
 interface FriendChatProps {
@@ -268,8 +265,56 @@ interface FriendChatProps {
   onImgClick(): void;
 }
 
-export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageType, imageUrl, secretId }) => {
+export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageType, imageUrl, secretId, isMine }) => {
   const [showSecretViewer, setShowSecretViewer] = useState(false);
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [secretStatus, setSecretStatus] = useState<SecretMessageStatus | null>(null);
+
+  // 내가 보낸 시크릿 메시지인 경우 읽음 상태 체크
+  useEffect(() => {
+    if (isMine && messageType === 'secret' && secretId) {
+      let intervalId: ReturnType<typeof setInterval> | null = null;
+      let isMounted = true;
+
+      const fetchStatus = async () => {
+        try {
+          const status = await checkSecretStatus(secretId);
+          if (!isMounted) return;
+
+          setSecretStatus(status);
+
+          // 읽음 또는 만료되면 폴링 중단
+          if (status.is_viewed || status.is_expired) {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch secret status:', err);
+        }
+      };
+
+      fetchStatus();
+      intervalId = setInterval(fetchStatus, 5000);
+
+      return () => {
+        isMounted = false;
+        if (intervalId) clearInterval(intervalId);
+      };
+    }
+  }, [isMine, messageType, secretId]);
+
+  // 읽은 시간 포맷
+  const formatViewedTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   // 에이전트 알림 메시지인 경우 (채팅방 중앙에 저장되는 메시지)
   if (messageType === 'agent_alert') {
@@ -299,6 +344,13 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
           <span className="not-read" style={{ left: '-35px', bottom: '18px', textAlign: 'right' }}>{notRead > 0 ? notRead : ''}</span>
         </SecretLink>
         <SecretAgentLabel>시크릿전송에이전트</SecretAgentLabel>
+        {/* 내가 보낸 시크릿 메시지 - 읽음 상태 표시 */}
+        {isMine && secretStatus?.is_viewed && secretStatus.viewed_at && (
+          <SecretViewedLabel>
+            <span className="check-icon">✓</span>
+            읽음 {formatViewedTime(secretStatus.viewed_at)}
+          </SecretViewedLabel>
+        )}
         {showSecretViewer && (
           <SecretMessageViewer
             secretId={secretId}
@@ -313,11 +365,19 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
   if (messageType === 'image' && imageUrl) {
     const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `${HOST}${imageUrl}`;
     return (
-      <ImageWrapper onClick={() => window.open(fullImageUrl, '_blank')}>
-        <img src={fullImageUrl} alt="전송된 이미지" />
-        <span className="time">{localeTime}</span>
-        <span className="not-read">{notRead > 0 ? notRead : ''}</span>
-      </ImageWrapper>
+      <>
+        <ImageWrapper onClick={() => setShowImageViewer(true)}>
+          <img src={fullImageUrl} alt="전송된 이미지" />
+          <span className="time">{localeTime}</span>
+          <span className="not-read">{notRead > 0 ? notRead : ''}</span>
+        </ImageWrapper>
+        {showImageViewer && (
+          <ImageViewerModal
+            imageUrl={fullImageUrl}
+            onClose={() => setShowImageViewer(false)}
+          />
+        )}
+      </>
     );
   }
 
@@ -340,7 +400,7 @@ export const MyChat: React.FC<ChatProps> = props => {
     return (
       <React.Fragment>
         {content ? <SeparationBlock content={content} /> : null}
-        <Chat {...props} />
+        <Chat {...props} isMine={true} />
       </React.Fragment>
     );
   }
@@ -350,7 +410,7 @@ export const MyChat: React.FC<ChatProps> = props => {
       {content ? <SeparationBlock content={content} /> : null}
       <RightBlock>
         <div>
-          <Chat {...props} />
+          <Chat {...props} isMine={true} />
         </div>
       </RightBlock>
     </React.Fragment>
@@ -360,27 +420,20 @@ export const MyChat: React.FC<ChatProps> = props => {
 // 다른 사람이 보낸 채팅 (연속 메시지, 썸네일 없음)
 export const FriendChat: React.FC<ChatProps> = props => {
   const { securityAnalysis } = props;
-  // 위협 경고 표시 여부 (LOW가 아닌 경우에만)
-  const showWarning = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
+  // 위협 힌트 표시 여부 (LOW가 아닌 경우에만)
+  const showHint = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
 
   return (
     <LeftBlock>
-      {showWarning && (
-        <ThreatWarning riskLevel={securityAnalysis!.risk_level}>
-          <span className="warning-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
-          <div className="warning-content">
-            <div className="warning-title">
-              {getThreatLabel(securityAnalysis!.risk_level)}
-            </div>
-            <div className="warning-reasons">
-              {securityAnalysis!.reasons.slice(0, 2).join(', ')}
-            </div>
-          </div>
-        </ThreatWarning>
-      )}
       <div>
         <Chat {...props} />
       </div>
+      {showHint && (
+        <ThreatHint riskLevel={securityAnalysis!.risk_level}>
+          <span className="hint-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
+          {getThreatHintText(securityAnalysis!)}
+        </ThreatHint>
+      )}
     </LeftBlock>
   );
 };
@@ -395,13 +448,32 @@ const getThreatIcon = (riskLevel: string) => {
   }
 };
 
-// 위협 레벨 라벨
-const getThreatLabel = (riskLevel: string) => {
-  switch(riskLevel) {
-    case 'CRITICAL': return '피싱/사기 의심!';
-    case 'HIGH': return '위험 감지';
-    case 'MEDIUM': return '주의 필요';
-    default: return '안전';
+// 위협 힌트 텍스트 (채팅 아래 회색 글씨)
+const getThreatHintText = (analysis: SecurityAnalysis) => {
+  const { risk_level, reasons, category_name } = analysis;
+
+  // 카테고리가 있으면 표시
+  if (category_name && category_name !== '일상 대화' && category_name !== '알 수 없음') {
+    if (risk_level === 'CRITICAL') {
+      return `이 메시지는 ${category_name} 사기일 수 있어요`;
+    } else if (risk_level === 'HIGH') {
+      return `${category_name} 패턴이 감지되었어요`;
+    } else {
+      return `${category_name} 가능성이 있어요`;
+    }
+  }
+
+  // 이유가 있으면 첫 번째 이유 전체 표시 (말줄임 없음)
+  if (reasons && reasons.length > 0) {
+    return reasons[0];
+  }
+
+  // 기본 메시지
+  switch(risk_level) {
+    case 'CRITICAL': return '이 메시지는 사기일 수 있어요';
+    case 'HIGH': return '주의가 필요한 메시지예요';
+    case 'MEDIUM': return '확인이 필요해요';
+    default: return '';
   }
 };
 
@@ -409,8 +481,8 @@ const getThreatLabel = (riskLevel: string) => {
 export const FriendChatWithThumbnail: React.FC<FriendChatProps> = props => {
   const { user, content, onImgClick, securityAnalysis } = props;
 
-  // 위협 경고 표시 여부 (LOW가 아닌 경우에만)
-  const showWarning = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
+  // 위협 힌트 표시 여부 (LOW가 아닌 경우에만)
+  const showHint = securityAnalysis && securityAnalysis.risk_level !== 'LOW';
 
   return (
     <React.Fragment>
@@ -422,22 +494,15 @@ export const FriendChatWithThumbnail: React.FC<FriendChatProps> = props => {
           onClick={onImgClick}
         />
         <NameBlock>{user.name}</NameBlock>
-        {showWarning && (
-          <ThreatWarning riskLevel={securityAnalysis!.risk_level}>
-            <span className="warning-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
-            <div className="warning-content">
-              <div className="warning-title">
-                {getThreatLabel(securityAnalysis!.risk_level)}
-              </div>
-              <div className="warning-reasons">
-                {securityAnalysis!.reasons.slice(0, 2).join(', ')}
-              </div>
-            </div>
-          </ThreatWarning>
-        )}
         <div>
           <Chat {...props} />
         </div>
+        {showHint && (
+          <ThreatHint riskLevel={securityAnalysis!.risk_level}>
+            <span className="hint-icon">{getThreatIcon(securityAnalysis!.risk_level)}</span>
+            {getThreatHintText(securityAnalysis!)}
+          </ThreatHint>
+        )}
       </LeftBlock>
     </React.Fragment>
   );

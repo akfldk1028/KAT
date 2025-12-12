@@ -945,17 +945,17 @@ def entity_extractor_mcp(message: str) -> Dict[str, Any]:
 # Context Analyzer MCP Tool - MECE 카테고리 + Cialdini 분류
 # ============================================================
 
-# Cialdini 6원리 매핑
+# Cialdini 6원리 매핑 (기획서: 20251210_AgentB_ver9.0_Final.md 기준)
 CIALDINI_MAPPING = {
-    "A-1": ["Urgency", "Liking"],           # 가족 사칭
-    "A-2": ["Authority", "Urgency"],        # 지인/상사 사칭
-    "A-3": ["Liking", "Reciprocity"],       # 상품권 대리구매
-    "B-1": ["Urgency", "Fear"],             # 택배/경조사
-    "B-2": ["Authority", "Fear"],           # 기관 사칭
-    "B-3": ["Urgency", "Fear"],             # 결제 승인
-    "C-1": ["Scarcity", "Social Proof"],    # 투자 권유
-    "C-2": ["Liking", "Reciprocity"],       # 로맨스 스캠
-    "C-3": ["Fear", "Urgency"],             # 몸캠 피싱
+    "A-1": ["Urgency", "Liking"],           # 지인/가족 사칭 (액정 파손, 급전, 번호 변경)
+    "A-2": ["Liking", "Social Proof"],      # 경조사 빙자 (청첩장, 부고장, 모바일 초대장)
+    "A-3": ["Liking", "Reciprocity"],       # 로맨스 스캠 (이성 교제, 금전 요구)
+    "B-1": ["Authority", "Fear"],           # 수사/금융 기관 사칭 (검찰, 금감원, 계좌 동결)
+    "B-2": ["Authority", "Urgency"],        # 공공 행정 알림 (건강검진, 과태료, 미납)
+    "B-3": ["Urgency", "Scarcity"],         # 택배/물류 사칭 (배송 지연, 주소 불명, 반송)
+    "C-1": ["Scarcity", "Authority"],       # 대출 빙자 (저금리, 정부지원금, 대환)
+    "C-2": ["Scarcity", "Social Proof"],    # 투자 리딩방 (코인, 주식, 고수익 리딩)
+    "C-3": ["Fear", "Urgency"],             # 몸캠 피싱 (영상통화, 녹화, 협박)
     "NORMAL": []
 }
 
@@ -965,16 +965,16 @@ def context_analyzer_mcp(message: str, context: List[str] = None) -> Dict[str, A
     Analyze message context and classify into MECE categories with Cialdini mapping.
     메시지를 MECE 9-카테고리로 분류하고 Cialdini 심리 원리를 매핑합니다.
 
-    MECE 카테고리:
-    - A-1: 가족 사칭 (액정 파손)
-    - A-2: 지인/상사 사칭 (급전)
-    - A-3: 상품권 대리 구매
-    - B-1: 생활 밀착형 (택배/경조사)
-    - B-2: 기관 사칭 (검찰/경찰)
-    - B-3: 결제 승인 (낚시성)
-    - C-1: 투자 권유 (리딩방)
-    - C-2: 로맨스 스캠
-    - C-3: 몸캠 피싱
+    MECE 카테고리 (기획서: 20251210_AgentB_ver9.0_Final.md 기준):
+    - A-1: 지인/가족 사칭 (액정 파손, 급전, 번호 변경)
+    - A-2: 경조사 빙자 (청첩장, 부고장, 모바일 초대장)
+    - A-3: 로맨스 스캠 (이성 교제, 금전 요구)
+    - B-1: 수사/금융 기관 사칭 (검찰, 금감원, 계좌 동결)
+    - B-2: 공공 행정 알림 (건강검진, 과태료, 미납)
+    - B-3: 택배/물류 사칭 (배송 지연, 주소 불명, 반송)
+    - C-1: 대출 빙자 (저금리, 정부지원금, 대환)
+    - C-2: 투자 리딩방 (코인, 주식, 고수익 리딩)
+    - C-3: 몸캠 피싱 (영상통화, 녹화, 협박)
     - NORMAL: 정상 메시지
 
     Cialdini 6원리:

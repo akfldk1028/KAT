@@ -9,6 +9,9 @@ export interface SecurityAnalysis {
   reasons: string[];
   recommended_action: string;
   is_secret_recommended: boolean;
+  category?: string;        // 스미싱 유형 코드 (A-1, B-2 등)
+  category_name?: string;   // 스미싱 유형명 (지인/가족 사칭 등)
+  scam_probability?: number; // 사기 확률 (0-100)
 }
 
 export interface ImageAnalysisState {

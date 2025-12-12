@@ -4,12 +4,9 @@ Threat Intelligence - 통합 위협 정보 조회 모듈
 
 통합 소스:
 - TheCheat API: 전화번호/계좌번호 사기 신고 조회
-- KISA Phishing API: 피싱 사이트 URL 조회 (로컬 캐시, 1순위)
-- VirusTotal API: URL/파일 악성코드 검사 (2순위)
-
-참고:
-- lrl.kr v6 API는 URL 안전검사 미지원 (URL 단축만 가능)
-- lrl.kr v5 URL 체크는 별도 키 필요 (현재 미사용)
+- LRL API: URL 안전검사 (Google Safe Browsing 대체, 1순위)
+- KISA Phishing API: 피싱 사이트 URL 조회 (로컬 캐시, 2순위)
+- VirusTotal API: URL/파일 악성코드 검사 (3순위)
 
 사용 패턴:
 1. ThreatIntelligence 클래스: 전체 통합 조회
@@ -23,8 +20,8 @@ from urllib.parse import urlparse
 from .thecheat_api import check_phone_thecheat, check_account_thecheat
 from .kisa_phishing_api import check_url_kisa
 from .virustotal_api import check_url_virustotal
-# lrl.kr v6는 URL 체크 미지원 (URL 단축만 가능)
-# from .lrl_api import check_url_lrl
+# LRL API - Google Safe Browsing 대체 (URL 안전검사)
+from .lrl_api import check_url_lrl
 
 
 class ThreatIntelligence:
@@ -124,26 +121,48 @@ class ThreatIntelligence:
 
     def check_url(self, url: str) -> Dict[str, Any]:
         """
-        URL 조회 (KISA 캐시 → VirusTotal 순차)
+        URL 조회 (LRL → KISA 캐시 → VirusTotal 순차)
 
         폴백 전략:
-        1. KISA 피싱사이트 로컬 캐시 조회 (빠름, O(1))
-        2. VirusTotal API 조회 (느림, 정밀)
-
-        참고: lrl.kr v6는 URL 체크 미지원 (v5 전용키 필요)
+        1. LRL API 조회 (Google Safe Browsing 대체, 빠름)
+        2. KISA 피싱사이트 로컬 캐시 조회 (빠름, O(1))
+        3. VirusTotal API 조회 (느림, 정밀)
 
         Args:
             url: 조회할 URL
 
         Returns:
             has_reported: 위협 URL 여부 (bool)
-            source: 조회된 소스 ("KISA" | "VirusTotal" | None)
+            source: 조회된 소스 ("LRL" | "KISA" | "VirusTotal" | None)
             report_count: 신고/탐지 건수 (VirusTotal인 경우 malicious_count)
             prior_probability: 사전 확률 (float)
             threat_type: 위협 유형 ("phishing" | "malware" | "safe" | "suspicious")
             details: 상세 정보 (Dict)
         """
-        # 1. KISA 피싱사이트 캐시 조회 (1순위, O(1) 검색)
+        # 1. LRL API 조회 (1순위, Google Safe Browsing 대체)
+        lrl_result = check_url_lrl(url)
+        if lrl_result:
+            if not lrl_result.get("is_safe"):
+                threat_type = lrl_result.get("threat", "malware").lower()
+                # LRL 위협 유형 매핑: MALWARE, SOCIAL_ENGINEERING, UNWANTED_SOFTWARE
+                if threat_type in ["social_engineering", "phishing"]:
+                    threat_type = "phishing"
+                elif threat_type in ["malware", "unwanted_software"]:
+                    threat_type = "malware"
+
+                return {
+                    "has_reported": True,
+                    "source": "LRL",
+                    "report_count": 1,
+                    "prior_probability": calculate_prior_probability(1),
+                    "threat_type": threat_type,
+                    "details": {
+                        "url": url,
+                        "threat": lrl_result.get("threat", "unknown")
+                    }
+                }
+
+        # 2. KISA 피싱사이트 캐시 조회 (2순위, O(1) 검색)
         kisa_result = check_url_kisa(url)
         if kisa_result:
             if kisa_result.get("is_phishing"):
@@ -159,7 +178,7 @@ class ThreatIntelligence:
                     }
                 }
 
-        # 2. VirusTotal 조회 (2순위, 정밀 검사)
+        # 3. VirusTotal 조회 (3순위, 정밀 검사)
         vt_result = check_url_virustotal(url)
         if vt_result:
             malicious_count = vt_result.get("malicious", 0)

@@ -1,0 +1,28 @@
+{
+  "test_date": "2025-12-12T01:05:18.651190",
+  "api_url": "http://localhost:8002/api/agents",
+  "results": [
+    {
+      "case_id": "B-025",
+      "expected_category": "B-3",
+      "actual_category": "B-3",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 8,
+      "elapsed_time_ms": 42115,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 전체 맥락에서 금전 요구, 계좌번호 요청, 앱 설치 유도 등 사기 징후가 없으며, 택배 거래 관련 안내 및 안전결제 링크 제공 제안만 있음. 스미싱 유형 패턴에 해당하지 않음."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    }
+  ]
+}

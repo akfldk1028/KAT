@@ -4,6 +4,7 @@ import {
   FetchChattingRequest,
   ChangeChattingRoomDto
 } from '~/types/chatting';
+import { SecurityAnalysis } from '~/types/security';
 
 export enum ChatTypes {
   SHOW_CHATTING_ROOM = 'chat/SHOW_CHATTING_ROOM',
@@ -12,6 +13,7 @@ export enum ChatTypes {
   ADD_CHATTING = 'chat/ADD_CHATTING',
   READ_CHATTING = 'chat/READ_CHATTING',
   UPDATE_CHAT_MESSAGE = 'chat/UPDATE_CHAT_MESSAGE',
+  UPDATE_CHAT_SECURITY_HINT = 'chat/UPDATE_CHAT_SECURITY_HINT',
   FETCH_CHATTING_REQUEST = 'chat/FETCH_CHATTING_REQUEST',
   FETCH_CHATTING_SUCCESS = 'chat/FETCH_CHATTING_SUCCESS',
   FETCH_CHATTING_FAILUER = 'chat/FETCH_CHATTING_FAILUER'
@@ -63,6 +65,16 @@ export interface UpdateChatMessageAction {
   payload: UpdateChatMessageDto;
 }
 
+export interface UpdateChatSecurityHintDto {
+  message_id: number;
+  security_analysis: SecurityAnalysis;
+}
+
+export interface UpdateChatSecurityHintAction {
+  type: ChatTypes.UPDATE_CHAT_SECURITY_HINT;
+  payload: UpdateChatSecurityHintDto;
+}
+
 export type ChatActionTypes =
   | ShowChattingRoomAction
   | HideChattingRoomAction
@@ -70,6 +82,7 @@ export type ChatActionTypes =
   | AddChattingAction
   | ReadChattingAction
   | UpdateChatMessageAction
+  | UpdateChatSecurityHintAction
   | FetchChattingAction
   | FectchChattingSuccessAction;
 
@@ -116,6 +129,15 @@ export const updateChatMessage = (param: UpdateChatMessageDto): UpdateChatMessag
   payload: param
 });
 
+// 채팅 메시지에 보안 힌트 추가 (Agent B 비동기 분석 결과)
+export const updateChatSecurityHint = (
+  messageId: number,
+  securityAnalysis: SecurityAnalysis
+): UpdateChatSecurityHintAction => ({
+  type: ChatTypes.UPDATE_CHAT_SECURITY_HINT,
+  payload: { message_id: messageId, security_analysis: securityAnalysis }
+});
+
 export const ChatActions = {
   showChattingRoom,
   hideChattingRoom,
@@ -123,5 +145,6 @@ export const ChatActions = {
   addChatting,
   readChatting,
   updateChatMessage,
+  updateChatSecurityHint,
   fetchChatting
 };

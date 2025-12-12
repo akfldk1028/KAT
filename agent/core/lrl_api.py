@@ -38,7 +38,7 @@ class LRLClient:
 
     def check_url(self, url: str) -> Dict[str, Any]:
         """
-        URL 안전성 검사
+        URL 안전성 검사 (GET 방식 - 공식 문서 예제)
 
         Args:
             url: 검사할 URL
@@ -52,36 +52,36 @@ class LRLClient:
         Raises:
             LRLAPIError: API 호출 실패 시
         """
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        payload = {
+        # GET 방식으로 호출 (공식 문서 예제)
+        # https://api.lrl.kr/v5/url/check?key=API_KEY&url=검사URL
+        params = {
             "key": self.api_key,
             "url": url
         }
 
         try:
-            response = requests.post(
+            response = requests.get(
                 self.endpoint,
-                headers=headers,
-                json=payload,
+                params=params,
                 timeout=10
             )
+
+            result = response.json()
 
             # HTTP 상태 코드별 처리
             if response.status_code == 201:
                 # 성공
-                result = response.json()
+                pass
             elif response.status_code == 400:
                 raise LRLAPIError("잘못된 요청 (HTTP 400)")
             elif response.status_code == 401:
-                raise LRLAPIError("API 키 오류 (HTTP 401)")
+                raise LRLAPIError("API 키 누락 또는 불일치 (HTTP 401)")
+            elif response.status_code == 403:
+                # ERR_INVALID_KEY 등
+                msg = result.get("message", "접근 불가")
+                raise LRLAPIError(f"API 키 오류: {msg} (HTTP 403)")
             elif response.status_code == 500:
                 raise LRLAPIError("서버 오류 (HTTP 500)")
-            else:
-                response.raise_for_status()
-                result = response.json()
 
         except requests.exceptions.Timeout:
             raise LRLAPIError("API 요청 타임아웃 (10초 초과)")
@@ -92,6 +92,10 @@ class LRLClient:
 
         # 응답 메시지 확인
         message = result.get("message", "")
+        if message == "ERR_INVALID_KEY":
+            raise LRLAPIError("API 키가 유효하지 않습니다. https://api.lrl.kr 에서 키 상태를 확인하세요.")
+        if message == "ERR_NO_URL":
+            raise LRLAPIError("URL 값이 누락되었습니다.")
         if message != "SUCCESS":
             raise LRLAPIError(f"API 응답 에러: {message}")
 

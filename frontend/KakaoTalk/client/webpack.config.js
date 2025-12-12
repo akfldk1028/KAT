@@ -29,7 +29,8 @@ module.exports = {
     contentBase: path.resolve(__dirname, "public"),
     compress: true,
     historyApiFallback: true,
-    port:3000,
+    port: 3000,
+    host: '0.0.0.0',
   },
   output: {
     path: path.resolve(__dirname, "build"),

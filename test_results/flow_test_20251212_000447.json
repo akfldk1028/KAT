@@ -1,0 +1,29 @@
+{
+  "test_date": "2025-12-12T00:04:47.307396",
+  "api_url": "http://localhost:8002/api/agents",
+  "results": [
+    {
+      "case_id": "A-002",
+      "expected_category": "A-1",
+      "actual_category": "A-1",
+      "final_risk_level": "HIGH",
+      "is_category_match": true,
+      "is_detected": true,
+      "is_pass": true,
+      "total_messages": 6,
+      "elapsed_time_ms": 49424,
+      "final_result": {
+        "risk_level": "HIGH",
+        "reasons": [
+          "대화 흐름이 전형적인 가족 사칭 패턴: 인사(아빠) → 상황 설명(폰 액정 깨짐) → 인증 요청 및 링크 전달 → 앱 설치 및 행동 요구로 이어짐. 금전 요구는 명시되지 않았으나, 인증 및 링크 클릭을 유도하는 점이 스미싱 위험 신호임.",
+          "가족 사칭 및 앱 설치 유도 등 전형적인 스미싱 의심 패턴이 감지되어 위험 수준으로 판단됩니다."
+        ],
+        "recommended_action": "강력 경고",
+        "is_secret_recommended": false,
+        "category": "A-1",
+        "category_name": "지인/가족 사칭",
+        "scam_probability": 91
+      }
+    }
+  ]
+}

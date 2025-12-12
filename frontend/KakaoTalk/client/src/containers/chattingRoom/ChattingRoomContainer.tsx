@@ -21,7 +21,7 @@ import {
   ReadChatResponse,
   UpdateRoomListDto
 } from '~/types/chatting';
-import { createRoom, uploadImage, convertMessageToSecret } from '~/apis/chat';
+import { createRoom, uploadImage } from '~/apis/chat';
 import { AddFriendRequestDto } from '~/types/friend';
 import { UserResponseDto } from '~/types/user';
 import { addFriendRequest } from '~/apis/friend';
@@ -370,7 +370,45 @@ class ChattingRoomContainer extends Component<Props, State> {
     this.setState({ showSecretPopup: true });
   };
 
-  handleNormalSend = () => {
+  handleNormalSend = async () => {
+    const pendingMessage = this.state.pendingTextMessage;
+    const selectedImage = this.state.selectedImage;
+
+    // 텍스트 메시지 "그냥보내기"
+    if (pendingMessage) {
+      this.sendTextMessage(pendingMessage);
+      this.clearAnalysisState();
+      return;
+    }
+
+    // 이미지 "그냥보내기"
+    if (selectedImage) {
+      try {
+        const imageUrl = await uploadImage(selectedImage);
+        const userState = this.props.rootState.user;
+        const chatState = this.props.rootState.chat;
+        const authState = this.props.rootState.auth;
+        const isGroup = chatState.type === 'group';
+        const isMe = chatState.participant[0].id === userState.id;
+
+        const chattingRequest: ChattingRequestDto = {
+          room_id: chatState.room_id,
+          type: chatState.type as RoomType,
+          participant: chatState.participant,
+          send_user_id: userState.id,
+          message: '[Image]',
+          not_read: !isGroup && isMe ? 0 : chatState.participant.length,
+          message_type: 'image',
+          image_url: imageUrl
+        };
+
+        authState.socket?.emit('message', chattingRequest);
+      } catch (error) {
+        console.error('Image upload failed:', error);
+        alert('이미지 전송에 실패했습니다.');
+      }
+    }
+
     this.clearAnalysisState();
   };
 
@@ -379,7 +417,6 @@ class ChattingRoomContainer extends Component<Props, State> {
     const userState = this.props.rootState.user;
     const pendingMessage = this.state.pendingTextMessage;
     const selectedImage = this.state.selectedImage;
-    const { updateChatMessage } = this.props.chatActions;
 
     if (selectedImage) {
       try {
@@ -393,9 +430,8 @@ class ChattingRoomContainer extends Component<Props, State> {
           require_auth: options.requireAuth,
           prevent_capture: options.preventCapture
         });
-        // 시크릿 링크만 전송 (에이전트 라벨은 시크릿 메시지 UI에 포함됨)
+        // 시크릿 링크만 전송
         this.sendSecretMessage(response.secret_id);
-        console.log('Secret image sent:', response.secret_id);
       } catch (error) {
         console.error('Secret image send failed:', error);
         alert('Failed to send secret image.');
@@ -423,24 +459,8 @@ class ChattingRoomContainer extends Component<Props, State> {
         prevent_capture: options.preventCapture
       });
 
-      console.log('Secret message created:', response);
-
-      const lastMessage = chatState.chatting[chatState.chatting.length - 1];
-      if (lastMessage && lastMessage.message === pendingMessage && lastMessage.send_user_id === userState.id) {
-        await convertMessageToSecret(lastMessage.id, response.secret_id);
-        updateChatMessage({
-          id: lastMessage.id,
-          message: '[SecretLink]',
-          message_type: 'secret',
-          secret_id: response.secret_id
-        });
-        console.log('Message converted to secret:', lastMessage.id);
-        // 에이전트 라벨은 시크릿 메시지 UI에 포함됨
-      } else {
-        console.warn('Could not find message to convert, sending new secret message');
-        // 시크릿 링크만 전송 (에이전트 라벨은 시크릿 메시지 UI에 포함됨)
-        this.sendSecretMessage(response.secret_id);
-      }
+      // 시크릿 메시지 직접 전송 (원본 메시지는 전송하지 않음)
+      this.sendSecretMessage(response.secret_id);
     } catch (error) {
       console.error('Secret message creation failed:', error);
       alert('Failed to create secret message.');
@@ -527,33 +547,34 @@ class ChattingRoomContainer extends Component<Props, State> {
     const { showProfile } = this.props.profileActions;
 
     const onChatSumbmit = async (msg: string) => {
-      // 1. Send message first (optimistic UI)
-      this.sendTextMessage(msg);
-
-      // 2. Show loading (AI analyzing)
+      // 1. Show loading (AI analyzing) - 메시지 전송 전에 분석 먼저!
       this.setState({
         isAnalyzing: true,
         pendingTextMessage: msg,
         isTextAnalysis: true
       });
 
-      // 3. Start AI analysis in background
+      // 2. Start AI analysis BEFORE sending
       try {
         const analysis = await analyzeOutgoing(msg, true);
 
-        // 4. If sensitive info detected, show popup
+        // 3. If sensitive info detected, show popup (don't send original message)
         if (analysis.risk_level !== 'LOW' && analysis.is_secret_recommended) {
           this.setState({
             securityAnalysis: analysis,
             isAnalyzing: false
           });
-        } else {
-          // Safe - hide loading
-          this.clearAnalysisState();
+          // 원본 메시지 전송 안 함 - 사용자가 시크릿 전송 선택하면 그때 전송
+          return;
         }
+
+        // 4. Safe - send message normally
+        this.sendTextMessage(msg);
+        this.clearAnalysisState();
       } catch (error) {
         console.error('Text analysis failed:', error);
-        // On failure, hide loading (already sent)
+        // On failure, send message anyway (fail-safe)
+        this.sendTextMessage(msg);
         this.clearAnalysisState();
       }
     };

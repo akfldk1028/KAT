@@ -1,0 +1,28 @@
+{
+  "test_date": "2025-12-12T01:00:59.237384",
+  "api_url": "http://localhost:8002/api/agents",
+  "results": [
+    {
+      "case_id": "B-010",
+      "expected_category": "C-3",
+      "actual_category": "NORMAL",
+      "final_risk_level": "LOW",
+      "is_category_match": false,
+      "is_detected": false,
+      "is_pass": false,
+      "total_messages": 6,
+      "elapsed_time_ms": 19484,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "현재 메시지는 일본 거주 여성임을 밝히며 친구 요청을 하는 일상적 대화로, 금전 요구, 링크, 앱 설치, 수사기관 사칭 등 스미싱 전형 패턴이 전혀 나타나지 않음. 이전 대화 맥락 역시 무해한 인사 및 친구 요청으로 구성되어 있음."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    }
+  ]
+}

@@ -100,40 +100,52 @@ const message = (socket: socketIO.Socket, io: socketIO.Server) => {
       if (me === target) {
         io.to(me).emit('message', messageResponse);
       } else {
-        // 수신자에게 보낼 때는 Incoming Agent 분석 결과 포함
-        let incomingAnalysis = null;
-        if (message_type !== 'image' && message_type !== 'agent_alert') {
-          // 대화 히스토리 조회 (최근 10개 메시지) - Agent B 맥락 분석용
-          const conversationHistory = await Chatting.findAll({
-            where: { room_id },
-            order: [['id', 'DESC']],
-            limit: 10,
-            attributes: ['send_user_id', 'message', 'createdAt']
-          });
-
-          // 시간순 정렬 후 Agent B에 전달
-          const historyForAgent = conversationHistory.reverse().map(chat => ({
-            sender_id: chat.send_user_id,
-            message: chat.message,
-            timestamp: chat.createdAt
-          }));
-
-          incomingAnalysis = await analyzeIncoming(
-            message,
-            send_user_id,
-            messageObj.participant[0]?.id,
-            historyForAgent  // 대화 맥락 전달
-          );
-        }
-
-        // 수신자용 응답 (Incoming 분석 결과 포함)
-        const targetResponse: MessageResponse = {
-          ...messageResponse,
-          security_analysis: incomingAnalysis || undefined
-        };
-
-        io.to(target).emit('message', targetResponse);
+        // 메시지 먼저 즉시 전송 (비동기 분석 전에)
+        io.to(target).emit('message', messageResponse);
         io.to(me).emit('message', messageResponse);
+
+        // Agent B 비동기 분석 (메시지 전송 후 백그라운드에서 실행)
+        if (message_type !== 'image' && message_type !== 'agent_alert' && message_type !== 'secret') {
+          // 비동기로 분석 실행 - 채팅 흐름을 막지 않음
+          (async () => {
+            try {
+              // 대화 히스토리 조회 (최근 10개 메시지) - Agent B 맥락 분석용
+              const conversationHistory = await Chatting.findAll({
+                where: { room_id },
+                order: [['id', 'DESC']],
+                limit: 10,
+                attributes: ['send_user_id', 'message', 'createdAt']
+              });
+
+              // 시간순 정렬 후 Agent B에 전달
+              const historyForAgent = conversationHistory.reverse().map(chat => ({
+                sender_id: chat.send_user_id,
+                message: chat.message,
+                timestamp: chat.createdAt
+              }));
+
+              const incomingAnalysis = await analyzeIncoming(
+                message,
+                send_user_id,
+                messageObj.participant[0]?.id,
+                historyForAgent  // 대화 맥락 전달
+              );
+
+              // 분석 결과가 있고 위험한 경우에만 힌트 전송
+              if (incomingAnalysis && incomingAnalysis.risk_level !== 'LOW') {
+                // 수신자에게만 보안 힌트 이벤트 전송
+                io.to(target).emit('security_hint', {
+                  message_id: savedMessage.id,
+                  room_id,
+                  security_analysis: incomingAnalysis
+                });
+                logger.info(`[Agent B] 보안 힌트 전송: message_id=${savedMessage.id}, risk=${incomingAnalysis.risk_level}`);
+              }
+            } catch (error) {
+              logger.error(`[Agent B] 비동기 분석 실패: ${error}`);
+            }
+          })();
+        }
         await Participant.increment(['not_read_chat'], {
           where: {
             user_id: messageObj.participant[0].id,

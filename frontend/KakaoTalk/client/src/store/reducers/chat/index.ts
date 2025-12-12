@@ -96,6 +96,21 @@ const chatReducer = (state = initialState, action: ChatActionTypes) => {
         ...state,
         chatting: updatedChatting
       };
+    case ChatTypes.UPDATE_CHAT_SECURITY_HINT:
+      // Agent B 비동기 분석 결과를 특정 메시지에 추가
+      const chattingWithHint = state.chatting.map(chat => {
+        if (chat.id === action.payload.message_id) {
+          return {
+            ...chat,
+            security_analysis: action.payload.security_analysis
+          };
+        }
+        return chat;
+      });
+      return {
+        ...state,
+        chatting: chattingWithHint
+      };
     default:
       return state;
   }

@@ -5,7 +5,7 @@ AI가 MCP 도구를 통해 호출하는 핵심 분석 모듈
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any, Set
 from functools import lru_cache
 from ..core.models import RiskLevel
 
@@ -71,6 +71,124 @@ def get_document_types() -> List[Dict]:
         }
         for item in data["document_types"]["items"]
     ]
+
+
+# === [추가] 은행 키워드 목록 (컨텍스트 기반 계좌 탐지용) ===
+BANK_KEYWORDS = [
+    # 인터넷/시중은행
+    "카카오뱅크", "카카오", "토스뱅크", "토스", "케이뱅크", "케이bank",
+    "KB국민", "국민은행", "국민", "신한은행", "신한", "우리은행", "우리",
+    "하나은행", "하나", "IBK기업", "기업은행", "기업", "SC제일", "씨티",
+    # 특수/상호금융
+    "NH농협", "농협은행", "농협", "단위농협", "우체국", "새마을금고", "신협", "수협", "산림조합",
+    # 지방은행
+    "대구은행", "DGB", "부산은행", "BNK", "경남은행", "광주은행", "전북은행", "제주은행",
+    # 증권사
+    "키움증권", "키움", "미래에셋", "한국투자", "삼성증권", "NH투자", "KB증권",
+    "신한투자", "하나증권", "대신증권", "메리츠", "유안타", "한화투자", "유진투자",
+    "DB금융", "교보증권", "하이투자", "현대차증권", "신영증권", "이베스트", "SK증권",
+    "토스증권", "카카오페이증권",
+    # 일반 키워드
+    "은행", "계좌", "통장", "입금", "송금", "이체", "예금주"
+]
+
+
+def _has_bank_context(text: str, match_start: int, window: int = 20) -> bool:
+    """
+    매칭된 숫자 주변에 은행 키워드가 있는지 확인
+
+    Args:
+        text: 전체 텍스트
+        match_start: 매칭 시작 위치
+        window: 앞뒤로 확인할 문자 수
+
+    Returns:
+        은행 키워드 존재 여부
+    """
+    # 매칭 위치 앞뒤 window 문자 추출
+    context_start = max(0, match_start - window)
+    context_end = min(len(text), match_start + window)
+    context = text[context_start:context_end].lower()
+
+    for keyword in BANK_KEYWORDS:
+        if keyword.lower() in context:
+            return True
+    return False
+
+
+def detect_context_accounts(text: str, existing_matches: List[Tuple[int, int]]) -> List[Dict]:
+    """
+    컨텍스트 기반 계좌번호 탐지
+    은행 키워드가 주변에 있으면 10-14자리 숫자를 계좌번호로 판단
+
+    - 평생계좌: 010-xxxx-xxxx + 은행명 → 계좌번호
+    - 일반 계좌: 10-14자리 연속 숫자 + 은행명 → 계좌번호
+
+    Args:
+        text: 분석할 텍스트
+        existing_matches: 이미 매칭된 범위 목록 (중복 방지)
+
+    Returns:
+        감지된 계좌번호 목록
+    """
+    accounts = []
+
+    # 패턴 1: 평생계좌 (010으로 시작, 하이픈 포함/미포함)
+    lifetime_pattern = r'010[\s\-]?\d{4}[\s\-]?\d{4}'
+
+    # 패턴 2: 일반 10-14자리 연속 숫자 (기존 정규식에서 못 잡는 경우)
+    general_pattern = r'\d{10,14}'
+
+    def is_overlapping(start: int, end: int) -> bool:
+        for m_start, m_end in existing_matches:
+            if not (end <= m_start or start >= m_end):
+                return True
+        return False
+
+    # 평생계좌 탐지 (은행 컨텍스트 필수)
+    for match in re.finditer(lifetime_pattern, text):
+        start, end = match.start(), match.end()
+        if is_overlapping(start, end):
+            continue
+
+        # 은행 키워드가 주변에 있으면 계좌번호로 판단
+        if _has_bank_context(text, start, window=15):
+            accounts.append({
+                "id": "account",
+                "category": "financial_info",
+                "value": match.group(),
+                "risk_level": "CRITICAL",
+                "name_ko": "계좌번호(평생계좌)",
+                "context_based": True
+            })
+            existing_matches.append((start, end))
+
+    # 일반 연속 숫자 탐지 (은행 컨텍스트 필수)
+    for match in re.finditer(general_pattern, text):
+        start, end = match.start(), match.end()
+        if is_overlapping(start, end):
+            continue
+
+        value = match.group()
+        digit_count = len(value)
+
+        # 10-14자리만 허용 (카드번호 16자리 제외, 날짜 8자리 제외)
+        if digit_count < 10 or digit_count > 14:
+            continue
+
+        # 은행 키워드가 주변에 있으면 계좌번호로 판단
+        if _has_bank_context(text, start, window=15):
+            accounts.append({
+                "id": "account",
+                "category": "financial_info",
+                "value": value,
+                "risk_level": "CRITICAL",
+                "name_ko": "계좌번호",
+                "context_based": True
+            })
+            existing_matches.append((start, end))
+
+    return accounts
 
 
 # === [수정] 의미 기반 정규화 함수 추가 ===
@@ -154,10 +272,11 @@ def detect_pii(text: str) -> Dict[str, Any]:
         "resident_id": 1,      # 주민번호
         "foreigner_id": 1,     # 외국인등록번호
         "card": 2,             # 신용카드
-        "passport": 3,         # 여권
-        "driver_license": 3,   # 운전면허
-        "phone": 4,            # 전화번호 (계좌번호보다 먼저 - 010 패턴 구분)
-        "account": 5,          # 계좌번호
+        "account_prefix": 3,   # 계좌번호(은행접두사) - 전화번호보다 높은 우선순위!
+        "passport": 4,         # 여권
+        "driver_license": 4,   # 운전면허
+        "phone": 5,            # 전화번호
+        "account": 6,          # 계좌번호 (하이픈 형식)
         "birth_date": 10,      # 생년월일 (가장 낮은 우선순위)
     }
 
@@ -218,6 +337,43 @@ def detect_pii(text: str) -> Dict[str, Any]:
                     highest_risk = RiskLevel(item["risk_level"])
         except re.error:
             continue
+
+    # === [추가] 평생계좌 재분류 (전화번호 → 계좌번호) ===
+    # 은행 키워드와 함께 있는 010 전화번호는 평생계좌로 재분류
+    phone_items_to_reclassify = []
+    for i, item in enumerate(found_pii):
+        if item["id"] == "phone" and item["value"].startswith("010"):
+            # 전화번호 위치 찾기
+            phone_start = normalized_text.find(item["value"])
+            if phone_start >= 0 and _has_bank_context(normalized_text, phone_start, window=15):
+                phone_items_to_reclassify.append(i)
+
+    # 역순으로 재분류 (인덱스 유지)
+    for i in reversed(phone_items_to_reclassify):
+        old_item = found_pii[i]
+        found_pii[i] = {
+            "id": "account",
+            "category": "financial_info",
+            "value": old_item["value"],
+            "risk_level": "CRITICAL",
+            "name_ko": "계좌번호(평생계좌)",
+            "context_based": True
+        }
+        categories_found.add("financial_info")
+        if risk_order["CRITICAL"] > risk_order[highest_risk.value]:
+            highest_risk = RiskLevel.CRITICAL
+    # === [추가 끝] ===
+
+    # === [추가] 컨텍스트 기반 계좌번호 탐지 ===
+    # 기존 정규식에서 못 잡는 계좌번호를 은행 키워드 컨텍스트로 추가 탐지
+    # 예: "신한 110277121051" (하이픈 없는 12자리)
+    context_accounts = detect_context_accounts(normalized_text, matched_ranges)
+    for acc in context_accounts:
+        found_pii.append(acc)
+        categories_found.add(acc["category"])
+        if risk_order[acc["risk_level"]] > risk_order[highest_risk.value]:
+            highest_risk = RiskLevel(acc["risk_level"])
+    # === [추가 끝] ===
 
     return {
         "found_pii": found_pii,

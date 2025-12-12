@@ -20,11 +20,20 @@ router = APIRouter()
 
 # ===== Request/Response 모델 =====
 
+class ConversationMessage(BaseModel):
+    """대화 히스토리 메시지"""
+    sender_id: Optional[int] = None
+    message: str
+    timestamp: Optional[str] = None
+
+
 class MessageAnalysisRequest(BaseModel):
     """메시지 분석 요청"""
     text: str
     sender_id: Optional[str] = None
     receiver_id: Optional[str] = None
+    conversation_history: Optional[List[ConversationMessage]] = None
+    use_ai: bool = True
 
 
 # === [수정] MECE 카테고리 필드 추가 ===
@@ -85,20 +94,39 @@ async def analyze_incoming_message(request: MessageAnalysisRequest):
     피싱, 사기, 가족 사칭 등의 위험한 메시지를 감지하고
     위험도에 따른 조치를 제안합니다.
 
-    Kanana Safeguard AI 모델을 활용한 정밀 분석을 수행합니다.
+    v9.0.1: 대화 맥락 기반 멀티메시지 사기 감지 지원
+    - conversation_history로 이전 대화 히스토리를 받아 전체 맥락 분석
+    - 개별 메시지는 무해해 보여도 전체 흐름이 사기 패턴이면 감지
 
     Args:
-        request: 메시지 분석 요청 (text, sender_id, receiver_id)
+        request: 메시지 분석 요청 (text, sender_id, receiver_id, conversation_history)
 
     Returns:
-        분석 결과 (위험도, 이유, 권장 조치)
+        분석 결과 (위험도, 이유, 권장 조치, 카테고리)
     """
     try:
         # AgentManager를 통해 Incoming Agent 가져오기
         incoming_agent = AgentManager.get_incoming()
+
+        # 대화 맥락을 dict 리스트로 변환
+        history_list = None
+        if request.conversation_history:
+            history_list = [
+                {
+                    "sender_id": msg.sender_id,
+                    "message": msg.message,
+                    "timestamp": msg.timestamp
+                }
+                for msg in request.conversation_history
+            ]
+            print(f"[API] Incoming 분석: text={request.text[:30]}..., history_count={len(history_list)}")
+
         result = incoming_agent.analyze(
             text=request.text,
-            sender_id=request.sender_id
+            sender_id=request.sender_id,
+            user_id=request.receiver_id,
+            conversation_history=history_list,
+            use_ai=request.use_ai
         )
 
         # === [수정] MECE 카테고리 정보 포함 ===

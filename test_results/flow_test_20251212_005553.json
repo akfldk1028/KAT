@@ -1,0 +1,28 @@
+{
+  "test_date": "2025-12-12T00:55:53.129110",
+  "api_url": "http://localhost:8002/api/agents",
+  "results": [
+    {
+      "case_id": "B-009",
+      "expected_category": "A-3",
+      "actual_category": "NORMAL",
+      "final_risk_level": "LOW",
+      "is_category_match": false,
+      "is_detected": false,
+      "is_pass": false,
+      "total_messages": 6,
+      "elapsed_time_ms": 27275,
+      "final_result": {
+        "risk_level": "LOW",
+        "reasons": [
+          "대화 흐름상 금전 요구, 계좌번호 요청, 링크 클릭 등 사기 징후가 없으며, 단순히 부탁 내용을 전달하는 일상적 메시지로 판단됨."
+        ],
+        "recommended_action": "표시",
+        "is_secret_recommended": false,
+        "category": "NORMAL",
+        "category_name": "일상 대화",
+        "scam_probability": 0
+      }
+    }
+  ]
+}

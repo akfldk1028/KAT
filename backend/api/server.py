@@ -359,7 +359,7 @@ async def api_analyze_incoming(request: IncomingRequest):
                 risk_level=result.risk_level.value,
                 category=result.category or "unknown"
             )
-            if result.scam_probability:
+            if result.scam_probability is not None:
                 kat_metrics.record_scam_probability(result.scam_probability)
 
         return AnalysisResponse(

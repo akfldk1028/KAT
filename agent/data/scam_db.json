@@ -1,11 +1,20 @@
 {
   "version": "1.0.0",
-  "last_updated": "2025-11-30",
+  "last_updated": "2025-12-11",
   "description": "사기 신고 DB (Mock Data) - 실제로는 경찰청/금감원 API 연동",
-
   "reported_accounts": {
     "description": "신고된 계좌번호 목록",
     "data": [
+      {
+        "account_number": "120-10-123456",
+        "bank": "테스트은행",
+        "report_count": 99,
+        "report_type": "TheCheat 테스트",
+        "first_reported": "2025-01-01",
+        "last_reported": "2025-12-11",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      },
       {
         "account_number": "110-123-456789",
         "bank": "신한은행",
@@ -48,10 +57,19 @@
       }
     ]
   },
-
   "reported_phones": {
     "description": "신고된 전화번호 목록",
     "data": [
+      {
+        "phone_number": "010-4444-0000",
+        "report_count": 99,
+        "report_type": "TheCheat 테스트",
+        "caller_claim": "TheCheat API 테스트 번호",
+        "first_reported": "2025-01-01",
+        "last_reported": "2025-12-11",
+        "status": "confirmed_scam",
+        "risk_score": 100
+      },
       {
         "phone_number": "010-1234-5678",
         "report_count": 50,
@@ -104,7 +122,6 @@
       }
     ]
   },
-
   "status_definitions": {
     "confirmed_scam": {
       "name_ko": "사기 확정",
@@ -122,7 +139,6 @@
       "action": "none"
     }
   },
-
   "risk_thresholds": {
     "immediate_block": 90,
     "strong_warning": 70,
