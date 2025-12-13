@@ -17,7 +17,7 @@ import {
 } from '../types/agent';
 
 // FastAPI Agent API 베이스 URL
-const AGENT_API_BASE_URL = process.env.AGENT_API_URL || 'http://localhost:8002/api/agents';
+const AGENT_API_BASE_URL = process.env.AGENT_API_URL || 'http://localhost:8004/api/agents';
 
 /**
  * 안심 전송 Agent (Outgoing) - 발신 메시지 분석

@@ -51,10 +51,10 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   transition: all 0.2s;
 
   ${({ variant }) => variant === 'primary' ? `
-    background: #3b82f6;
-    color: white;
+    background: #ffeb33;
+    color: #000;
     &:hover {
-      background: #2563eb;
+      background: #ffe000;
     }
   ` : `
     background: rgba(255, 255, 255, 0.2);

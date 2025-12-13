@@ -22,9 +22,39 @@ const ReasonList: React.FC<Props> = ({ reasons }) => {
     return null;
   }
 
+  // 중복 제거 및 유효한 항목만 필터링
+  const seen = new Set<string>();
+  const uniqueReasons: string[] = [];
+
+  for (const reason of reasons) {
+    // 빈 문자열 필터링
+    if (!reason || !reason.trim()) {
+      continue;
+    }
+    // JSON 형태 데이터 필터링
+    if (reason.includes('"name"') || reason.includes('"arguments"') || reason.includes('{"')) {
+      continue;
+    }
+    // 중복 제거
+    if (seen.has(reason)) {
+      continue;
+    }
+    seen.add(reason);
+    uniqueReasons.push(reason);
+
+    // 최대 5개까지만
+    if (uniqueReasons.length >= 5) {
+      break;
+    }
+  }
+
+  if (uniqueReasons.length === 0) {
+    return null;
+  }
+
   return (
     <List>
-      {reasons.map((reason, index) => (
+      {uniqueReasons.map((reason, index) => (
         <li key={index}>{reason}</li>
       ))}
     </List>

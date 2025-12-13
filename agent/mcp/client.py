@@ -19,11 +19,11 @@ class MCPClient:
     MCP 클라이언트 - SSE 방식으로 MCP 서버에 연결
 
     사용법:
-        async with MCPClient("http://localhost:8002/mcp") as client:
+        async with MCPClient("http://localhost:8004/mcp") as client:
             result = await client.call_tool("scan_pii", {"text": "계좌번호 110-123-456789"})
     """
 
-    def __init__(self, server_url: str = "http://localhost:8002/mcp"):
+    def __init__(self, server_url: str = "http://localhost:8004/mcp"):
         self.server_url = server_url
         self._tools_cache: Optional[List[Dict]] = None
         self._connected = False
@@ -164,7 +164,7 @@ class SyncMCPClient:
     비동기 MCPClient를 동기적으로 래핑
     """
 
-    def __init__(self, server_url: str = "http://localhost:8002/mcp"):
+    def __init__(self, server_url: str = "http://localhost:8004/mcp"):
         self.server_url = server_url
         self._async_client = MCPClient(server_url)
         self._loop: Optional[asyncio.AbstractEventLoop] = None

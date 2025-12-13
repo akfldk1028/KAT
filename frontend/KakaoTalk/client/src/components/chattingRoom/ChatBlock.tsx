@@ -5,6 +5,7 @@ import { SecurityAnalysis } from '~/types/security';
 import { BASE_IMG_URL, HOST } from '~/constants';
 import { SeparationBlock } from './InfoBlock';
 import SecretMessageViewer from './SecretMessageViewer';
+import SecretMessageManager from './SecretMessageManager';
 import ImageViewerModal from './ImageViewerModal';
 import { checkSecretStatus, SecretMessageStatus } from '~/apis/secret';
 
@@ -127,7 +128,7 @@ const AgentIcon = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff6b9d, #c850c0, #4158d0, #ff6b9d);
+  background: conic-gradient(from 0deg, #ffeb33, #ffc700, #ffeb33);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,15 +187,15 @@ const SecretLink = styled.div`
   padding: 10px 14px;
   border-radius: 12px;
   margin-bottom: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #ffeb33 0%, #ffc700 100%);
+  color: #000;
   cursor: pointer;
-  box-shadow: 0px 2px 8px rgba(102, 126, 234, 0.4);
+  box-shadow: 0px 2px 8px rgba(255, 199, 0, 0.4);
   transition: all 0.2s ease;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0px 4px 12px rgba(102, 126, 234, 0.5);
+    box-shadow: 0px 4px 12px rgba(255, 199, 0, 0.5);
   }
 
   & .secret-icon {
@@ -235,7 +236,7 @@ const SecretViewedLabel = styled.div`
   margin-bottom: 7px;
 
   & .check-icon {
-    color: #667eea;
+    color: #ffcc00;
     margin-right: 4px;
   }
 `;
@@ -272,37 +273,39 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
 
   // 내가 보낸 시크릿 메시지인 경우 읽음 상태 체크
   useEffect(() => {
-    if (isMine && messageType === 'secret' && secretId) {
-      let intervalId: ReturnType<typeof setInterval> | null = null;
-      let isMounted = true;
-
-      const fetchStatus = async () => {
-        try {
-          const status = await checkSecretStatus(secretId);
-          if (!isMounted) return;
-
-          setSecretStatus(status);
-
-          // 읽음 또는 만료되면 폴링 중단
-          if (status.is_viewed || status.is_expired) {
-            if (intervalId) {
-              clearInterval(intervalId);
-              intervalId = null;
-            }
-          }
-        } catch (err) {
-          console.error('Failed to fetch secret status:', err);
-        }
-      };
-
-      fetchStatus();
-      intervalId = setInterval(fetchStatus, 5000);
-
-      return () => {
-        isMounted = false;
-        if (intervalId) clearInterval(intervalId);
-      };
+    if (!isMine || messageType !== 'secret' || !secretId) {
+      return;
     }
+
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let isMounted = true;
+
+    const fetchStatus = async () => {
+      try {
+        const status = await checkSecretStatus(secretId);
+        if (!isMounted) return;
+
+        setSecretStatus(status);
+
+        // 읽음 또는 만료되면 폴링 중단
+        if (status.is_viewed || status.is_expired) {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch secret status:', err);
+      }
+    };
+
+    fetchStatus();
+    intervalId = setInterval(fetchStatus, 5000);
+
+    return () => {
+      isMounted = false;
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [isMine, messageType, secretId]);
 
   // 읽은 시간 포맷
@@ -351,7 +354,15 @@ export const Chat: React.FC<ChatProps> = ({ msg, localeTime, notRead, messageTyp
             읽음 {formatViewedTime(secretStatus.viewed_at)}
           </SecretViewedLabel>
         )}
-        {showSecretViewer && (
+        {/* 발신자: SecretMessageManager (시간 연장, 삭제 가능) */}
+        {showSecretViewer && isMine && (
+          <SecretMessageManager
+            secretId={secretId}
+            onClose={() => setShowSecretViewer(false)}
+          />
+        )}
+        {/* 수신자: SecretMessageViewer (열람만 가능) */}
+        {showSecretViewer && !isMine && (
           <SecretMessageViewer
             secretId={secretId}
             onClose={() => setShowSecretViewer(false)}

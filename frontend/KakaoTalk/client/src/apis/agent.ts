@@ -36,18 +36,36 @@ export const analyzeImage = async (
   const formData = new FormData();
   formData.append('file', imageFile);
 
-  const response = await axios.post<SecurityAnalysis>(
-    `${AGENT_HOST}/analyze/image?use_ai=${useAi}`,
-    formData,
-    {
-      timeout: 60000, // Vision 모델 로드 시간 고려
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }
-  );
+  console.log('[analyzeImage] 요청 시작:', {
+    fileName: imageFile.name,
+    fileSize: imageFile.size,
+    useAi,
+    endpoint: `${AGENT_HOST}/analyze/image?use_ai=${useAi}`
+  });
 
-  return response.data;
+  try {
+    const response = await axios.post<SecurityAnalysis>(
+      `${AGENT_HOST}/analyze/image?use_ai=${useAi}`,
+      formData,
+      {
+        timeout: 60000, // Vision 모델 로드 시간 고려
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+    console.log('[analyzeImage] 응답 성공:', response.data);
+    return response.data;
+  } catch (error) {
+    const err = error as any;
+    console.error('[analyzeImage] 에러:', {
+      message: err.message,
+      response: err.response?.data,
+      status: err.response?.status
+    });
+    throw error;
+  }
 };
 
 /**

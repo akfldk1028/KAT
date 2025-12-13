@@ -1,5 +1,5 @@
 # Agent A 계좌번호 탐지 개선 보고서
-
+ 
 **작성일**: 2025-12-12
 **버전**: sensitive_patterns.json v1.7.0
 

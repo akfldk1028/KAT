@@ -46,6 +46,18 @@ export interface SecretMessageStatus {
   remaining_seconds: number;
   created_at: string;
   expires_at: string;
+  // 발신자가 자신의 메시지 확인용
+  message?: string;
+  message_type?: string;
+  image_url?: string;
+}
+
+export interface ExtendSecretResponse {
+  status: string;
+  secret_id: string;
+  added_seconds: number;
+  new_expires_at: string;
+  remaining_seconds: number;
 }
 
 /**
@@ -96,6 +108,21 @@ export const expireSecretMessage = async (
 ): Promise<{ status: string; secret_id: string }> => {
   const response = await axios.delete(
     `${SECRET_HOST}/expire/${secretId}`,
+    { timeout: 5000 }
+  );
+  return response.data;
+};
+
+/**
+ * 시크릿 메시지 시간 연장
+ */
+export const extendSecretMessage = async (
+  secretId: string,
+  additionalSeconds: number
+): Promise<ExtendSecretResponse> => {
+  const response = await axios.put<ExtendSecretResponse>(
+    `${SECRET_HOST}/extend/${secretId}`,
+    { additional_seconds: additionalSeconds },
     { timeout: 5000 }
   );
   return response.data;

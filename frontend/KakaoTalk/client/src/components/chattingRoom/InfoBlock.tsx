@@ -270,7 +270,7 @@ const SecretAgentIcon = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff6b9d, #c850c0, #4158d0, #ff6b9d);
+  background: conic-gradient(from 0deg, #ffeb33, #ffc700, #ffeb33);
   display: flex;
   align-items: center;
   justify-content: center;

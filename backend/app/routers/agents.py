@@ -3,10 +3,12 @@ Kanana DualGuard Agent API Router
 서브에이전트(Outgoing, Incoming)를 호출하는 REST API 엔드포인트
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from pydantic import BaseModel
 from typing import Optional, List
 import sys
+import os
+import tempfile
 from pathlib import Path
 
 # agent 모듈 경로 추가
@@ -15,6 +17,7 @@ sys.path.insert(0, str(agent_path))
 
 from agent.agent_manager import AgentManager
 from agent import RiskLevel
+# analyze_image는 함수 내부에서 lazy import (circular import 방지)
 
 router = APIRouter()
 
@@ -145,6 +148,12 @@ async def analyze_incoming_message(request: MessageAnalysisRequest):
         raise HTTPException(status_code=500, detail=f"Incoming analysis failed: {str(e)}")
 
 
+@router.get("/test-endpoint")
+async def test_endpoint():
+    """Test endpoint to verify router is working"""
+    return {"status": "test ok"}
+
+
 @router.get("/health")
 async def health_check():
     """
@@ -161,3 +170,56 @@ async def health_check():
         },
         "message": "Kanana DualGuard Agents are operational"
     }
+
+
+@router.post("/analyze/image", response_model=MessageAnalysisResponse)
+async def analyze_image_endpoint(
+    file: UploadFile = File(...),
+    use_ai: bool = Query(default=True)
+):
+    """
+    이미지 분석 - Kanana Vision OCR + PII 감지
+
+    이미지에서 텍스트를 추출하고 민감정보를 분석합니다.
+
+    순차 처리:
+    1. Kanana Vision → 이미지에서 텍스트 추출 (OCR)
+    2. 추출된 텍스트를 2-Tier 방식으로 분석 (Rule-based + AI)
+
+    Args:
+        file: 업로드된 이미지 파일
+        use_ai: AI 분석 사용 여부 (기본: True)
+
+    Returns:
+        분석 결과 (위험도, 이유, 권장 조치, 시크릿 전송 추천 여부)
+    """
+    temp_path = None
+    try:
+        # Lazy import to avoid circular import issues
+        from agent.mcp.tools import analyze_image as agent_analyze_image
+
+        # 임시 파일로 저장
+        suffix = os.path.splitext(file.filename)[1] if file.filename else ".jpg"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+            content = await file.read()
+            temp_file.write(content)
+            temp_path = temp_file.name
+
+        # analyze_image 호출 (agent/mcp/tools.py)
+        result = agent_analyze_image(temp_path, use_ai=use_ai)
+
+        return MessageAnalysisResponse(
+            risk_level=result.risk_level.value if hasattr(result.risk_level, 'value') else result.risk_level,
+            reasons=result.reasons,
+            recommended_action=result.recommended_action,
+            is_secret_recommended=result.is_secret_recommended
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image analysis failed: {str(e)}")
+    finally:
+        # 임시 파일 삭제
+        if temp_path and os.path.exists(temp_path):
+            try:
+                os.unlink(temp_path)
+            except:
+                pass

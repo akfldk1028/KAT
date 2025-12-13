@@ -4,7 +4,8 @@
  */
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { checkSecretStatus, expireSecretMessage, SecretMessageStatus } from '~/apis/secret';
+import { checkSecretStatus, expireSecretMessage, extendSecretMessage, SecretMessageStatus } from '~/apis/secret';
+import { HOST } from '~/constants';
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -58,14 +59,14 @@ const Header = styled.div`
 const LockIcon = styled.div`
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #ffeb33 0%, #ffc700 100%);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 199, 0, 0.3);
 `;
 
 const Title = styled.h3`
@@ -116,6 +117,42 @@ const StatusBadge = styled.span<{ viewed?: boolean }>`
   color: ${({ viewed }) => viewed ? '#166534' : '#92400e'};
 `;
 
+const MessagePreviewSection = styled.div`
+  padding: 16px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+`;
+
+const PreviewLabel = styled.div`
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+`;
+
+const PreviewBox = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+`;
+
+const PreviewText = styled.div`
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-height: 100px;
+  overflow-y: auto;
+`;
+
+const PreviewImage = styled.img`
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 8px;
+  display: block;
+`;
+
 const FooterSection = styled.div`
   padding: 16px 20px 20px;
   display: flex;
@@ -123,10 +160,80 @@ const FooterSection = styled.div`
   gap: 10px;
 `;
 
+const ExtendSection = styled.div`
+  margin-bottom: 10px;
+`;
+
+const ExtendLabel = styled.div`
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  text-align: center;
+`;
+
+const ExtendOptions = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const ExtendButton = styled.button<{ selected?: boolean }>`
+  padding: 8px 14px;
+  border: 2px solid ${({ selected }) => selected ? '#ffeb33' : '#e5e7eb'};
+  border-radius: 20px;
+  background: ${({ selected }) => selected ? '#fffde7' : 'white'};
+  color: ${({ selected }) => selected ? '#b8860b' : '#666'};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #ffeb33;
+    background: #fffde7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const ApplyExtendButton = styled.button`
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #ffeb33 0%, #ffc700 100%);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 199, 0, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
 const DeleteButton = styled.button`
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #888 0%, #666 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -137,7 +244,7 @@ const DeleteButton = styled.button`
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 12px rgba(100, 100, 100, 0.4);
   }
 
   &:active {
@@ -155,8 +262,8 @@ const DeleteButton = styled.button`
 const CloseButton = styled.button`
   width: 100%;
   padding: 14px;
-  background: #f3f4f6;
-  color: #374151;
+  background: #eee;
+  color: #333;
   border: none;
   border-radius: 12px;
   font-size: 15px;
@@ -165,7 +272,7 @@ const CloseButton = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    background: #e5e7eb;
+    background: #ddd;
   }
 `;
 
@@ -182,7 +289,7 @@ const LoadingSpinner = styled.div`
     width: 32px;
     height: 32px;
     border: 3px solid #f0f0f0;
-    border-top-color: #3b82f6;
+    border-top-color: #ffeb33;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -227,12 +334,22 @@ interface Props {
   onDeleted?: () => void;
 }
 
+// 시간 연장 옵션 (초 단위)
+const EXTEND_OPTIONS = [
+  { label: '+1분', seconds: 60 },
+  { label: '+5분', seconds: 300 },
+  { label: '+10분', seconds: 600 },
+  { label: '+30분', seconds: 1800 },
+];
+
 const SecretMessageManager: React.FC<Props> = ({ secretId, onClose, onDeleted }) => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<SecretMessageStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [extending, setExtending] = useState(false);
+  const [selectedExtendTime, setSelectedExtendTime] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -263,6 +380,30 @@ const SecretMessageManager: React.FC<Props> = ({ secretId, onClose, onDeleted })
       alert('삭제에 실패했습니다');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleExtend = async () => {
+    if (!selectedExtendTime) {
+      alert('연장할 시간을 선택해주세요');
+      return;
+    }
+
+    setExtending(true);
+    try {
+      const result = await extendSecretMessage(secretId, selectedExtendTime);
+      // 상태 업데이트
+      setStatus(prev => prev ? {
+        ...prev,
+        remaining_seconds: result.remaining_seconds,
+        expires_at: result.new_expires_at
+      } : prev);
+      setSelectedExtendTime(null);
+      alert(`시간이 ${selectedExtendTime / 60}분 연장되었습니다`);
+    } catch (err) {
+      alert('시간 연장에 실패했습니다');
+    } finally {
+      setExtending(false);
     }
   };
 
@@ -319,6 +460,23 @@ const SecretMessageManager: React.FC<Props> = ({ secretId, onClose, onDeleted })
           </ExpiredMessage>
         )}
 
+        {/* 메시지 미리보기 */}
+        {status && !deleted && !error && status.message && (
+          <MessagePreviewSection>
+            <PreviewLabel>📝 보낸 내용</PreviewLabel>
+            <PreviewBox>
+              {status.message_type === 'image' ? (
+                <PreviewImage
+                  src={status.message.startsWith('http') ? status.message : `${HOST}${status.message}`}
+                  alt="보낸 이미지"
+                />
+              ) : (
+                <PreviewText>{status.message}</PreviewText>
+              )}
+            </PreviewBox>
+          </MessagePreviewSection>
+        )}
+
         {status && !deleted && !error && (
           <StatusSection>
             <StatusItem>
@@ -360,9 +518,32 @@ const SecretMessageManager: React.FC<Props> = ({ secretId, onClose, onDeleted })
 
         <FooterSection>
           {status && !deleted && !status.is_expired && (
-            <DeleteButton onClick={handleDelete} disabled={deleting}>
-              {deleting ? '삭제 중...' : '🗑️ 메시지 삭제'}
-            </DeleteButton>
+            <>
+              <ExtendSection>
+                <ExtendLabel>⏱️ 시간 연장</ExtendLabel>
+                <ExtendOptions>
+                  {EXTEND_OPTIONS.map(opt => (
+                    <ExtendButton
+                      key={opt.seconds}
+                      selected={selectedExtendTime === opt.seconds}
+                      onClick={() => setSelectedExtendTime(opt.seconds)}
+                      disabled={extending}
+                    >
+                      {opt.label}
+                    </ExtendButton>
+                  ))}
+                </ExtendOptions>
+                {selectedExtendTime && (
+                  <ApplyExtendButton onClick={handleExtend} disabled={extending}>
+                    {extending ? '연장 중...' : '⏱️ 시간 연장하기'}
+                  </ApplyExtendButton>
+                )}
+              </ExtendSection>
+
+              <DeleteButton onClick={handleDelete} disabled={deleting || extending}>
+                {deleting ? '삭제 중...' : '🗑️ 메시지 삭제'}
+              </DeleteButton>
+            </>
           )}
           <CloseButton onClick={onClose}>
             닫기

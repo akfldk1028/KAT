@@ -78,7 +78,7 @@ const OptionDesc = styled.span`
 const Toggle = styled.div<{ active: boolean }>`
   width: 44px;
   height: 24px;
-  background: ${({ active }) => (active ? '#3b82f6' : '#d1d5db')};
+  background: ${({ active }) => (active ? '#ffeb33' : '#d1d5db')};
   border-radius: 12px;
   position: relative;
   transition: all 0.2s;
@@ -119,7 +119,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #ffcc00;
   }
 `;
 
@@ -142,14 +142,14 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   ${({ variant }) =>
     variant === 'primary'
       ? `
-        background: #3b82f6;
-        color: white;
-        &:hover { background: #2563eb; }
+        background: #ffeb33;
+        color: #000;
+        &:hover { background: #ffe000; }
       `
       : `
-        background: #f3f4f6;
-        color: #374151;
-        &:hover { background: #e5e7eb; }
+        background: #eee;
+        color: #333;
+        &:hover { background: #ddd; }
       `}
 `;
 

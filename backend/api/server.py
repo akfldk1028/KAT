@@ -2,7 +2,7 @@
 FastAPI Agent API Server
 MCP 도구를 HTTP 엔드포인트로 노출
 
-포트: 8002
+포트: 8004
 엔드포인트:
 - POST /api/agents/analyze/outgoing - 발신 메시지 분석
 - POST /api/agents/analyze/incoming - 수신 메시지 분석
@@ -675,6 +675,55 @@ def expire_secret_message(
     return {"status": "expired", "secret_id": secret_id}
 
 
+class ExtendRequest(BaseModel):
+    """시간 연장 요청"""
+    additional_seconds: int  # 추가할 시간 (초)
+
+
+@app.put("/api/secret/extend/{secret_id}")
+def extend_secret_message(
+    secret_id: str,
+    request: ExtendRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    시크릿 메시지 시간 연장 (발신자용)
+    - 만료 전에만 가능
+    - 최대 1시간까지 연장 가능
+    """
+    secret_msg = db.query(SecretMessageModel).filter(
+        SecretMessageModel.secret_id == secret_id
+    ).first()
+
+    if not secret_msg:
+        raise HTTPException(status_code=404, detail="메시지를 찾을 수 없습니다")
+
+    now = datetime.utcnow()
+
+    # 이미 만료된 경우
+    if now > secret_msg.expires_at or secret_msg.is_expired:
+        raise HTTPException(status_code=400, detail="이미 만료된 메시지입니다")
+
+    # 최대 1시간 제한
+    max_additional = 3600  # 1시간
+    additional = min(request.additional_seconds, max_additional)
+
+    # 만료 시간 연장
+    secret_msg.expires_at = secret_msg.expires_at + timedelta(seconds=additional)
+    secret_msg.expiry_seconds = secret_msg.expiry_seconds + additional
+    db.commit()
+
+    remaining = (secret_msg.expires_at - now).total_seconds()
+
+    return {
+        "status": "extended",
+        "secret_id": secret_id,
+        "added_seconds": additional,
+        "new_expires_at": secret_msg.expires_at,
+        "remaining_seconds": int(remaining)
+    }
+
+
 @app.get("/api/secret/status/{secret_id}")
 def check_secret_status(
     secret_id: str,
@@ -699,13 +748,17 @@ def check_secret_status(
         "is_expired": is_expired,
         "remaining_seconds": int(remaining),
         "created_at": secret_msg.created_at,
-        "expires_at": secret_msg.expires_at
+        "expires_at": secret_msg.expires_at,
+        # 발신자가 자신의 메시지 내용 확인용
+        "message": secret_msg.original_message,
+        "message_type": secret_msg.message_type,
+        "image_url": secret_msg.image_url
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-    print("Starting DualGuard Agent API on port 8002...")
+    print("Starting DualGuard Agent API on port 8004...")
     print("Category fields: category, category_name, scam_probability enabled")
     print("Server reload triggered at startup")
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    uvicorn.run(app, host="0.0.0.0", port=8004)

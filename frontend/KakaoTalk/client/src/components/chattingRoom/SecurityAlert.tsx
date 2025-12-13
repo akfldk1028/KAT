@@ -90,7 +90,7 @@ const Spinner = styled.div`
   width: 40px;
   height: 40px;
   border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  border-top-color: #ffeb33;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
@@ -127,21 +127,21 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
     switch (variant) {
       case 'primary':
         return `
-          background: #3b82f6;
-          color: white;
-          &:hover { background: #2563eb; }
+          background: #ffeb33;
+          color: #000;
+          &:hover { background: #ffe000; }
         `;
       case 'danger':
         return `
-          background: #ef4444;
+          background: #999;
           color: white;
-          &:hover { background: #dc2626; }
+          &:hover { background: #777; }
         `;
       default:
         return `
-          background: #f3f4f6;
-          color: #374151;
-          &:hover { background: #e5e7eb; }
+          background: #eee;
+          color: #333;
+          &:hover { background: #ddd; }
         `;
     }
   }}
@@ -199,13 +199,30 @@ const SecurityAlert: React.FC<Props> = ({
 
         {imagePreview && <ImagePreview src={imagePreview} alt="분석 이미지" />}
 
-        {analysis.reasons.length > 0 && (
-          <ReasonList>
-            {analysis.reasons.map((reason, index) => (
-              <ReasonItem key={index}>{reason}</ReasonItem>
-            ))}
-          </ReasonList>
-        )}
+        {analysis.reasons.length > 0 && (() => {
+          // 중복 제거 및 JSON 데이터 필터링
+          const filteredReasons = Array.from(new Set(analysis.reasons))
+            .filter(reason => {
+              // JSON 형태 데이터 필터링
+              if (reason.includes('"name"') || reason.includes('"arguments"') || reason.includes('{"')) {
+                return false;
+              }
+              // 빈 문자열 필터링
+              if (!reason.trim()) {
+                return false;
+              }
+              return true;
+            })
+            .slice(0, 5); // 최대 5개만 표시
+
+          return filteredReasons.length > 0 ? (
+            <ReasonList>
+              {filteredReasons.map((reason, index) => (
+                <ReasonItem key={index}>{reason}</ReasonItem>
+              ))}
+            </ReasonList>
+          ) : null;
+        })()}
 
         <ButtonGroup>
           <Button variant="secondary" onClick={onNormalSend}>

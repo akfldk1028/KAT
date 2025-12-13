@@ -33,9 +33,9 @@ const Button = styled.button<{ variant: 'primary' | 'secondary' | 'danger' }>`
         `;
       case 'danger':
         return `
-          background: #f44336;
+          background: #999;
           color: white;
-          &:hover { background: #d32f2f; }
+          &:hover { background: #777; }
         `;
     }
   }}

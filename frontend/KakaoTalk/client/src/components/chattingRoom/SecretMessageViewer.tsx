@@ -157,6 +157,37 @@ const SecretImage = styled.img`
   margin: 0 auto;
 `;
 
+const ImageContainer = styled.div`
+  position: relative;
+  text-align: center;
+`;
+
+const DownloadButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #FFE812 0%, #FFC700 100%);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 199, 0, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 const WarningBadge = styled.div`
   display: inline-flex;
   align-items: center;
@@ -305,6 +336,35 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
   const progress = totalSeconds > 0 ? (remainingSeconds / totalSeconds) * 100 : 0;
   const isUrgent = remainingSeconds <= 30; // 30초 이하면 긴급
 
+  // 이미지 다운로드 핸들러
+  const handleDownload = async () => {
+    if (!content || content.message_type !== 'image') return;
+
+    try {
+      const imageUrl = content.message.startsWith('http')
+        ? content.message
+        : `${HOST}${content.message}`;
+
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // 파일명 추출 또는 기본값
+      const filename = content.message.split('/').pop() || `secret_image_${Date.now()}.jpg`;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+      alert('다운로드에 실패했습니다');
+    }
+  };
+
   return (
     <Overlay onClick={onClose}>
       <ViewerBox onClick={(e) => e.stopPropagation()}>
@@ -357,12 +417,19 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
             <ContentSection>
               <MessageBox preventCapture={content.prevent_capture}>
                 {content.message_type === 'image' ? (
-                  <SecretImage
-                    src={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
-                    alt="시크릿 이미지"
-                    draggable={false}
-                    onContextMenu={(e) => content.prevent_capture && e.preventDefault()}
-                  />
+                  <ImageContainer>
+                    <SecretImage
+                      src={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
+                      alt="시크릿 이미지"
+                      draggable={false}
+                      onContextMenu={(e) => content.prevent_capture && e.preventDefault()}
+                    />
+                    {/* 이미지는 항상 다운로드 가능 */}
+                    <DownloadButton onClick={handleDownload}>
+                      <span>💾</span>
+                      다운로드
+                    </DownloadButton>
+                  </ImageContainer>
                 ) : (
                   content.message
                 )}
