@@ -13,7 +13,7 @@ import re
 from typing import Dict, Any
 from .base import BaseAgent
 from ..core.models import RiskLevel, AnalysisResponse
-from ..core.pattern_matcher import detect_pii, calculate_risk, get_risk_action
+from ..core.pattern_matcher import detect_pii, detect_document_type, calculate_risk, get_risk_action
 from ..llm.kanana import LLMManager
 from ..prompts.outgoing_agent import get_outgoing_system_prompt
 
@@ -141,20 +141,39 @@ class OutgoingAgent(BaseAgent):
         Rule-based 분석 (pattern_matcher.py 사용)
 
         1. detect_pii() - 정규식으로 PII 스캔
-        2. calculate_risk () - 조합 규칙 적용하여 최종 위험도 계산
-        3. get_risk_action() - 권장 조치 반환
+        2. detect_document_type() - 문서 유형 감지 (가족관계증명서 등)
+        3. calculate_risk() - 조합 규칙 적용하여 최종 위험도 계산
+        4. get_risk_action() - 권장 조치 반환
         """
+        risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
+
         # 1. PII 스캔
         pii_result = detect_pii(text)
 
-        # 2. 위험도 계산 (조합 규칙 적용)
+        # 2. 문서 유형 감지 (가족관계증명서, 주민등록증 등)
+        doc_result = detect_document_type(text)
+
+        # 3. 위험도 계산 (조합 규칙 적용)
         risk_result = calculate_risk(pii_result["found_pii"])
 
-        # 3. 권장 조치
-        recommended_action = get_risk_action(risk_result["final_risk"])
+        # 4. 문서 유형 위험도와 비교하여 더 높은 것 사용
+        final_risk = risk_result["final_risk"]
+        if doc_result["document_type"] and doc_result["risk_level"]:
+            doc_risk = doc_result["risk_level"]
+            if risk_order.get(doc_risk, 0) > risk_order.get(final_risk, 0):
+                final_risk = doc_risk
 
-        # 4. 감지 이유 생성
+        # 5. 권장 조치
+        recommended_action = get_risk_action(final_risk)
+
+        # 6. 감지 이유 생성
         reasons = []
+
+        # 문서 유형이 감지된 경우 최우선 이유로 추가
+        if doc_result["document_type"]:
+            reasons.append(f"민감 문서 감지: {doc_result['name_ko']} (위험도: {doc_result['risk_level']})")
+
+        # PII 감지 이유 추가
         for item in pii_result["found_pii"]:
             reasons.append(f"{item['name_ko']} 패턴이 감지되었습니다.")
 
@@ -163,13 +182,16 @@ class OutgoingAgent(BaseAgent):
             reasons.append(risk_result["escalation_reason"])
 
         # RiskLevel enum으로 변환
-        risk_level = RiskLevel(risk_result["final_risk"])
+        risk_level = RiskLevel(final_risk)
+
+        # 시크릿 전송 권장 여부
+        is_secret_recommended = risk_order[final_risk] >= risk_order["MEDIUM"]
 
         return AnalysisResponse(
             risk_level=risk_level,
             reasons=reasons,
             recommended_action=recommended_action,
-            is_secret_recommended=risk_result["is_secret_recommended"]
+            is_secret_recommended=is_secret_recommended
         )
 
     def _analyze_with_ai(self, text: str) -> AnalysisResponse:

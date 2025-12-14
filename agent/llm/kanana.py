@@ -267,23 +267,61 @@ class KananaLLM:
         return definitions
 
     def _parse_response(self, content: str) -> Optional[Dict[str, Any]]:
-        """응답에서 JSON 결과 파싱"""
-        # JSON 블록 찾기
-        json_patterns = [
-            r'```json\s*(.*?)\s*```',
-            r'\{[^{}]*"risk_level"[^{}]*\}',
-            r'\{.*?\}'
-        ]
+        """응답에서 JSON 결과 파싱 (개선된 버전)"""
+        if not content:
+            return None
 
-        for pattern in json_patterns:
-            matches = re.findall(pattern, content, re.DOTALL)
-            for match in matches:
-                try:
-                    result = json.loads(match)
-                    if "risk_level" in result:
-                        return result
-                except json.JSONDecodeError:
-                    continue
+        # 1. ```json ... ``` 블록 찾기
+        json_block_match = re.search(r'```json\s*([\s\S]*?)\s*```', content)
+        if json_block_match:
+            try:
+                result = json.loads(json_block_match.group(1).strip())
+                if isinstance(result, dict) and "risk_level" in result:
+                    return result
+            except json.JSONDecodeError:
+                pass
+
+        # 2. 밸런스드 브레이스 매칭으로 전체 JSON 객체 찾기
+        def find_json_objects(text: str) -> list:
+            """Find complete JSON objects using brace balancing"""
+            objects = []
+            i = 0
+            while i < len(text):
+                if text[i] == '{':
+                    start = i
+                    brace_count = 1
+                    i += 1
+                    while i < len(text) and brace_count > 0:
+                        if text[i] == '{':
+                            brace_count += 1
+                        elif text[i] == '}':
+                            brace_count -= 1
+                        i += 1
+                    if brace_count == 0:
+                        objects.append(text[start:i])
+                else:
+                    i += 1
+            return objects
+
+        json_objects = find_json_objects(content)
+        for obj_str in json_objects:
+            try:
+                result = json.loads(obj_str)
+                if isinstance(result, dict) and "risk_level" in result:
+                    return result
+            except json.JSONDecodeError:
+                continue
+
+        # 3. risk_level 키워드만 찾아서 기본 결과 생성
+        risk_match = re.search(r'"risk_level"\s*:\s*"(LOW|MEDIUM|HIGH|CRITICAL)"', content, re.IGNORECASE)
+        if risk_match:
+            risk_level = risk_match.group(1).upper()
+            return {
+                "risk_level": risk_level,
+                "reasons": ["AI 분석 결과"],
+                "is_secret_recommended": risk_level in ["MEDIUM", "HIGH", "CRITICAL"],
+                "recommended_action": "시크릿 전송 권장" if risk_level != "LOW" else "전송"
+            }
 
         return None
 
