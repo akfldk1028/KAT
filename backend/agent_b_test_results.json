@@ -1,0 +1,3030 @@
+{
+  "test_date": "2025-12-11T23:46:10.142940",
+  "total_cases": 26,
+  "results": [
+    {
+      "case_id": "A-001",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "엄마 바빠?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "다름이 아니라 내가 급하게 친구한테 돈 보내줄 게 있는데",
+            "폰 인증이 안돼서 이체가 안되네 ㅠㅠ"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "엄마가 먼저 90만원만 보내주라. 내가 폰 고치고 바로 보내줄게."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "과장님 계좌인데 여기로 바로 넣어주면 돼."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "신한 홍길동 12010123456"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "보내고 톡 줘 급해!!"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-002",
+      "total_sessions": 4,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "아빠",
+            "나 핸드폰 액정 깨져서 보험 신청해야 하는데"
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.67)",
+              "Rule-based 판정: A-1 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "A-1",
+            "category_name": "지인/가족 사칭",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "아빠 폰으로 인증 좀 해줄 수 있어?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "내가 보내는 거 깔아서 수락만 눌러주면 돼.",
+            "https://xgo.kr/5lb"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "이거 누르고 열기 누르면 돼. 깔고 알려줘."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-003",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[12월 3주차 VIP 수익 인증]",
+            "회원님들 오늘도 수익 축하드립니다. ^^"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: C-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "현재 무료 체험방 인원이 마감 임박입니다.",
+            "아래 링크로 입장하셔서 '성함/연락처' 남겨주시면 급등주 정보 무료로 드립니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "▼ VIP 체험방 입장하기"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "https://xgo.kr/5lb"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "선착순 5분만 더 받을게요~"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-004",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "고객님, 안녕하세요. XX은행 대출상담팀 김미영 팀장입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: C-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "지난번 문의주신 '새희망홀씨' 대출 심사 결과 승인 가능하십니다.",
+            "다만 기존 대출 상환 조건이라 유선상으로 안내가 필요합니다."
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: C-1 (점수: 0.67)",
+              "Rule-based 판정: C-1 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "C-1",
+            "category_name": "대출 빙자",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "통화 가능하실 때 담당자 직통 번호로 연락 부탁드립니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "상담 문의: 010-4444-0000"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "카톡으로는 상담이 어렵습니다. 전화 주세요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-005",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[배송 지연 안내]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "고객님의 상품이 '주소지 불명'으로 배송이 중단되었습니다."
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.67)",
+              "Rule-based 판정: B-3 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "B-3",
+            "category_name": "택배/물류 사칭",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "금일 18시까지 주소지 재입력이 없을 경우 반송 처리됩니다.",
+            "아래 링크에서 정확한 도로명 주소를 입력해주세요."
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.67)",
+              "Rule-based 판정: B-3 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "B-3",
+            "category_name": "택배/물류 사칭",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "https://xgo.kr/5lb"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "*본 메시지는 발신 전용입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-006",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "엄마 뭐해?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "나 지금 폰 고장 나서 PC카톡으로 들어왔어."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "AS센터 맡겼는데 수리비가 좀 나온대 ㅠㅠ"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "근데 혹시 지금 바빠?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "통화는 안 되고 톡만 돼. 답장 좀 줘봐."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-007",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "아니 돈 보내달라는 게 아니고"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "내가 지금 급하게 문상 사야 되는데 내 폰이 인증이 안 돼서 그래."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "엄마 명의로 잠깐 가입해서 결제만 하면 되거든?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "엄마 민증이랑 신용카드 앞면 사진 찍어서 좀 보내줘."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "뒷번호 가리지 말고 빛 반사 안 되게 잘 찍어서 보내줘 빨리~"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "비밀번호 앞 두 자리도 알려주고."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-008",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "이모, 부탁 하나만 해도 돼?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "내가 지금 급하게 교수님 선물 드려야 하는데",
+            "폰이 고장 나서 결제가 안 되네 ㅠㅠ"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "이모가 지금 편의점 가서 '구글 기프트카드' 좀 사다 줄 수 있어?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "10만원짜리 5장 사서 뒷면 긁으면 번호 나오거든?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "그거 사진 찍어서 톡으로 보내주면 돼."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "저녁에 돈 바로 부쳐줄게. 지금 너무 급해서 그래 ㅠㅠ"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-009",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "김대리님 접니다 박과장."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "제 폰이 갑자기 먹통 돼서 초기화했더니 번호가 다 날아갔네요.",
+            "급하게 계정 새로 만들었어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "혹시 지금 자리에 계신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "부탁드릴 게 있어서요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "다른 직원들한테는 비밀로 좀 해주세요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-010",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "안녕하세요. 혹시 골프 모임 총무님 아니신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "어머, 제가 번호를 잘못 저장했나 봐요. 죄송합니다. ^^;"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "프로필 사진 보니까 인상이 너무 좋으시네요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "저도 한국에 친구가 없어서 그런데.."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "실례가 안 된다면 친구로 지내도 될까요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "저는 일본에서 패션 사업하고 있는 김민정입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-011",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[긴급 보안 공지]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "회원님, 최근 발생한 개인정보 유출 사고로 인해 회원님의 계정이 '보호 조치' 되었습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "현재 모든 주문 및 결제가 일시 중단된 상태입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "본인 확인 후 보호 조치를 해제하시기 바랍니다.",
+            "▼ 보호 조치 해제 바로가기"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "https://xgo.kr/5lb"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "*24시간 이내 미조치 시 계정이 영구 동결될 수 있습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-012",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[행정안전부] 2025년 하반기 민생회복 소비쿠폰 지급 안내"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "귀하는 이번 '긴급 생활안정 지원금' 추가 지급 대상자로 확인되었습니다.",
+            "예산 소진 시 조기 마감될 수 있으니 즉시 신청 바랍니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "- 지원금액: 250,000원 (지역화폐/온라인 포인트 택1)",
+            "- 신청기간: 2025.12.10 ~ 12.15"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "▼ 지원금 신청 및 조회"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "https://xgo.kr/5lb"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-013",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[XX카드] 카드 배송 안내"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "회원님의 신규 신용카드(Global Pass)가 금일 배송될 예정입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "수취인 부재 시 대리 수령이 불가합니다.",
+            "- 배송기사: 최성실",
+            "- 배송예정시간: 14:00 ~ 16:00"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "본인이 카드 발급을 신청하지 않았거나 명의도용이 의심되는 경우, 즉시 아래 사고 접수 센터로 신고해주시기 바랍니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "신고 및 문의: 01034887705"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-014",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "안녕하세요. KISA(한국인터넷진흥원) 가상자산 피해구제 센터입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "최근 적발된 불법 거래소 범죄 수익금 환수 조치에 따라, 귀하의 피해 금액 중 일부(약 3,800만 원)가 환급 가능 금액으로 확정되었습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "환급 신청 기한이 내일까지입니다.",
+            "아래 담당 법무관에게 연락하여 절차를 진행하시기 바랍니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "담당자: 박민수 사무관"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "직통 번호: 01042703748"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "사건번호: 2025-형제-8291"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-015",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "엄마 뉴스 봤어?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "지금 SKT 해킹돼서 난리 났대.",
+            "내 친구네 엄마도 정보 다 털려서 소액결제 되고 그랬다는데"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "엄마도 SKT 쓰잖아. 혹시 이상한 문자 온 거 없어?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "내가 지금 통신사 홈페이지 들어가서 엄마 거 보안 설정 좀 바꿔줄게."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "엄마 폰으로 인증번호 날아가는 거 있으면 좀 불러줘 봐."
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.67)",
+              "Rule-based 판정: A-1 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "A-1",
+            "category_name": "지인/가족 사칭",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "그리고 통신사 비밀번호 혹시 기억나?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-016",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "고객님 안녕하세요. XX텔레콤 강남점입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "이번에 보도된 유심 복제 해킹 이슈 관련해서 연락드렸습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "고객님 사용 중인 구형 유심이 해킹 취약 모델이라 교체가 시급하셔서요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "저희가 본사 지원으로 '보안 유심'을 댁으로 무료 택배 발송해 드리고 있습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "번거로우시겠지만 댁 주소랑 받으시는 분 성함 확인 좀 부탁드려도 될까요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "지금 바로 접수해드려야 오늘 발송됩니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-017",
+      "total_sessions": 7,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "여보 지금 쿠팡 썼어?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "방금 내 폰으로 98만원 결제됐다고 알림 와서 놀라서 들어갔는데"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "주문 내역에는 또 안 뜨네?",
+            "이거 뉴스에 나온 그 해킹인가?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "여보가 산 거 아니지?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "지금 고객센터 연결도 안 되고 미치겠네."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "일단 여보 카드로도 자동결제 걸려있을 수 있으니까"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "카드 번호랑 유효기간 좀 불러줘 봐. 내가 해지되는지 확인해볼게."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-018",
+      "total_sessions": 7,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[부고]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "저희 아버지께서 금일 아침 별세하셨기에 삼가 알려드립니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "황망한 마음에 일일이 연락드리지 못함을 널리 혜량해 주시길 바랍니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "장례식장이 협소하여 조문객 분들을 위해 모바일로 장례 일정을 안내드립니다."
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: A-2 (점수: 0.67)",
+              "Rule-based 판정: A-2 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "A-2",
+            "category_name": "경조사 빙자",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "바쁘시더라도 오셔서 따뜻한 위로 부탁드립니다.",
+            "▼ 장례식장 및 발인 정보 확인"
+          ],
+          "analysis": {
+            "risk_level": "MEDIUM",
+            "reasons": [
+              "Rule-based 폴백: A-2 (점수: 0.67)",
+              "Rule-based 판정: A-2 → SUSPICIOUS"
+            ],
+            "recommended_action": "주의 표시",
+            "is_secret_recommended": false,
+            "category": "A-2",
+            "category_name": "경조사 빙자",
+            "scam_probability": 66
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "https://t.ly/WVoZk"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "상주 이영호 배상"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-019",
+      "total_sessions": 5,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "저희 두 사람, 사랑으로 하나 되어 새 출발 하려 합니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "오셔서 축복해 주시면 더없는 기쁨으로 간직하겠습니다.",
+            "참석해주셔서 자리를 빛내주세요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "※ 모바일 청첩장 보기 (약도/갤러리)"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "https://t.ly/WVoZk"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "꼭 오셔서 식사하고 가세요 ^^"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-020",
+      "total_sessions": 7,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[서울지방검찰청]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "귀하의 명의가 대포통장 개설 및 불법 자금 세탁 사건(2025형제3829호)에 연루된 정황이 포착되었습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "본인이 개설한 적이 없는 경우, 즉시 아래 담당 수사관에게 소명 절차를 진행해야 합니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "미조치 시 '피의자' 신분으로 전환되어 출석 요구서가 발송될 수 있습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "- 사건 조회 및 공문 확인: https://t.ly/WVoZk"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "- 담당 수사관: 박진혁 경위 (01034887705)"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "*본 메시지 확인 즉시 연락 바랍니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-021",
+      "total_sessions": 7,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "안녕하세요 ^^"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "쇼핑몰 마케팅 담당자 최수진입니다.",
+            "요즘 물가도 비싼데 집에서 핸드폰 하나로 월 200~300만원 벌어가실 분 모집해요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "상품 주문하고 리뷰만 간단히 남겨주시면 되는 업무예요. (물건은 저희가 지원해드려요!)"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "건당 3만원~5만원 당일 지급해 드립니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: A-1 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "선착순 10분만 모시고 마감할게요.",
+            "▼ 체험단 신청 및 상담"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "https://t.ly/WVoZk"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "편하게 문의주세요~"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "A-022",
+      "total_sessions": 6,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[국민건강보험공단]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "2024년도 본인부담상한액 초과 의료비 환급금 신청 안내입니다.",
+            "귀하께서는 현재 미수령 환급금이 482,000원 존재합니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "지급 신청 기간 내에 신청하지 않을 경우 국고로 환수 조치됩니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "오늘까지 신청 시 내일 오전 중으로 입금됩니다.",
+            "▼ 환급금 조회 및 신청"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "https://t.ly/WVoZk"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "문의: 1577-1000"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-023",
+      "total_sessions": 8,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "안녕하세요~"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "혹시 강남점 필라테스 제니 쌤 맞으신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "어제 문의드렸던 수강생인데 카톡 아이디 알려주신 걸로 친추했어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "어? 아니신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "죄송합니다 제가 번호를 잘못 저장했나 봐요 ㅠㅠ"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "프로필 사진이 너무 예쁘셔서 모델이신 줄 알았어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "실례가 안 된다면.. 제가 한국 온 지 얼마 안 돼서 친구가 없는데"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 8,
+          "messages": [
+            "가끔 대화하는 친구로 지낼 수 있을까요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-024",
+      "total_sessions": 8,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "혹시 예전에 'OO투자그룹' 이용하셨던 회원님 맞으신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: C-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "아 네 안녕하세요. 저 거기서 담당했던 김대리입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "다름이 아니라 이번에 저희가 회원님들 손실 보신 거 복구해드리려고 연락드렸어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "저도 거기서 나오고 나서, 지금 계신 전문가님 따라서 수익 많이 보고 있거든요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: C-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "절대 돈 요구하거나 유료 가입하라는 거 아니고요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "그냥 정보방 들어오셔서 눈팅만 하셔도 도움 되실 거예요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "지난주에도 300% 수익 난 거 인증 다 있어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: C-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 8,
+          "messages": [
+            "초대해드려도 될까요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-025",
+      "total_sessions": 8,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "안녕하세요. 당근보고 연락드렸어요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "네네 물건 아직 있습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "제가 지금 지방 출장 중이라 직거래는 좀 힘들 것 같은데 택배 거래 괜찮으신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "택배비는 제가 부담해서 보내드릴게요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "혹시 사기 걱정되시면 '안전결제'로 하셔도 돼요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "제가 안전결제 창 만들어서 링크 보내드릴 테니까"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "거기서 네이버페이로 결제하시면 제가 확인하고 바로 편의점 택배 부쳐드릴게요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-3 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 8,
+          "messages": [
+            "잠시만요 링크 따올게요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "B-026",
+      "total_sessions": 8,
+      "results": [
+        {
+          "session_id": 1,
+          "messages": [
+            "[국제발신]"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 2,
+          "messages": [
+            "고객님 해외 직구하신 물품(TV 65인치)이 인천 세관에 도착했습니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 3,
+          "messages": [
+            "현재 관세가 미납되어 통관이 보류된 상태입니다."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 4,
+          "messages": [
+            "본인이 주문하신 게 맞으신가요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 5,
+          "messages": [
+            "아니라고요?"
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 6,
+          "messages": [
+            "여기 송장에는 고객님 성함이랑 전화번호가 적혀있는데요.."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 7,
+          "messages": [
+            "명의도용 되신 것 같은데 이거 그냥 두시면 세금 체납되세요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "Rule-based 폴백: B-2 (점수: 0.33)",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        },
+        {
+          "session_id": 8,
+          "messages": [
+            "일단 제가 통관 담당자 연결해드릴 테니까 취소 처리 하셔야 할 것 같아요."
+          ],
+          "analysis": {
+            "risk_level": "LOW",
+            "reasons": [
+              "키워드 힌트 없음 → NORMAL 판정",
+              "Rule-based 판정: NORMAL → SAFE"
+            ],
+            "recommended_action": "표시",
+            "is_secret_recommended": false,
+            "category": "NORMAL",
+            "category_name": "일상 대화",
+            "scam_probability": 0
+          }
+        }
+      ]
+    }
+  ],
+  "metrics": null
+}

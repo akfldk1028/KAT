@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 module.exports = {
-  mode: process.env.NODE_ENV,
+  mode: 'development',
 
   entry: "./src/index.tsx",
 
@@ -18,18 +18,17 @@ module.exports = {
         test: /\.tsx?$/,
         loader: "babel-loader",
         exclude: /node_modules/
-      },
-      {
-          test: /\.tsx?$/,
-          loader: 'ts-loader'
       }
     ]
   },
   devServer: {
-    contentBase: path.resolve(__dirname, "public"),
+    static: {
+      directory: path.resolve(__dirname, "public"),
+    },
     compress: true,
     historyApiFallback: true,
-    port:3000,
+    port: 3000,
+    open: true,
   },
   output: {
     path: path.resolve(__dirname, "build"),
