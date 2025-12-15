@@ -149,15 +149,25 @@ class IncomingAgent(BaseAgent):
         print(f"[Stage 2] AI Agent 분류: {stage2.get('category')} (신뢰도: {stage2.get('confidence', 0):.2f}, {stage2['time_ms']}ms)")
 
         # Stage 2에서 NORMAL이면 SAFE로 종료 (85% 케이스)
+        # 단, 피싱 의심 키워드가 있으면 Stage 3로 진행
         if stage2.get("category") == "NORMAL" and stage2.get("confidence", 0) >= 0.8:
-            return {
-                "stage1": stage1,
-                "stage2": stage2,
-                "stage3": None,
-                "final_risk_level": "SAFE",
-                "terminated_at": 2,
-                "total_time_ms": int((time.time() - start_time) * 1000)
-            }
+            # 피싱 의심 키워드 확인
+            matched_patterns = stage2.get("matched_patterns", [])
+
+            if len(matched_patterns) > 0:
+                # 키워드가 있으면 Stage 3로 진행
+                print(f"[Stage 2] NORMAL이지만 의심 키워드 발견 ({len(matched_patterns)}개) → Stage 3 진행")
+            else:
+                # 키워드도 없고 NORMAL → SAFE 종료
+                print(f"[Stage 2] NORMAL + 키워드 없음 → SAFE 종료")
+                return {
+                    "stage1": stage1,
+                    "stage2": stage2,
+                    "stage3": None,
+                    "final_risk_level": "SAFE",
+                    "terminated_at": 2,
+                    "total_time_ms": int((time.time() - start_time) * 1000)
+                }
 
         # ========== Stage 3: AI Judge 최종 판단 ==========
         stage3_start = time.time()
