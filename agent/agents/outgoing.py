@@ -86,15 +86,20 @@ class OutgoingAgent(BaseAgent):
         - "-"로 구분된 숫자 패턴이 있거나
         - 민감정보 관련 키워드가 있으면 True
         - Tier 3 조합 패턴 (이름+생년+성별+주소)도 감지
+        - [추가] 한글 숫자 패턴 (의미 기반 정규화 대상)
+        - [추가] OCR 공백 제거 후 키워드 매칭
         """
         import re
 
-        # 숫자가 6자리 이상 연속 (하이픈 포함)
-        if re.search(r'[\d-]{8,}', text):
+        # OCR 공백 제거 버전 생성 (띄어쓰기로 인한 키워드 누락 방지)
+        text_no_space = re.sub(r'\s+', '', text)
+
+        # 숫자가 6자리 이상 연속 (하이픈 포함) - 공백 제거 버전으로도 체크
+        if re.search(r'[\d-]{8,}', text) or re.search(r'[\d-]{8,}', text_no_space):
             return True
 
         # 연도 패턴 (1990년생, 90년생 등)
-        if re.search(r'\d{2,4}년생', text):
+        if re.search(r'\d{2,4}년생', text) or re.search(r'\d{2,4}년생', text_no_space):
             return True
 
         # 마스킹된 패턴 (OCR 결과에서 주민번호 등이 마스킹된 경우)
@@ -104,28 +109,51 @@ class OutgoingAgent(BaseAgent):
         if re.search(r'[*X]{6,}', text):  # 연속된 마스킹 문자
             return True
 
+        # === [추가] 한글 숫자 패턴 감지 (Semantic Normalization 대상) ===
+        # "공일공", "구공공일일오", "일이삼사오육칠" 등 변칙 표기 감지
+        # 한글 숫자가 3개 이상 연속되면 의심
+        korean_num_pattern = r'[공일이삼사오육칠팔구영]{3,}'
+        if re.search(korean_num_pattern, text) or re.search(korean_num_pattern, text_no_space):
+            return True
+
+        # 한글 숫자가 띄어쓰기/구분자로 나뉘어 있어도 감지
+        # 예: "구공공일일오 다시 일이삼사오육칠"
+        korean_nums = re.findall(r'[공일이삼사오육칠팔구영]+', text)
+        total_korean_digits = sum(len(n) for n in korean_nums)
+        if total_korean_digits >= 6:  # 6자리 이상이면 의심 (전화번호, 주민번호 등)
+            return True
+        # === [추가 끝] ===
+
         # Tier 1-2 민감정보 관련 키워드 (즉시 True)
         sensitive_keywords = [
             '계좌', '통장', '카드', '번호',
             '주민', '등록', '여권', '면허',
             '외국인', '비밀번호', '인증',
-            '송금', '이체', '입금'
+            '송금', '이체', '입금',
+            # [추가] 변형 키워드
+            '민번',  # 주민번호 줄임말
+            '보안카드', '지갑', '복구', '니모닉',  # 금융/암호화폐
+            '우울증', '병원', '처방', '약',  # 건강정보
+            '지문', '홍채', '생체',  # 생체정보
         ]
         for keyword in sensitive_keywords:
-            if keyword in text:
+            # 원본 텍스트와 공백 제거 버전 모두 체크 (OCR 대응)
+            if keyword in text or keyword in text_no_space:
                 return True
 
         # 민감 문서 유형 키워드 (증명서, 등본 등 - 이미지 OCR에서 감지)
         document_keywords = [
             '가족관계', '증명서', '등본', '초본',
-            '주민등록', '운전면허', '건강보험',
+            '주민등록', '주민등록증', '운전면허', '건강보험',
             '의료', '진단서', '처방전',
             '소득', '재직', '졸업',
             '인감', '법인', '사업자',
-            '출생', '혼인', '사망'
+            '출생', '혼인', '사망',
+            '신분증',  # [추가] 주민등록증 별칭
         ]
         for keyword in document_keywords:
-            if keyword in text:
+            keyword_no_space = re.sub(r'\s+', '', keyword)
+            if keyword in text or keyword_no_space in text_no_space:
                 return True
 
         # Tier 3 조합 감지 (2개 이상 매칭 시 True)

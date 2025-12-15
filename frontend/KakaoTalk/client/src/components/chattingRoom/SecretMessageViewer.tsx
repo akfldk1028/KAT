@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { viewSecretMessage, SecretMessageContent } from '~/apis/secret';
 import { HOST } from '~/constants';
+import ImageViewerModal from './ImageViewerModal';
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -155,6 +156,12 @@ const SecretImage = styled.img`
   border-radius: 12px;
   display: block;
   margin: 0 auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -291,6 +298,7 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [totalSeconds, setTotalSeconds] = useState(0);
+  const [showImageViewer, setShowImageViewer] = useState(false);  // 이미지 확대 모달
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -420,15 +428,18 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
                   <ImageContainer>
                     <SecretImage
                       src={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
-                      alt="시크릿 이미지"
+                      alt="시크릿 이미지 (클릭하여 확대)"
                       draggable={false}
                       onContextMenu={(e) => content.prevent_capture && e.preventDefault()}
+                      onClick={() => setShowImageViewer(true)}
                     />
-                    {/* 이미지는 항상 다운로드 가능 */}
-                    <DownloadButton onClick={handleDownload}>
-                      <span>💾</span>
-                      다운로드
-                    </DownloadButton>
+                    {/* 캡처 방지 ON이면 다운로드 버튼 숨김 */}
+                    {!content.prevent_capture && (
+                      <DownloadButton onClick={handleDownload}>
+                        <span>💾</span>
+                        다운로드
+                      </DownloadButton>
+                    )}
                   </ImageContainer>
                 ) : (
                   content.message
@@ -444,6 +455,15 @@ const SecretMessageViewer: React.FC<Props> = ({ secretId, onClose }) => {
           </CloseButton>
         </FooterSection>
       </ViewerBox>
+
+      {/* 이미지 확대 모달 */}
+      {showImageViewer && content && content.message_type === 'image' && (
+        <ImageViewerModal
+          imageUrl={content.message.startsWith('http') ? content.message : `${HOST}${content.message}`}
+          onClose={() => setShowImageViewer(false)}
+          preventCapture={content.prevent_capture}
+        />
+      )}
     </Overlay>
   );
 };

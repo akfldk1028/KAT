@@ -24,12 +24,23 @@ const ImageContainer = styled.div`
   align-items: center;
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled.img<{ preventCapture?: boolean }>`
   max-width: 100%;
   max-height: 80vh;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+  /* 캡처 방지 CSS */
+  ${({ preventCapture }) => preventCapture && `
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
+  `}
 `;
 
 const ButtonContainer = styled.div`
@@ -95,9 +106,10 @@ const LoadingText = styled.div`
 interface Props {
   imageUrl: string;
   onClose: () => void;
+  preventCapture?: boolean;  // 캡처 방지 모드
 }
 
-const ImageViewerModal: React.FC<Props> = ({ imageUrl, onClose }) => {
+const ImageViewerModal: React.FC<Props> = ({ imageUrl, onClose, preventCapture = false }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -152,6 +164,9 @@ const ImageViewerModal: React.FC<Props> = ({ imageUrl, onClose }) => {
           <StyledImage
             src={imageUrl}
             alt="확대된 이미지"
+            preventCapture={preventCapture}
+            draggable={!preventCapture}
+            onContextMenu={(e) => preventCapture && e.preventDefault()}
             onLoad={() => setIsLoading(false)}
             onError={() => {
               setIsLoading(false);
@@ -163,10 +178,13 @@ const ImageViewerModal: React.FC<Props> = ({ imageUrl, onClose }) => {
       </ImageContainer>
 
       <ButtonContainer>
-        <Button variant="primary" onClick={handleDownload}>
-          <DownloadIcon />
-          다운로드
-        </Button>
+        {/* 캡처 방지 모드에서는 다운로드 버튼 숨김 */}
+        {!preventCapture && (
+          <Button variant="primary" onClick={handleDownload}>
+            <DownloadIcon />
+            다운로드
+          </Button>
+        )}
         <Button onClick={onClose}>
           닫기
         </Button>

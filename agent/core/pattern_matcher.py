@@ -200,6 +200,7 @@ def normalize_korean_numbers(text: str) -> str:
 
     변칙 표기를 표준 포맷으로 변환하여 탐지율 향상
     예: "공일공-일이삼사-오육칠팔" → "010-1234-5678"
+    예: "구공공일일오 다시 일이삼사오육칠" → "900115-1234567"
 
     Args:
         text: 원본 텍스트
@@ -207,6 +208,8 @@ def normalize_korean_numbers(text: str) -> str:
     Returns:
         정규화된 텍스트
     """
+    import re
+
     korean_num_map = {
         '공': '0', '일': '1', '이': '2', '삼': '3', '사': '4',
         '오': '5', '육': '6', '칠': '7', '팔': '8', '구': '9',
@@ -216,6 +219,21 @@ def normalize_korean_numbers(text: str) -> str:
     result = text
     for korean, arabic in korean_num_map.items():
         result = result.replace(korean, arabic)
+
+    # === [추가] 구분자 정규화 ===
+    # "다시", "에", 띄어쓰기 등 숫자 사이 구분자를 하이픈으로 변환
+    # 예: "900115 다시 1234567" → "900115-1234567"
+    separator_patterns = [
+        (r'(\d+)\s*다시\s*(\d+)', r'\1-\2'),  # "다시" → 하이픈
+        (r'(\d+)\s*에\s*(\d+)', r'\1-\2'),    # "에" → 하이픈 (공일공에 일이삼사)
+        (r'(\d{6})\s+([1-4]\d{6})', r'\1-\2'),  # 주민번호: 6자리 + 공백 + 7자리(1-4로 시작)
+        (r'(\d{3})\s+(\d{4})\s+(\d{4})', r'\1-\2-\3'),  # 전화번호: 3-4-4
+        (r'(\d{4})\s+(\d{4})\s+(\d{4})\s+(\d{4})', r'\1-\2-\3-\4'),  # 카드번호: 4-4-4-4
+    ]
+
+    for pattern, replacement in separator_patterns:
+        result = re.sub(pattern, replacement, result)
+    # === [추가 끝] ===
 
     return result
 # === [수정 끝] ===
@@ -398,24 +416,50 @@ def detect_document_type(text: str) -> Dict[str, Any]:
             "confidence": "high/medium/low"
         }
     """
+    import re
     data = _get_patterns_data()
     text_lower = text.lower()
+    # OCR 공백 제거 버전 (띄어쓰기로 인한 키워드 누락 방지)
+    text_no_space = re.sub(r'\s+', '', text_lower)
 
     best_match = None
     best_score = 0
 
+    # 주민등록증 특수 감지 - OCR에서 자주 나오는 변형 패턴
+    resident_card_patterns = [
+        '주민등록증', '주민 등록증', '주민등록 증',
+        '신분증', 'resident', 'id card',
+        '주민등록번호', '등록번호'
+    ]
+
     for item in data["document_types"]["items"]:
         score = 0
+
+        # 1. 일반 키워드 매칭 (원본 텍스트)
         for keyword in item["keywords"]:
-            if keyword.lower() in text_lower:
-                score += 1
+            keyword_lower = keyword.lower()
+            if keyword_lower in text_lower:
+                score += 2  # 정확한 매칭은 가중치 2
+
+        # 2. 공백 제거 후 매칭 (OCR 공백 문제 해결)
+        for keyword in item["keywords"]:
+            keyword_no_space = re.sub(r'\s+', '', keyword.lower())
+            if keyword_no_space in text_no_space and keyword.lower() not in text_lower:
+                score += 1  # 공백 제거 매칭은 가중치 1
+
+        # 3. 주민등록증 특수 처리
+        if item["id"] == "resident_card":
+            for pattern in resident_card_patterns:
+                pattern_no_space = re.sub(r'\s+', '', pattern.lower())
+                if pattern_no_space in text_no_space:
+                    score += 1
 
         if score > best_score:
             best_score = score
             best_match = item
 
     if best_match and best_score > 0:
-        confidence = "high" if best_score >= 2 else "medium" if best_score == 1 else "low"
+        confidence = "high" if best_score >= 3 else "medium" if best_score >= 1 else "low"
         return {
             "document_type": best_match["id"],
             "name_ko": best_match["name_ko"],
