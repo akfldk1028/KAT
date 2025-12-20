@@ -1,0 +1,7002 @@
+[
+  {
+    "case_id": "PHISH-A-001",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-002",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-003",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-004",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-005",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-006",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-007",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-008",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-009",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-010",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-011",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-012",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-013",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-014",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-015",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-016",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-017",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-018",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-019",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-020",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-021",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-022",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-023",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-024",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-025",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-026",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-027",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-028",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-029",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-030",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-031",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-032",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-033",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-034",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-035",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-036",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-037",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-038",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-039",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-040",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-041",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-042",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-043",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-044",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-045",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-046",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-047",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-048",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-049",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-050",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-051",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-052",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-053",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-054",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-055",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-056",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-057",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-058",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-059",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-060",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-061",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-062",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-063",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-064",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-065",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-066",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-067",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-068",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-069",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-070",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-071",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-072",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-073",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-074",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-075",
+    "category": "친구 사칭 (사고 수습비)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-076",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-077",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-078",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-079",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-080",
+    "category": "지인 사칭 (긴급 송금)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-081",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-082",
+    "category": "자녀 사칭 (급전 요청)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-083",
+    "category": "가족 사칭 (계좌이체 요구)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-084",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-085",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-086",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-087",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-088",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-089",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-090",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-091",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-092",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-093",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-094",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-095",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-096",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-097",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-098",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-099",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-100",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-101",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-102",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-103",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-104",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-105",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-106",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-107",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-108",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-109",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-110",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-111",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-112",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-113",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-114",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-115",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-116",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-117",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-118",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-119",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-120",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-121",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-122",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-123",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-124",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-125",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-126",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-127",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-128",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-129",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-130",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-131",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-132",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-133",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-134",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-135",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-136",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-137",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-138",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-139",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-140",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-141",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-142",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-143",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-144",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-145",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-146",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-147",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-148",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-149",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-150",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-151",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-152",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-153",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-154",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-155",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-156",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-157",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-158",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-159",
+    "category": "기관 사칭 (링크 클릭 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-160",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-161",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-162",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-163",
+    "category": "금융기관 사칭 (계정 탈취)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-164",
+    "category": "공공기관 사칭 (개인정보 수집)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-165",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-166",
+    "category": "택배 사칭 (피싱 링크)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "CRITICAL"
+  },
+  {
+    "case_id": "PHISH-A-167",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-168",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-169",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-170",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-171",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-172",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-173",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-174",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-175",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-176",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-177",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-A-178",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-179",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-180",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-181",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-182",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-183",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-184",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-185",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-186",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-187",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-188",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-189",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-190",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-191",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-192",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-193",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-194",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-195",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-196",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-197",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-198",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-199",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-200",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-201",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-202",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-A-203",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-204",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-205",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-206",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-207",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-208",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-209",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-210",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-211",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-212",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-213",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-214",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-215",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-216",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-217",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-218",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-219",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-220",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-221",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-222",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-223",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-224",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-225",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-226",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-227",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-228",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-229",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-230",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-231",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-232",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-233",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-234",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-235",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-236",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-237",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-238",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-239",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-240",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-A-241",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-242",
+    "category": "금융기관 사칭 (전화 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-243",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-244",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-245",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-246",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-247",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-248",
+    "category": "보이스피싱 (상담원 연결)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-249",
+    "category": "검찰·경찰 사칭 (전화 협박)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-A-250",
+    "category": "보험사 사칭 (환급금 유도)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-001",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-002",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-003",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-004",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-005",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-006",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-007",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-008",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-009",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-010",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-011",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-012",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-013",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-014",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-015",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-016",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-017",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-018",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-019",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-020",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-021",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-022",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-023",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-024",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-025",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-026",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-027",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-028",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-029",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-030",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-031",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-032",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-033",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-034",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-035",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-036",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-037",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-038",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-039",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-040",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-041",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-042",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-043",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-044",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-045",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-046",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-047",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-048",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-049",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-050",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-051",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-052",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-053",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-054",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-055",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-056",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-057",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-058",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-059",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-060",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-061",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-062",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-063",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-064",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-065",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-066",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-067",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-068",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-069",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-070",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-071",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-072",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-073",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-074",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-075",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-076",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-077",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-078",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-079",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-080",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-081",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-082",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-083",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-084",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-085",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-086",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-087",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-088",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-089",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-090",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-091",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-092",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-093",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-094",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-095",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-096",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-097",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-098",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-099",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-100",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-101",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-102",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-103",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-104",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-105",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-106",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-107",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-108",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-109",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-110",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-111",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-112",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-113",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-114",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-115",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-116",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-117",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-118",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-119",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-120",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-121",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-122",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-123",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-124",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-125",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-126",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-127",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-128",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-129",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-130",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-131",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-132",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-133",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-134",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-135",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-136",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-137",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-138",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-139",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-140",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-141",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-142",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-143",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-144",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-145",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-146",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-147",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-148",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-149",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-150",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-151",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-152",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-153",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-154",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-155",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-B-156",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-157",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-158",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-159",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-160",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-161",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-162",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-163",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-164",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-165",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-166",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-167",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-168",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-169",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-170",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-171",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-172",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-173",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-174",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-175",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-176",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-177",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-178",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-179",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-180",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-181",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-182",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-183",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-184",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-185",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-186",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-187",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-188",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-B-189",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-190",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-191",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-192",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-193",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-194",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-195",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-196",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-197",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-198",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-199",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-200",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-201",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-202",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-203",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-204",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-205",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-206",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-207",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-208",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-209",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-210",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-211",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-212",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-213",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-214",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-215",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-216",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-217",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-218",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-219",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-220",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-221",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-222",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-223",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-224",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-225",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-226",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-227",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-228",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-229",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-230",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-231",
+    "category": "비밀번호 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-232",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-233",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-234",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-235",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-236",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-237",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-B-238",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-239",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-240",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-241",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-242",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-243",
+    "category": "인증번호 가로채기",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-244",
+    "category": "OTP 번호 요청",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-245",
+    "category": "카드정보 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-246",
+    "category": "신분증 요구",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-247",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-248",
+    "category": "로맨스 스캠",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "PHISH-B-249",
+    "category": "개인정보 탈취",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "PHISH-B-250",
+    "category": "피싱 링크 (URL 미포함)",
+    "actual": "PHISH",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-001",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-002",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-003",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-004",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-005",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-006",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-007",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-008",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-009",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-010",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-011",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-012",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-013",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-014",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-015",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-016",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-017",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-018",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-019",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-020",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-021",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-022",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-023",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-024",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-025",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-026",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-027",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-028",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-029",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-030",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-031",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-032",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-033",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-034",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-035",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-036",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-037",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-038",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-039",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-040",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-041",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-042",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-043",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-044",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-045",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-046",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-047",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-048",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-049",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-050",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-051",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-052",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-053",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-054",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-055",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-056",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-057",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-058",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-059",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-060",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-061",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-062",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-063",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-064",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-065",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-066",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-067",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-068",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-069",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-070",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-071",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-072",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-073",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-074",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-075",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-076",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-077",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-078",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-079",
+    "category": "은행 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-080",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-081",
+    "category": "증권사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-082",
+    "category": "카드사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-083",
+    "category": "보험사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-084",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-085",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-086",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-087",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-088",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-089",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-090",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-091",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-092",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-093",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-094",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-095",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-096",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-097",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-098",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-099",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-100",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-101",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-102",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-103",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-104",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-105",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-106",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-107",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-108",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-109",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-110",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-111",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-112",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-113",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-114",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-115",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-116",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-117",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-118",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-119",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-120",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-121",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-122",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-123",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-124",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-125",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-126",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-127",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-128",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-129",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-130",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-131",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-132",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-133",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-134",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-135",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-136",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-137",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-138",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-139",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-140",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-141",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-142",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-143",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-144",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-145",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-146",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-147",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-148",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-149",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-150",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-151",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-152",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-153",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-154",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-155",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-156",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-157",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-158",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-159",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-160",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-161",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-162",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-163",
+    "category": "배송 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-164",
+    "category": "통신사 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-165",
+    "category": "고객센터 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-166",
+    "category": "예약 확인",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-167",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-168",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-169",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-170",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-171",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-172",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-173",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-174",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-175",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-176",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-177",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-178",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-179",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-180",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-181",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-182",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-183",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-184",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-185",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-186",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-187",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-188",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-189",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-190",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-191",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-192",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-193",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-194",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-195",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-196",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-197",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-198",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-199",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-200",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-201",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-202",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-203",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-204",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-205",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-206",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-207",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-208",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-209",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-210",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-211",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-212",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-213",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-214",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-215",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-216",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-217",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-218",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-219",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-220",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-221",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-222",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-223",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-224",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-225",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-226",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-227",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-228",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-229",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-230",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-231",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-232",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-233",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-234",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-235",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-236",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-237",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-238",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-239",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-240",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-241",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "MEDIUM"
+  },
+  {
+    "case_id": "NORMAL-A-242",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-243",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-244",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-245",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-A-246",
+    "category": "쇼핑몰 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-247",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-248",
+    "category": "공공기관 정상 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-249",
+    "category": "이벤트 안내",
+    "actual": "NORMAL",
+    "predicted": "PHISH",
+    "risk_level": "HIGH"
+  },
+  {
+    "case_id": "NORMAL-A-250",
+    "category": "서비스 안내",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-001",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-002",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-003",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-004",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-005",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-006",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-007",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-008",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-009",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-010",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-011",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-012",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-013",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-014",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-015",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-016",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-017",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-018",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-019",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-020",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-021",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-022",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-023",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-024",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-025",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-026",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-027",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-028",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-029",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-030",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-031",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-032",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-033",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-034",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-035",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-036",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-037",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-038",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-039",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-040",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-041",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-042",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-043",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-044",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-045",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-046",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-047",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-048",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-049",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-050",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-051",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-052",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-053",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-054",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-055",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-056",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-057",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-058",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-059",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-060",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-061",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-062",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-063",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-064",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-065",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-066",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-067",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-068",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-069",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-070",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-071",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-072",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-073",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-074",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-075",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-076",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-077",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-078",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-079",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-080",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-081",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-082",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-083",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-084",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-085",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-086",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-087",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-088",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-089",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-090",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-091",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-092",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-093",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-094",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-095",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-096",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-097",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-098",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-099",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-100",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-101",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-102",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-103",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-104",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-105",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-106",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-107",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-108",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-109",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-110",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-111",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-112",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-113",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-114",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-115",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-116",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-117",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-118",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-119",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-120",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-121",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-122",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-123",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-124",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-125",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-126",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-127",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-128",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-129",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-130",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-131",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-132",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-133",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-134",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-135",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-136",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-137",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-138",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-139",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-140",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-141",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-142",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-143",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-144",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-145",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-146",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-147",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-148",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-149",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-150",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-151",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-152",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-153",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-154",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-155",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-156",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-157",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-158",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-159",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-160",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-161",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-162",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-163",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-164",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-165",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-166",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-167",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-168",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-169",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-170",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-171",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-172",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-173",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-174",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-175",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-176",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-177",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-178",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-179",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-180",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-181",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-182",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-183",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-184",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-185",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-186",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-187",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-188",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-189",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-190",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-191",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-192",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-193",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-194",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-195",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-196",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-197",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-198",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-199",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-200",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-201",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-202",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-203",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-204",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-205",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-206",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-207",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-208",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-209",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-210",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-211",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-212",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-213",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-214",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-215",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-216",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-217",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-218",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-219",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-220",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-221",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-222",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-223",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-224",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-225",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-226",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-227",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-228",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-229",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-230",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-231",
+    "category": "안부 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-232",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-233",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-234",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-235",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-236",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-237",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-238",
+    "category": "친구 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-239",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-240",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-241",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-242",
+    "category": "취미 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-243",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-244",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-245",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-246",
+    "category": "감사 인사",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-247",
+    "category": "가족 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-248",
+    "category": "업무 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-249",
+    "category": "약속 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  },
+  {
+    "case_id": "NORMAL-B-250",
+    "category": "일상 대화",
+    "actual": "NORMAL",
+    "predicted": "NORMAL",
+    "risk_level": "LOW"
+  }
+]
