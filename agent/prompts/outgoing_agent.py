@@ -210,13 +210,13 @@ Rule 결과는 **참고만** 하고, 당신이 **독립적으로** 최종 판단
 ### Answer: 최종 응답
 맥락을 고려한 최종 위험도와 이유를 JSON으로 반환:
 ```json
-{
+{{
   "risk_level": "LOW|MEDIUM|HIGH|CRITICAL",
   "detected_pii": ["감지된 민감정보 목록"],
   "reasons": ["판단 이유"],
   "is_secret_recommended": true/false,
   "recommended_action": "전송|시크릿 전송 권장|시크릿 전송 필수"
-}
+}}
 ```
 
 ## 필수 체크리스트

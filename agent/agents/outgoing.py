@@ -53,12 +53,31 @@ class OutgoingAgent(BaseAgent):
         rule_result = self._analyze_rule_based(text)
 
         # Step 2: AI 분석 (use_ai=True일 때)
+        # 최적화 + Tier 3 조합 패턴 감지
         if use_ai:
+            risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
+
+            # Rule-based가 LOW이면 맥락적 요소 감지 (Option B: AI의 맥락 판단 활용)
+            if rule_result.risk_level.value == "LOW":
+                # 숫자 존재 여부 (전화번호, 나이, 주소 등)
+                has_numbers = bool(re.search(r'\d', text))
+
+                # 한글 이름 패턴 (2-4글자 한글)
+                has_korean_name = bool(re.search(r'[가-힣]{2,4}', text))
+
+                # 이메일 패턴
+                has_email_hint = '@' in text
+
+                # 확실히 안전한 경우만 AI 스킵 (숫자도 없고, 이름도 없고, 이메일도 없음)
+                if not (has_numbers or has_korean_name or has_email_hint):
+                    return rule_result
+
+                # 맥락적 요소가 있으면 AI한테 조합/맥락 판단 맡기기
+
+            # MEDIUM 이상 또는 맥락적 요소 존재 시 → AI로 재검증
             ai_result = self._analyze_with_ai(text)
 
             # Step 3: 하이브리드 - 둘 중 높은 위험도 사용
-            risk_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
-
             if risk_order[rule_result.risk_level.value] >= risk_order[ai_result.risk_level.value]:
                 # Rule-based가 더 높거나 같음 → Rule 결과 + AI 이유 병합
                 combined_reasons = list(rule_result.reasons)
@@ -255,6 +274,9 @@ class OutgoingAgent(BaseAgent):
 
         except Exception as e:
             print(f"[OutgoingAgent] AI+MCP analysis error: {e}, falling back to rule-based")
+            print(f"[OutgoingAgent] Error type: {type(e).__name__}")
+            import traceback
+            traceback.print_exc()
             return self._analyze_rule_based(text)
 
     def _tool_scan_pii(self, text: str) -> Dict[str, Any]:

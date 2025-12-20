@@ -536,7 +536,8 @@ def calculate_risk(detected_items: List[Dict]) -> Dict[str, Any]:
                         matched_rules.append(rule_id)
 
     # 3. 자동 상향 규칙 (count_based)
-    count = len(detected_items)
+    # [수정] 같은 ID는 1개로만 카운트 (이름이 여러 개 감지되어도 1개로 취급)
+    count = len(detected_ids)
     for escalation in data["auto_escalation"]["count_based"]:
         if count >= escalation["min_items"]:
             if risk_order[escalation["escalate_to"]] > risk_order[final_risk]:
